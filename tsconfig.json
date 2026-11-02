@@ -8,6 +8,7 @@
     "outDir": ".build",
     "jsx": "react-jsx",
     "strict": true,
+    "skipLibCheck": true,
     "declaration": true,
     "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": true

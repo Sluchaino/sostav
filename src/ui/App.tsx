@@ -172,7 +172,7 @@ function Editor({ catalog: baseCatalog, texts: baseTexts }: { catalog: Catalog; 
 
   function removeCustom(id: string) {
     commit(current => {
-      const { interpretation: _old, ...rest } = current;
+      const { interpretation: _old, selectionReview: _review, ...rest } = current;
       return { ...rest, customObjects: (current.customObjects ?? []).filter(item => item.id !== id), objects: current.objects.filter(item => item.objectId !== id) };
     });
     setToast('SVG удалён из библиотеки и сцены. Действие можно отменить.');
@@ -333,7 +333,7 @@ function Editor({ catalog: baseCatalog, texts: baseTexts }: { catalog: Catalog; 
       </aside>
     </div>
     <input ref={svgInput} type="file" accept=".svg,image/svg+xml" multiple hidden aria-label="Свои SVG" onChange={event => { void importSvgFiles(Array.from(event.target.files ?? [])); event.target.value = ''; }} />
-    {editingCustom && scene.customObjects?.find(item => item.id === editingCustom) && <CustomObjectDialog key={editingCustom} object={scene.customObjects.find(item => item.id === editingCustom)!} catalog={catalog} palettes={[...catalog.palettes, ...scene.customPalettes]} paletteId={scene.paletteId} onClose={() => setEditingCustom(null)} onSave={value => { commit(current => { const { interpretation: _old, ...rest } = current; return { ...rest, customObjects: (current.customObjects ?? []).map(item => item.id === value.id ? value : item) }; }); setEditingCustom(null); setToast('Настройки SVG сохранены. Цвета применены на холсте.'); }} />}
+    {editingCustom && scene.customObjects?.find(item => item.id === editingCustom) && <CustomObjectDialog key={editingCustom} object={scene.customObjects.find(item => item.id === editingCustom)!} catalog={catalog} palettes={[...catalog.palettes, ...scene.customPalettes]} paletteId={scene.paletteId} onClose={() => setEditingCustom(null)} onSave={value => { commit(current => { const { interpretation: _old, selectionReview: _review, ...rest } = current; return { ...rest, customObjects: (current.customObjects ?? []).map(item => item.id === value.id ? value : item) }; }); setEditingCustom(null); setToast('Настройки SVG сохранены. Цвета применены на холсте.'); }} />}
     <input ref={projectInput} type="file" accept=".json,.sostav.json,application/json" hidden aria-label="Файл проекта" onChange={event => { void openFile(event.target.files?.[0], 'project'); event.target.value = ''; }} />
     {showAuto && <AutoComposeDialog catalog={catalog} texts={texts} scene={scene} onClose={() => setShowAuto(false)} onApply={next => { commit(next); setSelectedId([...next.objects].reverse().find(object => object.role === 'main')?.instanceId ?? null); setShowAuto(false); setToast('Композиция собрана. Её можно редактировать и скачать в SVG.'); }} />}
     <input ref={paletteInput} type="file" accept=".json,application/json" hidden aria-label="Файл палитры" onChange={event => { void openFile(event.target.files?.[0], 'palette'); event.target.value = ''; }} />

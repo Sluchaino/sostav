@@ -1,10 +1,14 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import { ArrowRight, Check, Layers3, Plus, RefreshCw, Shapes, Sparkles, X } from 'lucide-react';
 import type { Catalog, ObjectRole } from '../library/types.js';
+import { searchObjects } from '../library/index.js';
+import { SuggestionClient } from '../editor/semantic-client.js';
+import { semanticDocuments, type SemanticSuggestion } from '../editor/semantic.js';
+import { confirmedSuggestion, editReview, type ReviewedItem, type SelectionReview } from '../editor/selection.js';
 import { generateLayouts, MAX_LAYOUT_OBJECTS, objectsFromNames, parseObjectNames, type LayoutVariant } from '../editor/layout.js';
-import { exportSvg, type AssetTexts } from '../editor/svg.js';
-import type { Scene } from '../editor/model.js';
-import { selectObjectsByTheme, objectsFromMeaning, THEME_EXAMPLES, type MeaningResult } from '../editor/meaning.js';
+import { exportSvg, preparedSvg, type AssetTexts } from '../editor/svg.js';
+import { activePalette, type Scene } from '../editor/model.js';
+import { selectObjectsByTheme, THEME_EXAMPLES, type MeaningResult } from '../editor/meaning.js';
 
 function VariantPreview({ catalog, texts, variant }: { catalog: Catalog; texts: AssetTexts; variant: LayoutVariant }) {
   const markup = useMemo(() => {
@@ -17,10 +21,29 @@ function VariantPreview({ catalog, texts, variant }: { catalog: Catalog; texts: 
   return <span className="variant-artwork" aria-hidden="true" dangerouslySetInnerHTML={{ __html: markup }} />;
 }
 
+function ObjectThumbnail({ catalog, texts, scene, objectId }: { catalog: Catalog; texts: AssetTexts; scene: Scene; objectId: string }) {
+  const id = useId().replace(/[^a-zA-Z0-9_-]/g, '');
+  const markup = useMemo(() => {
+    const asset = catalog.objects.find(object => object.id === objectId)!.variants[scene.size].main;
+    const root = preparedSvg(catalog, asset, texts.get(asset.url)!, activePalette(catalog, scene), 'object', 'choice-' + id);
+    root.setAttribute('width', '100%'); root.setAttribute('height', '100%');
+    return new XMLSerializer().serializeToString(root);
+  }, [catalog, texts, scene, objectId, id]);
+  return <span className="choice-thumbnail" aria-hidden="true" dangerouslySetInnerHTML={{ __html: markup }} />;
+}
+
 export function AutoComposeDialog({ catalog, texts, scene, onApply, onClose }: { catalog: Catalog; texts: AssetTexts; scene: Scene; onApply: (scene: Scene) => void; onClose: () => void }) {
   const [source, setSource] = useState<'theme' | 'canvas' | 'names'>('theme');
   const [onlyCustom, setOnlyCustom] = useState(false);
-  const [theme, setTheme] = useState(scene.interpretation?.prompt ?? (scene.name === 'Новая иллюстрация' ? '' : scene.name));
+  const [theme, setTheme] = useState(scene.selectionReview?.prompt ?? scene.interpretation?.prompt ?? (scene.name === 'Новая иллюстрация' ? '' : scene.name));
+  const [review, setReview] = useState<ReviewedItem[] | null>(scene.selectionReview?.items ?? null);
+  const [acceptedSuggestion, setAcceptedSuggestion] = useState<SelectionReview['suggestion']>(scene.selectionReview?.suggestion);
+  const [suggestion, setSuggestion] = useState<SemanticSuggestion | null>(null);
+  const [suggestionStatus, setSuggestionStatus] = useState<'idle' | 'loading' | 'found' | 'none' | 'skipped' | 'error'>('idle');
+  const [suggestionMessage, setSuggestionMessage] = useState('');
+  const [choiceQuery, setChoiceQuery] = useState('');
+  const suggestionClient = useRef<SuggestionClient | null>(null);
+  const requestVersion = useRef(0);
   const [meaning, setMeaning] = useState<MeaningResult | null>(null);
   const [names, setNames] = useState(scene.objects.map(object => catalog.objects.find(item => item.id === object.objectId)!.name).join(', '));
   const [roles, setRoles] = useState<Record<string, ObjectRole>>(() => Object.fromEntries(scene.objects.flatMap((object, index) => [[object.instanceId, object.role], [`auto-choice-${index}-${object.objectId}`, object.role]])));
@@ -34,11 +57,15 @@ export function AutoComposeDialog({ catalog, texts, scene, onApply, onClose }: {
   const previousFocus = useRef(document.activeElement as HTMLElement | null);
   const parsed = useMemo(() => parseObjectNames(catalog, names), [catalog, names]);
   const objects = useMemo(() => source === 'theme'
-    ? (meaning?.items ?? []).map(item => ({ instanceId: `theme-${item.objectId}`, objectId: item.objectId, role: roles[`theme-${item.objectId}`] ?? item.role, x: 0.5, y: 0.5, rotation: 0 }))
+    ? (review ?? []).map(item => ({ instanceId: `theme-${item.objectId}`, objectId: item.objectId, role: item.role, x: 0.5, y: 0.5, rotation: 0 }))
     : source === 'canvas'
     ? scene.objects.map(object => ({ ...object, role: roles[object.instanceId] ?? object.role }))
-    : parsed.objectIds.map((objectId, index) => ({ instanceId: `auto-choice-${index}-${objectId}`, objectId, role: roles[`auto-choice-${index}-${objectId}`] ?? 'main', x: 0.5, y: 0.5, rotation: 0 })), [source, scene.objects, roles, parsed, meaning]);
+    : parsed.objectIds.map((objectId, index) => ({ instanceId: `auto-choice-${index}-${objectId}`, objectId, role: roles[`auto-choice-${index}-${objectId}`] ?? 'main', x: 0.5, y: 0.5, rotation: 0 })), [source, scene.objects, roles, parsed, review]);
+  const themeCatalog = useMemo(() => onlyCustom ? { ...catalog, objects: catalog.objects.filter(object => object.custom) } : catalog, [catalog, onlyCustom]);
+  const excluded = meaning?.excludedObjectIds ?? [];
+  const choiceObjects = searchObjects(themeCatalog, choiceQuery).filter(object => !excluded.includes(object.id) && !(review ?? []).some(item => item.objectId === object.id));
   const activeVariant = variants[selected];
+  useEffect(() => () => { requestVersion.current++; suggestionClient.current?.cancel(); }, []);
   const mainCount = objects.filter(object => object.role === 'main').length;
 
   useEffect(() => { if (objects.length >= MAX_LAYOUT_OBJECTS) setSupport(false); }, [objects.length]);
@@ -51,7 +78,7 @@ export function AutoComposeDialog({ catalog, texts, scene, onApply, onClose }: {
 
   function invalidate() { setDirty(true); setError(''); }
   function changeTheme(value: string) {
-    setTheme(value); setMeaning(null);
+    setTheme(value); resetSelection();
     setRoles(previous => Object.fromEntries(Object.entries(previous).filter(([id]) => !id.startsWith('theme-'))));
     invalidate();
   }
@@ -61,15 +88,55 @@ export function AutoComposeDialog({ catalog, texts, scene, onApply, onClose }: {
     setNames([...ids.map(objectId => catalog.objects.find(item => item.id === objectId)!.name), ...parsed.unknown].join(', '));
     invalidate();
   }
-  function generate() {
+  function cancelSuggestion() { requestVersion.current++; suggestionClient.current?.cancel(); }
+  function resetSelection() {
+    cancelSuggestion(); setMeaning(null); setReview(null); setAcceptedSuggestion(undefined); setSuggestion(null); setSuggestionStatus('idle'); setSuggestionMessage(''); setVariants([]); invalidate();
+  }
+  function pickByRules() {
     try {
-      const themeCatalog = onlyCustom ? { ...catalog, objects: catalog.objects.filter(object => object.custom) } : catalog;
-      const interpretation = source === 'theme' ? selectObjectsByTheme(themeCatalog, theme, { includeBackgroundObjects: support }) : null;
-      if (interpretation) setMeaning(interpretation);
-      if (interpretation?.status === 'unmatched') { setVariants([]); throw new Error(interpretation.summary); }
-      const selectedObjects = interpretation ? objectsFromMeaning(catalog, interpretation, roles) : source === 'names' ? objectsFromNames(catalog, names, roles) : objects;
-      const { interpretation: _prior, ...baseScene } = scene;
-      const base: Scene = { ...baseScene, name: source === 'theme' ? theme.trim().slice(0, 120) : scene.name.trim() || 'Новая иллюстрация', objects: selectedObjects, ...(interpretation ? { interpretation } : {}) };
+      resetSelection();
+      const result = selectObjectsByTheme(themeCatalog, theme, { includeBackgroundObjects: support });
+      setMeaning(result);
+      setReview(result.items.map(item => ({ objectId: item.objectId, role: item.role, reason: item.reason, origin: 'rules' })));
+    } catch (error) { setError(error instanceof Error ? error.message : 'Не удалось подобрать предметы'); }
+  }
+  function editItems(action: Parameters<typeof editReview>[1]) {
+    try {
+      const next = editReview(review ?? [], action, themeCatalog, excluded);
+      cancelSuggestion(); setSuggestionStatus('idle'); setSuggestion(null); setReview(next);
+      if (!next.some(item => item.origin === 'model-confirmed')) setAcceptedSuggestion(undefined);
+      invalidate();
+    } catch (error) { setError(error instanceof Error ? error.message : 'Не удалось изменить подбор'); }
+  }
+  async function askSuggestion() {
+    if (!meaning || meaning.items.length || (review?.length ?? 0) || source !== 'theme') return;
+    cancelSuggestion();
+    const version = requestVersion.current;
+    setSuggestionStatus('loading'); setSuggestionMessage('Подготавливаем локальную модель…'); setSuggestion(null);
+    suggestionClient.current ??= new SuggestionClient();
+    try {
+      const result = await suggestionClient.current.suggest({ prompt: theme.trim(), documents: semanticDocuments(catalog), allowed: themeCatalog.objects.map(object => object.id), excluded }, text => { if (version === requestVersion.current) setSuggestionMessage(text); });
+      if (version !== requestVersion.current) return;
+      if (result && (!themeCatalog.objects.some(object => object.id === result.objectId) || excluded.includes(result.objectId))) throw new Error('Предложен недоступный предмет');
+      setSuggestion(result); setSuggestionStatus(result ? 'found' : 'none'); setSuggestionMessage(result ? '' : 'Надёжной подсказки нет. Уточните фразу или выберите предмет вручную.');
+    } catch (error) {
+      if (version !== requestVersion.current) return;
+      setSuggestionStatus('error'); setSuggestionMessage(error instanceof Error ? error.message : 'Модель недоступна');
+    }
+  }
+  function acceptSuggestion() {
+    if (!suggestion || (review?.length ?? 0) || !themeCatalog.objects.some(object => object.id === suggestion.objectId) || excluded.includes(suggestion.objectId)) return;
+    setReview([{ objectId: suggestion.objectId, role: 'main', origin: 'model-confirmed', reason: 'Вы подтвердили предположение локальной модели по близости фразы и описания предмета.' }]);
+    setAcceptedSuggestion(confirmedSuggestion(suggestion)); setSuggestion(null); setSuggestionStatus('idle'); invalidate();
+  }
+  function generate() {
+    if (source === 'theme' && review === null) { pickByRules(); return; }
+    try {
+      const selectedObjects = source === 'theme' ? objects : source === 'names' ? objectsFromNames(catalog, names, roles) : objects;
+      const { interpretation: _prior, selectionReview: _oldReview, ...baseScene } = scene;
+      const selectionReview: SelectionReview | undefined = source === 'theme' && review?.length ? { prompt: theme.trim(), items: review, ...(acceptedSuggestion && review.some(item => item.origin === 'model-confirmed') ? { suggestion: acceptedSuggestion } : {}) } : undefined;
+      const unchangedRules = meaning && review && review.length === meaning.items.length && review.every((item, i) => item.origin === 'rules' && item.objectId === meaning.items[i]?.objectId);
+      const base: Scene = { ...baseScene, name: source === 'theme' ? theme.trim().slice(0, 120) : scene.name.trim() || 'Новая иллюстрация', objects: selectedObjects, ...(selectionReview ? { selectionReview } : {}), ...(source === 'theme' && unchangedRules && meaning ? { interpretation: meaning } : {}) };
       const result = generateLayouts(catalog, base, { seed, includeBackgroundObjects: source === 'theme' ? false : support });
       setVariants(result); setSelected(0); setError(''); setDirty(false); setSeed(seed + 1);
     } catch (error) { setError(error instanceof Error ? error.message : 'Не удалось собрать композицию'); setDirty(true); }
@@ -88,22 +155,29 @@ export function AutoComposeDialog({ catalog, texts, scene, onApply, onClose }: {
       <header className="auto-header"><div><span className="eyebrow">АВТОКОМПОЗИЦИЯ</span><h2 id="auto-dialog-title">{source === 'theme' ? 'Начните с идеи. Мы подберём предметы' : 'Выберите предметы. Мы найдём им место'}<span>.</span></h2><p>Три расположения из ваших исходных векторов.</p></div><button className="icon-button" aria-label="Закрыть автосборку" onClick={onClose}><X size={20} /></button></header>
       <div className="auto-body">
         <div className="auto-inputs">
-          <div className="auto-source" aria-label="Источник предметов"><button aria-pressed={source === 'theme'} className={source === 'theme' ? 'active' : ''} onClick={() => { setSource('theme'); invalidate(); }}><Sparkles size={12} />По смыслу</button><button aria-pressed={source === 'canvas'} className={source === 'canvas' ? 'active' : ''} onClick={() => { setSource('canvas'); invalidate(); }}><Layers3 size={12} />На холсте</button><button aria-pressed={source === 'names'} className={source === 'names' ? 'active' : ''} onClick={() => { setSource('names'); invalidate(); }}><Shapes size={12} />По названиям</button></div>
-          {source === 'theme' && <><div className="meaning-mode"><span />Локальный подбор · без AI</div><label className="auto-input-label" htmlFor="auto-theme">О чём ваша иллюстрация?</label><textarea id="auto-theme" aria-label="Заголовок или метафора" placeholder="Например: обучение онлайн или финансовая подушка" value={theme} onChange={event => changeTheme(event.target.value)} rows={3} maxLength={300} /><div className="theme-examples">{THEME_EXAMPLES.map(example => <button key={example} onClick={() => changeTheme(example)}>{example}</button>)}</div></>}
+          <div className="auto-source" aria-label="Источник предметов"><button aria-pressed={source === 'theme'} className={source === 'theme' ? 'active' : ''} onClick={() => { cancelSuggestion(); setSuggestionStatus('idle'); setSource('theme'); invalidate(); }}><Sparkles size={12} />По смыслу</button><button aria-pressed={source === 'canvas'} className={source === 'canvas' ? 'active' : ''} onClick={() => { cancelSuggestion(); setSuggestionStatus('idle'); setSource('canvas'); invalidate(); }}><Layers3 size={12} />На холсте</button><button aria-pressed={source === 'names'} className={source === 'names' ? 'active' : ''} onClick={() => { cancelSuggestion(); setSuggestionStatus('idle'); setSource('names'); invalidate(); }}><Shapes size={12} />По названиям</button></div>
+          {source === 'theme' && <><div className="meaning-mode"><span />Правила · модель по запросу</div><label className="auto-input-label" htmlFor="auto-theme">О чём ваша иллюстрация?</label><textarea id="auto-theme" aria-label="Заголовок или метафора" placeholder="Например: обучение онлайн или финансовая подушка" value={theme} onChange={event => changeTheme(event.target.value)} rows={3} maxLength={300} /><div className="theme-examples">{THEME_EXAMPLES.map(example => <button key={example} onClick={() => changeTheme(example)}>{example}</button>)}</div></>}
           {source === 'names' && <><label className="auto-input-label" htmlFor="auto-names">Какие предметы нужны?</label><textarea id="auto-names" aria-label="Названия предметов для автосборки" placeholder="Например: книга, телефон, ручка" value={names} onChange={event => { setNames(event.target.value); invalidate(); }} rows={3} maxLength={500} /><div className="auto-object-chips">{catalog.objects.map(object => <button key={object.id} aria-pressed={parsed.objectIds.includes(object.id)} className={parsed.objectIds.includes(object.id) ? 'active' : ''} onClick={() => chooseObject(object.id)}>{parsed.objectIds.includes(object.id) ? <Check size={11} /> : <Plus size={11} />}{object.name}</button>)}</div></>}
-          {source === 'theme' && catalog.objects.some(object => object.custom) && <label className="auto-support"><input type="checkbox" checked={onlyCustom} onChange={event => { setOnlyCustom(event.target.checked); setMeaning(null); invalidate(); }} /><span>Только мои SVG<small>Подбирать из загруженных картинок</small></span></label>}
+          {source === 'theme' && catalog.objects.some(object => object.custom) && <label className="auto-support"><input type="checkbox" checked={onlyCustom} onChange={event => { setOnlyCustom(event.target.checked); resetSelection(); }} /><span>Только мои SVG<small>Подбирать из загруженных картинок</small></span></label>}
           <div className="auto-selection-heading"><h3>Предметы композиции</h3><span className={objects.length > MAX_LAYOUT_OBJECTS ? 'over-limit' : ''}>{objects.length} / {MAX_LAYOUT_OBJECTS}</span></div>
-          <div className="auto-selected-list">{objects.map(object => <div key={object.instanceId} className="meaning-object"><label className="auto-selected-object"><span className={`role-dot ${object.role}`} /><span>{catalog.objects.find(item => item.id === object.objectId)!.name}</span><select aria-label={`Роль: ${catalog.objects.find(item => item.id === object.objectId)!.name}`} value={object.role} onChange={event => { setRoles({ ...roles, [object.instanceId]: event.target.value as ObjectRole }); invalidate(); }}><option value="main">Главный</option><option value="secondary">Фоновый</option></select></label>{source === 'theme' && <p>{meaning?.items.find(item => item.objectId === object.objectId)?.reason}</p>}</div>)}{!objects.length && <p className="auto-empty-selection">{source === 'theme' ? 'Подберём предметы после ввода темы.' : source === 'canvas' ? 'Холст пуст. Выберите предметы по названиям.' : 'Введите названия или нажмите на предметы выше.'}</p>}</div>
-          <label className="auto-support"><input type="checkbox" checked={support} disabled={objects.length >= MAX_LAYOUT_OBJECTS} onChange={event => { setSupport(event.target.checked); invalidate(); }} /><span>{source === 'theme' ? 'Использовать фоновые предметы' : 'Добавить фоновый предмет'}<small>{source === 'theme' ? 'Дополнить смысл второстепенным предметом' : 'Подберём дополнение из библиотеки'}</small></span></label>
+          <div className="auto-selected-list">{objects.map(object => <div key={object.instanceId} className="meaning-object"><label className="auto-selected-object"><span className={`role-dot ${object.role}`} /><span>{catalog.objects.find(item => item.id === object.objectId)!.name}</span><select aria-label={`Роль: ${catalog.objects.find(item => item.id === object.objectId)!.name}`} value={object.role} onChange={event => { if (source === 'theme') setReview(current => (current ?? []).map(item => item.objectId === object.objectId ? { ...item, role: event.target.value as ObjectRole } : item)); else setRoles({ ...roles, [object.instanceId]: event.target.value as ObjectRole }); invalidate(); }}><option value="main">Главный</option><option value="secondary">Фоновый</option></select></label>{source === 'theme' && <><p>{review?.find(item => item.objectId === object.objectId)?.reason}</p><div className="review-edit-row"><label>Заменить<select aria-label={`Заменить: ${catalog.objects.find(item => item.id === object.objectId)!.name}`} value={object.objectId} onChange={event => editItems({ type: 'replace', objectId: event.target.value, previousId: object.objectId })}><option value={object.objectId}>{catalog.objects.find(item => item.id === object.objectId)!.name}</option>{themeCatalog.objects.filter(item => !excluded.includes(item.id) && !(review ?? []).some(selected => selected.objectId === item.id)).map(item => <option key={item.id} value={item.id}>{item.name}</option>)}</select></label><button type="button" aria-label={`Убрать из подбора: ${catalog.objects.find(item => item.id === object.objectId)!.name}`} onClick={() => editItems({ type: 'remove', objectId: object.objectId })}>Убрать</button></div></>}</div>)}{!objects.length && <p className="auto-empty-selection">{source === 'theme' ? review === null ? 'Введите фразу и подберите предметы.' : 'Предметы не выбраны. Уточните фразу или добавьте их вручную.' : source === 'canvas' ? 'Холст пуст. Выберите предметы по названиям.' : 'Введите названия или нажмите на предметы выше.'}</p>}</div>
+          {source === 'theme' && review !== null && <>
+            <button className="button secondary review-retry" onClick={pickByRules}>Подобрать заново</button>
+            {meaning?.items.length === 0 && !review.length && <section className="suggestion-box" aria-label="Подсказка локальной модели"><h3>Попробовать смысловую подсказку</h3><p>Модель предложит один предмет по описанию. Это предположение — решение за вами.</p>
+              {suggestionStatus === 'found' && suggestion ? <><div className="suggestion-object"><ObjectThumbnail catalog={catalog} texts={texts} scene={scene} objectId={suggestion.objectId} /><strong>{catalog.objects.find(object => object.id === suggestion.objectId)!.name}</strong></div><p>Совпадение смысла не гарантировано. Проверьте, подходит ли предмет вашей идее.</p><div className="suggestion-actions"><button className="button primary" onClick={acceptSuggestion}>Использовать предмет</button><button className="button secondary" onClick={() => { setSuggestion(null); setSuggestionStatus('skipped'); setSuggestionMessage('Подсказка пропущена. Можно уточнить фразу или выбрать предмет вручную.'); }}>Пропустить</button></div></> : <><p className="suggestion-download">Первый запуск скачает около 130 МиБ модели и токенизатора. Фраза обрабатывается на устройстве, без API-ключа.</p>{suggestionMessage && <p role="status">{suggestionMessage}</p>}{suggestionStatus === 'loading' ? <button className="button secondary" onClick={() => { cancelSuggestion(); setSuggestionStatus('idle'); setSuggestionMessage('Загрузка отменена.'); }}>Отменить загрузку</button> : <button className="button secondary" onClick={() => { void askSuggestion(); }}>Найти подсказку модели</button>}</>}
+            </section>}
+            <details className="review-library"><summary>Добавить предмет вручную</summary><label>Поиск<input aria-label="Поиск для исправления подбора" placeholder="Название или тег" value={choiceQuery} onChange={event => setChoiceQuery(event.target.value)} /></label><div className="review-choice-grid">{choiceObjects.map(object => <button className="review-choice" key={object.id} disabled={(review?.length ?? 0) >= MAX_LAYOUT_OBJECTS} onClick={() => editItems({ type: 'add', objectId: object.id })}><ObjectThumbnail catalog={catalog} texts={texts} scene={scene} objectId={object.id} /><span>{object.name}</span><Plus size={12} /></button>)}</div>{!choiceObjects.length && <p>Доступных предметов не найдено. Проверьте поиск и ограничения фразы.</p>}</details>
+          </>}
+          <label className="auto-support"><input type="checkbox" checked={support} disabled={objects.length >= MAX_LAYOUT_OBJECTS} onChange={event => { setSupport(event.target.checked); if (source === 'theme') resetSelection(); else invalidate(); }} /><span>{source === 'theme' ? 'Использовать фоновые предметы' : 'Добавить фоновый предмет'}<small>{source === 'theme' ? 'Дополнить смысл второстепенным предметом' : 'Подберём дополнение из библиотеки'}</small></span></label>
           <p className="auto-rules">От одного до шести предметов, хотя бы один главный. Пропорции сохраняются, фоновые располагаются позади главных.</p>
           {source === 'names' && parsed.unknown.length > 0 && !error && <p className="auto-error" role="status">Нет в библиотеке: {[...new Set(parsed.unknown)].join(', ')}</p>}
           {error && <p className="auto-error" role="alert">{error}</p>}
-          <button className="button primary generate-button" onClick={generate}><RefreshCw size={16} />{variants.length && !dirty ? 'Ещё варианты' : source === 'theme' ? 'Подобрать и собрать' : 'Получить варианты'}</button>
+          <button className="button primary generate-button" disabled={source === 'theme' && review !== null && !review.length} onClick={generate}><RefreshCw size={16} />{variants.length && !dirty ? 'Ещё варианты' : source === 'theme' ? review === null ? 'Подобрать предметы' : 'Собрать варианты' : 'Получить варианты'}</button>
         </div>
         <div className="auto-results">
           <div className="auto-results-heading"><span>РАСПОЛОЖЕНИЯ</span><span>{scene.size} · {catalog.formats.find(format => format.id === scene.formatId)!.width} × {catalog.formats.find(format => format.id === scene.formatId)!.height}</span></div>
-          {source === 'theme' && meaning && <div className={`meaning-summary ${meaning.status}`} role="status"><span>{meaning.status === 'matched' ? 'Найдена смысловая связь' : meaning.status === 'partial' ? 'Частичная смысловая связь' : 'Нужен контекст'}</span><p>{meaning.summary}</p><div>{meaning.concepts.map(concept => <i key={concept.id}>{concept.label}</i>)}</div>{meaning.limitations.map((note, index) => <p className="meaning-limitation" key={index}>{note}</p>)}{meaning.excludedObjectIds.length > 0 && <p className="meaning-limitation">Исключены по вашему запросу: {meaning.excludedObjectIds.map(id => catalog.objects.find(object => object.id === id)!.name).join(', ')}.</p>}</div>}
-          {!variants.length ? <div className="auto-placeholder"><span><Sparkles size={32} /></span><h3>У одной идеи — несколько форм</h3><p>Выберите предметы слева и получите<br />три варианта композиции.</p><div><i /><i /><i /></div></div> : <>
+          {source === 'theme' && meaning && <div className={`meaning-summary ${meaning.status}`} role="status"><span>{review?.some(item => item.origin !== 'rules') ? 'Состав исправлен вами' : meaning.status === 'matched' ? 'Найдена смысловая связь' : meaning.status === 'partial' ? 'Частичная смысловая связь' : 'Нужен контекст'}</span><p>{review?.some(item => item.origin !== 'rules') ? 'Соберём варианты из подтверждённых вами предметов.' : meaning.summary}</p><div>{meaning.concepts.map(concept => <i key={concept.id}>{concept.label}</i>)}</div>{meaning.limitations.map((note, index) => <p className="meaning-limitation" key={index}>{note}</p>)}{meaning.excludedObjectIds.length > 0 && <p className="meaning-limitation">Исключены по вашему запросу: {meaning.excludedObjectIds.map(id => catalog.objects.find(object => object.id === id)!.name).join(', ')}.</p>}</div>}
+          {!variants.length ? <div className="auto-placeholder"><span><Sparkles size={32} /></span><h3>У одной идеи — несколько форм</h3><p>Проверьте предметы слева и нажмите<br />«Собрать варианты».</p><div><i /><i /><i /></div></div> : <>
             <div className={`variant-grid ${dirty ? 'stale' : ''}`}>{variants.map((variant, index) => <button className={`variant-card ${selected === index ? 'active' : ''}`} key={variant.id} aria-pressed={selected === index} aria-label={`Вариант: ${variant.name}`} onClick={() => setSelected(index)}><span className="variant-image"><VariantPreview catalog={catalog} texts={texts} variant={variant} /><span className="variant-number">0{index + 1}</span>{selected === index && <span className="variant-check"><Check size={13} /></span>}</span><strong>{variant.name}</strong><small>{variant.description}</small></button>)}</div>
             <div className="auto-result-note">{dirty ? 'Настройки изменились. Получите новые варианты перед применением.' : activeVariant?.addedObjectIds.length ? `Добавлен фоновый предмет: ${activeVariant.addedObjectIds.map(id => catalog.objects.find(item => item.id === id)!.name).join(', ')}.` : `Главных: ${mainCount} · фоновых: ${objects.length - mainCount}. Все предметы помещаются в холст.`}</div>
             <p className="auto-after-note">После выбора вы сможете переместить предметы, изменить цвета и скачать SVG.</p>

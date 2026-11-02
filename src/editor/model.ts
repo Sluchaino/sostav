@@ -2,6 +2,7 @@ import type { Catalog, IllustrationSize, ObjectRole, Palette } from '../library/
 import { validatePalette } from '../library/index.js';
 import { customLibrary, validateCustomObjects, type CustomObject } from '../library/custom.js';
 import { validateMeaningResult, type MeaningResult } from './meaning.js';
+import { validateSelectionReview, type SelectionReview } from './selection.js';
 
 export interface SceneObject {
   instanceId: string;
@@ -14,6 +15,7 @@ export interface SceneObject {
 }
 
 export interface Scene {
+  selectionReview?: SelectionReview;
   customObjects?: CustomObject[];
   version: 1;
   name: string;
@@ -96,6 +98,7 @@ export function validateScene(value: unknown, catalog: Catalog): asserts value i
   }
   if (scene.version !== 1 || typeof scene.name !== 'string' || !scene.name.trim() || scene.name.length > 120) throw new Error('Неверная версия или название проекта');
   if (scene.interpretation !== undefined) validateMeaningResult(scene.interpretation, catalog);
+  if (scene.selectionReview !== undefined) validateSelectionReview(scene.selectionReview, catalog);
   if (scene.size !== 'S' && scene.size !== 'L') throw new Error('Неизвестный размер иллюстрации');
   if (!catalog.formats.some(item => item.id === scene.formatId)) throw new Error('Неизвестный формат холста');
   if (typeof scene.compositionScale !== 'number' || !Number.isFinite(scene.compositionScale) || scene.compositionScale < 0.15 || scene.compositionScale > 1.5) throw new Error('Недопустимый масштаб композиции');
