@@ -1,0 +1,1 @@
+{"name":"sostav-meaning-benchmark","private":true,"type":"module","scripts":{"run":"node run.mjs"},"dependencies":{"@huggingface/transformers":"3.8.1"}}
