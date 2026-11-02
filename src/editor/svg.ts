@@ -61,7 +61,7 @@ export function backgroundMarkup(catalog: Catalog, texts: AssetTexts, scene: Sce
 }
 
 /** Same scene transforms and SVG preparation used by the live editor. No UI controls in export. */
-export function exportSvg(catalog: Catalog, texts: AssetTexts, scene: Scene): string {
+export function exportSvg(catalog: Catalog, texts: AssetTexts, scene: Scene, namespace = ''): string {
   const { width, height } = canvasSize(catalog, scene);
   const doc = new DOMParser().parseFromString(`<svg xmlns="${SVG_NS}" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}"></svg>`, 'image/svg+xml');
   const root = doc.documentElement;
@@ -78,21 +78,21 @@ export function exportSvg(catalog: Catalog, texts: AssetTexts, scene: Scene): st
   };
   if (scene.backgroundVisible) {
     const group = doc.createElementNS(SVG_NS, 'g');
-    group.setAttribute('id', 'background');
+    group.setAttribute('id', namespace + 'background');
     group.setAttribute('data-name', 'Фон');
-    append(group, backgroundMarkup(catalog, texts, scene));
+    append(group, backgroundMarkup(catalog, texts, scene, namespace + 'scene-background'));
     root.appendChild(group);
   }
   const palette = activePalette(catalog, scene);
   for (const object of scene.objects) {
     const asset = selectObject(catalog, object.objectId, scene.size, object.role);
     const group = doc.createElementNS(SVG_NS, 'g');
-    group.setAttribute('id', `object-${object.instanceId}`);
+    group.setAttribute('id', `${namespace}object-${object.instanceId}`);
     group.setAttribute('data-object-id', object.objectId);
     group.setAttribute('data-role', object.role);
     group.setAttribute('data-name', catalog.objects.find(item => item.id === object.objectId)!.name);
     group.setAttribute('transform', objectTransform(catalog, scene, object));
-    append(group, objectMarkup(catalog, texts, asset, palette, `instance-${object.instanceId}`));
+    append(group, objectMarkup(catalog, texts, asset, palette, `${namespace}instance-${object.instanceId}`));
     root.appendChild(group);
   }
   return '<?xml version="1.0" encoding="UTF-8"?>\n' + new XMLSerializer().serializeToString(root);

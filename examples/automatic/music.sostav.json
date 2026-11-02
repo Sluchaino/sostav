@@ -1,0 +1,28 @@
+{
+  "version": 1,
+  "name": "Время для себя",
+  "size": "L",
+  "formatId": "portrait",
+  "paletteId": "aqua",
+  "customPalettes": [],
+  "compositionScale": 0.8878034178730815,
+  "backgroundVisible": true,
+  "objects": [
+    {
+      "instanceId": "example-vase",
+      "objectId": "flower-vase",
+      "role": "secondary",
+      "x": 0.5,
+      "y": 0.28635898552302164,
+      "rotation": 0
+    },
+    {
+      "instanceId": "example-headphones",
+      "objectId": "headphones",
+      "role": "main",
+      "x": 0.5,
+      "y": 0.7302133449439425,
+      "rotation": 0
+    }
+  ]
+}

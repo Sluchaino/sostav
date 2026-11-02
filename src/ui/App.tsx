@@ -3,6 +3,7 @@ import { ArrowDown, ArrowUp, Check, CheckCheck, ChevronDown, Copy, Download, Eye
 import { selectObject, searchObjects, validatePalette, type Catalog, type Palette, type SvgAsset } from '../library/index.js';
 import { activePalette, canvasSize, compositionScale, createBlankScene, createExample, EXAMPLES, moveLayer, objectTransform, reduceHistory, validateScene, type ExampleId, type History, type Scene, type SceneObject } from '../editor/model.js';
 import { backgroundMarkup, exportSvg, objectMarkup, preparedSvg, type AssetTexts } from '../editor/svg.js';
+import { AutoComposeDialog } from './AutoComposeDialog.js';
 
 const STORAGE_KEY = 'sostav-project-v1';
 const MAX_FILE_BYTES = 2_000_000;
@@ -85,6 +86,7 @@ function Editor({ catalog, texts }: { catalog: Catalog; texts: AssetTexts }) {
   const [toast, setToast] = useState(initial.invalid ? 'Сохранённый проект не удалось прочитать. Открыт пример.' : initial.restored ? 'Восстановлен последний проект' : 'Начните с примера или добавьте свои предметы');
   const [showExamples, setShowExamples] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
+  const [showAuto, setShowAuto] = useState(false);
   const [viewport, setViewport] = useState({ width: 900, height: 800 });
   const stageContainer = useRef<HTMLDivElement>(null);
   const stageRef = useRef<SVGSVGElement>(null);
@@ -181,6 +183,7 @@ function Editor({ catalog, texts }: { catalog: Catalog; texts: AssetTexts }) {
   }, [history.present]);
   useEffect(() => {
     function keydown(event: KeyboardEvent) {
+      if (showAuto) return;
       const element = event.target as HTMLElement;
       if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 's') { event.preventDefault(); saveProject(); return; }
       if (['INPUT', 'TEXTAREA', 'SELECT'].includes(element.tagName) || element.isContentEditable) return;
@@ -252,7 +255,7 @@ function Editor({ catalog, texts }: { catalog: Catalog; texts: AssetTexts }) {
       </aside>
 
       <main className="canvas-panel">
-        <div className="canvas-toolbar"><div className="toolbar-left"><IconButton icon={Undo2} label="Отменить (Ctrl+Z)" disabled={!history.past.length} onClick={() => dispatch({ type: 'undo' })} /><IconButton icon={Redo2} label="Повторить (Ctrl+Shift+Z)" disabled={!history.future.length} onClick={() => dispatch({ type: 'redo' })} /><span className="toolbar-divider" /><label className="format-select"><LayoutGrid size={15} /><select aria-label="Формат холста" value={scene.formatId} onChange={event => patch({ formatId: event.target.value })}>{catalog.formats.map(format => <option key={format.id} value={format.id}>{formatNames[format.id]} · {format.width} × {format.height}</option>)}</select><ChevronDown size={14} /></label></div><div className="example-menu"><button className={`button quiet ${showExamples ? 'active' : ''}`} aria-expanded={showExamples} onClick={() => setShowExamples(!showExamples)}><Sparkles size={16} />Примеры<ChevronDown size={14} /></button>{showExamples && <><button className="menu-backdrop" aria-label="Закрыть примеры" onClick={() => setShowExamples(false)} /><div className="dropdown">{EXAMPLES.map(example => <button key={example.id} onClick={() => loadExample(example.id)}><span>{example.name}</span><small>{example.description}</small></button>)}</div></>}</div></div>
+        <div className="canvas-toolbar"><div className="toolbar-left"><IconButton icon={Undo2} label="Отменить (Ctrl+Z)" disabled={!history.past.length} onClick={() => dispatch({ type: 'undo' })} /><IconButton icon={Redo2} label="Повторить (Ctrl+Shift+Z)" disabled={!history.future.length} onClick={() => dispatch({ type: 'redo' })} /><span className="toolbar-divider" /><label className="format-select"><LayoutGrid size={15} /><select aria-label="Формат холста" value={scene.formatId} onChange={event => patch({ formatId: event.target.value })}>{catalog.formats.map(format => <option key={format.id} value={format.id}>{formatNames[format.id]} · {format.width} × {format.height}</option>)}</select><ChevronDown size={14} /></label></div><div className="toolbar-actions"><button className="button auto-compose-button" aria-label="Собрать композицию" onClick={() => setShowAuto(true)}><Sparkles size={15} /><span>Собрать композицию</span></button><div className="example-menu"><button className={`button quiet ${showExamples ? 'active' : ''}`} aria-expanded={showExamples} onClick={() => setShowExamples(!showExamples)}><Sparkles size={16} />Примеры<ChevronDown size={14} /></button>{showExamples && <><button className="menu-backdrop" aria-label="Закрыть примеры" onClick={() => setShowExamples(false)} /><div className="dropdown">{EXAMPLES.map(example => <button key={example.id} onClick={() => loadExample(example.id)}><span>{example.name}</span><small>{example.description}</small></button>)}</div></>}</div></div></div>
         <div className="canvas-viewport" ref={stageContainer}>
           <div className="canvas-space" style={{ minWidth: Math.max(viewport.width, displayWidth + 100), minHeight: Math.max(viewport.height, displayHeight + 100) }}>
             <div className="artboard-wrap" style={{ width: displayWidth, height: displayHeight }}><div className="artboard-label"><span>{scene.name || 'Новая иллюстрация'}</span><span>{scene.size} / {width} × {height}</span></div>
@@ -286,6 +289,7 @@ function Editor({ catalog, texts }: { catalog: Catalog; texts: AssetTexts }) {
       </aside>
     </div>
     <input ref={projectInput} type="file" accept=".json,.sostav.json,application/json" hidden aria-label="Файл проекта" onChange={event => { void openFile(event.target.files?.[0], 'project'); event.target.value = ''; }} />
+    {showAuto && <AutoComposeDialog catalog={catalog} texts={texts} scene={scene} onClose={() => setShowAuto(false)} onApply={next => { commit(next); setSelectedId([...next.objects].reverse().find(object => object.role === 'main')?.instanceId ?? null); setShowAuto(false); setToast('Композиция собрана. Её можно редактировать и скачать в SVG.'); }} />}
     <input ref={paletteInput} type="file" accept=".json,application/json" hidden aria-label="Файл палитры" onChange={event => { void openFile(event.target.files?.[0], 'palette'); event.target.value = ''; }} />
     {toast && <div className="toast" role="status"><CheckCheck size={17} /><span>{toast}</span><button aria-label="Закрыть уведомление" onClick={() => setToast('')}><X size={14} /></button></div>}
     {showHelp && <div className="modal-backdrop" onClick={() => setShowHelp(false)}><section className="help-dialog" role="dialog" aria-modal="true" aria-label="Горячие клавиши" onClick={event => event.stopPropagation()}><div className="section-title"><h2>Быстрее с клавиатурой</h2><IconButton icon={X} label="Закрыть подсказки" onClick={() => setShowHelp(false)} /></div><Shortcut keys="Ctrl / ⌘ + Z">Отменить</Shortcut><Shortcut keys="Ctrl / ⌘ + Shift + Z">Повторить</Shortcut><Shortcut keys="Ctrl / ⌘ + D">Дублировать предмет</Shortcut><Shortcut keys="Ctrl / ⌘ + S">Скачать проект</Shortcut><Shortcut keys="← ↑ ↓ →">Переместить на 1 пиксель</Shortcut><Shortcut keys="Shift + стрелки">Переместить на 10 пикселей</Shortcut><Shortcut keys="Delete">Удалить предмет</Shortcut><Shortcut keys="Esc">Снять выделение</Shortcut><p className="field-hint">Проект автоматически сохраняется в этом браузере. Скачайте JSON проекта, чтобы перенести его на другое устройство.</p></section></div>}
