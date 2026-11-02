@@ -41,18 +41,18 @@ export function allowedColors(catalog: Catalog, palette: Palette, target: PaintT
 
 /** Complete role-based palette format for adding schemes, including custom ones. */
 export function validatePalette(catalog: Catalog, value: unknown): asserts value is Palette {
-  if (!value || typeof value !== 'object') throw new Error('Palette must be an object');
+  if (!value || typeof value !== 'object') throw new Error('Палитра должна быть объектом JSON');
   const item = value as Partial<Palette>;
-  if (typeof item.id !== 'string' || !/^[a-z][a-z0-9-]*$/.test(item.id)) throw new Error('Invalid palette id');
-  if (typeof item.name !== 'string' || !item.name.trim()) throw new Error('Invalid palette name');
-  if (!item.colors || typeof item.colors !== 'object' || Array.isArray(item.colors)) throw new Error('Palette colors are required');
+  if (typeof item.id !== 'string' || !/^[a-z][a-z0-9-]*$/.test(item.id)) throw new Error('Некорректный id палитры: используйте латинские строчные буквы, цифры и дефис; начните с буквы');
+  if (typeof item.name !== 'string' || !item.name.trim()) throw new Error('Укажите название палитры');
+  if (!item.colors || typeof item.colors !== 'object' || Array.isArray(item.colors)) throw new Error('Укажите объект colors с цветами палитры');
   const roles = Object.keys(catalog.colorRoles) as ColorRole[];
-  if (Object.keys(item.colors).length !== roles.length) throw new Error('Palette must specify exactly the known color roles');
+  if (Object.keys(item.colors).length !== roles.length) throw new Error('В colors должны быть указаны все роли цветов из примера палитры, без дополнительных ролей');
   const base = getPalette(catalog, catalog.basePaletteId);
   for (const role of roles) {
     const color = item.colors[role];
-    if (typeof color !== 'string' || !/^#[0-9a-f]{6}$/i.test(color)) throw new Error('Invalid color for role: ' + role);
-    if (!catalog.colorRoles[role].editable && color.toUpperCase() !== base.colors[role]) throw new Error('Fixed color role cannot change: ' + role);
+    if (typeof color !== 'string' || !/^#[0-9a-f]{6}$/i.test(color)) throw new Error('Укажите цвет в формате #RRGGBB для роли: ' + role);
+    if (!catalog.colorRoles[role].editable && color.toUpperCase() !== base.colors[role]) throw new Error('Этот цвет зафиксирован и не может меняться: ' + role);
   }
 }
 

@@ -1,6 +1,6 @@
 {
   "name": "illustration-constructor",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "private": true,
   "type": "module",
   "description": "Векторный конструктор иллюстраций",
@@ -31,5 +31,10 @@
     "@vitejs/plugin-react": "^5.1.0",
     "typescript": "^5.9.3",
     "vite": "^7.2.0"
+  },
+  "overrides": {
+    "@huggingface/transformers": {
+      "sharp": "0.35.5"
+    }
   }
 }

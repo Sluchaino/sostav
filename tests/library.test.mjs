@@ -57,9 +57,9 @@ test('new palettes require complete roles and preserve fixed structural colors',
   validatePalette(catalog, custom);
   assert.equal(allowedColors(catalog, custom, 'object').find(x => x.role === 'object.primary').color, '#123456');
   const incomplete = structuredClone(custom); delete incomplete.colors['object.soft'];
-  assert.throws(() => validatePalette(catalog, incomplete), /exactly/);
+  assert.throws(() => validatePalette(catalog, incomplete), /все роли цветов/);
   custom.colors['neutral.ink'] = '#333333';
-  assert.throws(() => validatePalette(catalog, custom), /Fixed/);
+  assert.throws(() => validatePalette(catalog, custom), /зафиксирован/);
 });
 
 test('scene scaling is uniform and never normalizes individual object sizes', () => {
