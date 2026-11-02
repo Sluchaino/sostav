@@ -75,19 +75,38 @@ function splitNegation(prompt: string) {
   return { positive, negative };
 }
 
+const semanticWords = (text: string) => normalize(text).match(/[\p{L}\p{N}]+/gu) ?? [];
+// Conservative suffix folding for user-authored labels, not a full morphological parser.
+const semanticStem = (word: string) => word.length > 4 ? word.replace(/(?:иями|ами|ями|ого|ему|ому|ыми|ими|ией|ия|ие|ии|ый|ий|ой|ая|яя|ое|ее|ые|их|ых|ов|ев|ам|ям|ах|ях|ом|ем|у|ю|а|я|ы|и|е|о)$/u, '') : word;
+function labelEvidence(label: string, words: string[]): string[] {
+  const target = semanticWords(label);
+  if (!target.length) return [];
+  for (let index = 0; index <= words.length - target.length; index++) {
+    if (target.every((word, offset) => semanticStem(word) === semanticStem(words[index + offset]!))) return words.slice(index, index + target.length);
+  }
+  return [];
+}
+
 export function selectObjectsByTheme(catalog: Catalog, text: string, options: { includeBackgroundObjects?: boolean } = {}): MeaningResult {
   if (typeof text !== 'string' || text.trim().length < 2 || text.trim().length > 300) throw new Error('Введите заголовок длиной от 2 до 300 символов');
   const prompt = text.trim();
   const { positive, negative } = splitNegation(prompt);
   const available = new Set(catalog.objects.map(object => object.id));
   const excluded = new Set(negative.flatMap(mentions));
-  for (const concept of CONCEPTS) if (evidence(concept, negative).length) {
+  const customs = catalog.objects.filter(object => object.custom);
+  const labels = (object: typeof customs[number]) => [object.name, ...object.tags, ...(object.meanings ?? [])];
+  const conceptSource = CONCEPTS.map(concept => ({ ...concept, links: [...concept.links, ...customs.filter(object => labels(object).some(label => evidence(concept, semanticWords(label)).length)).map(object => link(object.id, 8, `Свой SVG «${object.name}» связан с темой «${concept.label}» через заданные теги и смыслы.`))] }));
+  for (const object of customs) if (labels(object).some(label => labelEvidence(label, negative).length)) excluded.add(object.id);
+  for (const concept of conceptSource) if (evidence(concept, negative).length) {
     for (const connection of concept.links) if (connection.weight >= 5) excluded.add(connection.objectId);
   }
-  const concepts = CONCEPTS.map(concept => ({ ...concept, evidence: evidence(concept, positive) })).filter(concept => concept.evidence.length);
+  const concepts = conceptSource.map(concept => ({ ...concept, evidence: evidence(concept, positive) })).filter(concept => concept.evidence.length);
   const direct = new Set(positive.flatMap(mentions).filter(id => available.has(id) && !excluded.has(id)));
+  const customMatches = customs.filter(object => !excluded.has(object.id)).map(object => ({ object, evidence: [...new Set(labels(object).flatMap(label => labelEvidence(label, positive)))] })).filter(match => match.evidence.length);
+  for (const match of customMatches) direct.add(match.object.id);
   const ranks = new Map<string, { score: number; reasons: string[]; concepts: string[] }>();
   for (const objectId of direct) ranks.set(objectId, { score: 9, reasons: ['Предмет прямо указан в заголовке.'], concepts: [] });
+  for (const { object, evidence: found } of customMatches) ranks.set(object.id, { score: 10, reasons: [`Свой SVG «${object.name}»: совпадение с названием, тегами или смыслами — ${found.join(', ')}.`], concepts: [] });
   for (const concept of concepts) for (const connection of concept.links) {
     if (!available.has(connection.objectId) || excluded.has(connection.objectId)) continue;
     const rank = ranks.get(connection.objectId) ?? { score: 0, reasons: [], concepts: [] };
@@ -96,7 +115,8 @@ export function selectObjectsByTheme(catalog: Catalog, text: string, options: { 
   }
   const ranked = [...ranks.entries()].sort((a, b) => Number(direct.has(b[0])) - Number(direct.has(a[0])) || b[1].score - a[1].score || a[0].localeCompare(b[0], 'en'));
   const limitations: string[] = [];
-  const missing = [...new Set(positive.flatMap(word => MISSING.has(word) ? [MISSING.get(word)!] : []))];
+  const customAccounted = new Set(customMatches.flatMap(match => match.evidence));
+  const missing = [...new Set(positive.flatMap(word => MISSING.has(word) && !customAccounted.has(word) ? [MISSING.get(word)!] : []))];
   if (missing.length) limitations.push('В библиотеке нет отдельных предметов: ' + missing.join(', ') + '. Новые объекты не создаются.');
   const base: MeaningResult = { provider: 'local', prompt, status: 'unmatched', summary: '', concepts: concepts.map(concept => ({ id: concept.id, label: concept.label, evidence: concept.evidence })), items: [], excludedObjectIds: [...excluded].filter(id => available.has(id)), limitations };
   if (direct.size > 6) return { ...base, summary: 'В заголовке перечислено больше шести предметов. Сократите список.' };
@@ -113,12 +133,13 @@ export function selectObjectsByTheme(catalog: Catalog, text: string, options: { 
   const noBackground = /без\s+фонов[\p{L}]*/u.test(normalize(prompt));
   const support = options.includeBackgroundObjects && !noBackground && main.length < 6 ? ranked.filter(([id]) => !main.some(([mainId]) => mainId === id)).slice(0, 1) : [];
   base.items = [...main.map(([id, rank]): MeaningItem => ({ objectId: id, role: 'main', reason: rank.reasons.slice(0, 2).join(' '), conceptIds: rank.concepts })), ...support.map(([id, rank]): MeaningItem => ({ objectId: id, role: 'secondary', reason: rank.reasons.slice(0, 2).join(' '), conceptIds: rank.concepts }))];
-  const accounted = new Set([...concepts.flatMap(concept => concept.evidence), ...positive.filter(word => mentions(word).some(id => direct.has(id)))]);
+  const accounted = new Set([...customAccounted, ...concepts.flatMap(concept => concept.evidence), ...positive.filter(word => mentions(word).some(id => direct.has(id)))]);
   const significant = positive.filter(word => word.length >= 3 && !STOP.has(word));
   const coverage = significant.length ? significant.filter(word => accounted.has(word)).length / significant.length : 0;
   base.status = coverage >= 0.5 && !missing.length && meaningsCovered ? 'matched' : 'partial';
   base.summary = concepts.length
     ? 'Связал тему с понятиями: ' + concepts.map(concept => concept.label.toLocaleLowerCase('ru')).join(', ') + '.'
+    : customMatches.length ? 'Сопоставил фразу с названиями, тегами и смыслами ваших SVG.'
     : 'Нашёл в заголовке названия предметов и использовал их как основу композиции.';
   if (base.status === 'partial') base.limitations.push('Распознана только часть формулировки. Проверьте выбранные предметы или уточните тему.');
   if (!meaningsCovered) base.limitations.push('Не все найденные темы представлены главными предметами. Сузьте формулировку или уточните состав вручную.');

@@ -27,6 +27,8 @@ export interface SvgAsset {
 }
 
 export interface LibraryObject {
+  custom?: boolean;
+  meanings?: string[];
   id: string;
   name: string;
   tags: string[];

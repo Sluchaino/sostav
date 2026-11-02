@@ -1,0 +1,54 @@
+{
+  "version": 1,
+  "name": "Путь к успеху",
+  "size": "L",
+  "formatId": "square",
+  "paletteId": "aqua",
+  "customPalettes": [],
+  "compositionScale": 1.5,
+  "backgroundVisible": true,
+  "objects": [
+    {
+      "instanceId": "theme-custom-ecf6a2a1-9049-4dc4-b1e8-a0b1713c2dcf",
+      "objectId": "custom-ecf6a2a1-9049-4dc4-b1e8-a0b1713c2dcf",
+      "role": "main",
+      "x": 0.5,
+      "y": 0.5,
+      "rotation": -8
+    }
+  ],
+  "customObjects": [
+    {
+      "id": "custom-ecf6a2a1-9049-4dc4-b1e8-a0b1713c2dcf",
+      "name": "Лестница",
+      "tags": [
+        "ступени",
+        "движение вверх"
+      ],
+      "meanings": [
+        "рост",
+        "развитие",
+        "карьера",
+        "путь к успеху"
+      ],
+      "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 300 400\" width=\"300\" height=\"400\" preserveAspectRatio=\"xMidYMid meet\">\n  <title>Лестница — рост и развитие</title>\n  <path d=\"M65 365L125 35M175 365L235 35\" fill=\"none\" stroke=\"#7353A6\" stroke-width=\"22\" stroke-linecap=\"round\"/>\n  <path d=\"M82 285H190M97 205H205M111 125H220\" fill=\"none\" stroke=\"#F3AD64\" stroke-width=\"18\" stroke-linecap=\"round\"/>\n</svg>"
+    }
+  ],
+  "interpretation": {
+    "provider": "local",
+    "prompt": "Путь к успеху",
+    "status": "matched",
+    "summary": "Сопоставил фразу с названиями, тегами и смыслами ваших SVG.",
+    "concepts": [],
+    "items": [
+      {
+        "objectId": "custom-ecf6a2a1-9049-4dc4-b1e8-a0b1713c2dcf",
+        "role": "main",
+        "reason": "Свой SVG «Лестница»: совпадение с названием, тегами или смыслами — путь, к, успеху.",
+        "conceptIds": []
+      }
+    ],
+    "excludedObjectIds": [],
+    "limitations": []
+  }
+}

@@ -1,5 +1,6 @@
 import type { Catalog, IllustrationSize, ObjectRole, Palette } from '../library/types.js';
 import { validatePalette } from '../library/index.js';
+import { customLibrary, validateCustomObjects, type CustomObject } from '../library/custom.js';
 import { validateMeaningResult, type MeaningResult } from './meaning.js';
 
 export interface SceneObject {
@@ -13,6 +14,7 @@ export interface SceneObject {
 }
 
 export interface Scene {
+  customObjects?: CustomObject[];
   version: 1;
   name: string;
   size: IllustrationSize;
@@ -88,6 +90,10 @@ export function moveLayer(scene: Scene, instanceId: string, direction: -1 | 1): 
 export function validateScene(value: unknown, catalog: Catalog): asserts value is Scene {
   if (!value || typeof value !== 'object' || Array.isArray(value)) throw new Error('Файл должен содержать проект конструктора');
   const scene = value as Partial<Scene>;
+  if (scene.customObjects !== undefined) {
+    validateCustomObjects(scene.customObjects, catalog);
+    catalog = customLibrary(catalog, scene.customObjects);
+  }
   if (scene.version !== 1 || typeof scene.name !== 'string' || !scene.name.trim() || scene.name.length > 120) throw new Error('Неверная версия или название проекта');
   if (scene.interpretation !== undefined) validateMeaningResult(scene.interpretation, catalog);
   if (scene.size !== 'S' && scene.size !== 'L') throw new Error('Неизвестный размер иллюстрации');
