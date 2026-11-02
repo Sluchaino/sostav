@@ -1,4 +1,5 @@
-import type { Catalog, LibraryObject, SvgAsset } from './types.js';
+import type { Catalog, ColorRole, LibraryObject, SvgAsset } from './types.js';
+import { normalizePaintColor, PAINT_ATTRIBUTES } from './paint.js';
 
 export interface CustomObject {
   id: string;
@@ -6,6 +7,7 @@ export interface CustomObject {
   tags: string[];
   meanings: string[];
   svg: string;
+  paintRoles?: Record<string, ColorRole>;
 }
 export const MAX_SVG_BYTES = 1_000_000;
 export const MAX_CUSTOM_OBJECTS = 30;
@@ -15,7 +17,7 @@ const attributes = new Set('id xmlns xmlns:xlink version width height viewBox pr
 const styleAttributes = new Set('fill fill-rule fill-opacity stroke stroke-width stroke-opacity stroke-linecap stroke-linejoin stroke-miterlimit stroke-dasharray stroke-dashoffset opacity clip-path clip-rule mask filter stop-color stop-opacity color display visibility font-family font-size font-weight font-style text-anchor dominant-baseline vector-effect paint-order'.split(' '));
 
 /** Accept only self-contained, static SVG. Never insert arbitrary uploaded XML into HTML. */
-export function readCustomSvg(text: string): { svg: string; width: number; height: number; viewBox: [number, number, number, number] } {
+export function readCustomSvg(text: string): { svg: string; width: number; height: number; viewBox: [number, number, number, number]; colors: string[]; unsupportedPaints: string[] } {
   if (typeof text !== 'string' || new TextEncoder().encode(text).length > MAX_SVG_BYTES) throw new Error('SVG должен быть не больше 1 МБ');
   if (/<!DOCTYPE|<!ENTITY|<\?xml-stylesheet/i.test(text)) throw new Error('SVG с DTD или внешними стилями не поддерживается');
   text = text.replace(/^\uFEFF?\s*<\?xml\s[^?]*\?>/i, '');
@@ -62,7 +64,31 @@ export function readCustomSvg(text: string): { svg: string; width: number; heigh
   root.setAttribute('viewBox', viewBox.join(' '));
   root.setAttribute('width', String(width)); root.setAttribute('height', String(height));
   root.setAttribute('preserveAspectRatio', 'xMidYMid meet');
-  return { svg: new XMLSerializer().serializeToString(root), width, height, viewBox };
+  // Make SVG default paints explicit so they can also be assigned palette roles.
+  const inheritsDefault = (node: Element, name: string) => {
+    let current: Element | null = node;
+    while (current) {
+      if (current.hasAttribute(name) && current.getAttribute(name) !== 'inherit') return false;
+      current = current.parentNode?.nodeType === 1 ? current.parentNode as Element : null;
+    }
+    return true;
+  };
+  const filledShapes = new Set(['path', 'rect', 'circle', 'ellipse', 'polygon', 'polyline', 'text', 'tspan', 'use']);
+  if (nodes.some(node => filledShapes.has(node.localName) && inheritsDefault(node, 'fill'))) root.setAttribute('fill', '#000000');
+  const colors = new Set<string>(), unsupportedPaints = new Set<string>();
+  const usesCurrentColor = nodes.some(node => PAINT_ATTRIBUTES.some(name => node.getAttribute(name)?.toLowerCase() === 'currentcolor'));
+  if (usesCurrentColor && nodes.some(node => inheritsDefault(node, 'color'))) root.setAttribute('color', '#000000');
+  for (const node of nodes) {
+    if (node.localName === 'stop' && !node.hasAttribute('stop-color')) node.setAttribute('stop-color', '#000000');
+    for (const name of PAINT_ATTRIBUTES) {
+      if (name === 'color' && !usesCurrentColor) continue;
+      const value = node.getAttribute(name);
+      if (!value || /^(none|inherit|currentcolor|url\()/i.test(value)) continue;
+      const color = normalizePaintColor(value);
+      if (color) colors.add(color); else unsupportedPaints.add(value);
+    }
+  }
+  return { svg: new XMLSerializer().serializeToString(root), width, height, viewBox, colors: [...colors], unsupportedPaints: [...unsupportedPaints] };
 }
 
 export function validateCustomObjects(value: unknown, catalog: Catalog): asserts value is CustomObject[] {
@@ -74,7 +100,13 @@ export function validateCustomObjects(value: unknown, catalog: Catalog): asserts
     ids.add(item.id);
     if (typeof item.name !== 'string' || !item.name.trim() || item.name.length > 80) throw new Error('Название SVG: от 1 до 80 символов');
     for (const field of [item.tags, item.meanings]) if (!Array.isArray(field) || field.length > 30 || field.some((word: unknown) => typeof word !== 'string' || !word.trim() || word.length > 120)) throw new Error('Не более 30 тегов и смыслов, каждый до 120 символов');
-    readCustomSvg(item.svg);
+    const { colors } = readCustomSvg(item.svg);
+    if (item.paintRoles !== undefined) {
+      if (!item.paintRoles || typeof item.paintRoles !== 'object' || Array.isArray(item.paintRoles)) throw new Error('Неверное назначение цветов SVG');
+      for (const [color, role] of Object.entries(item.paintRoles)) {
+        if (!colors.includes(color) || typeof role !== 'string' || !Object.hasOwn(catalog.colorRoles, role) || !catalog.colorRoles[role as ColorRole].targets.includes('object')) throw new Error('Неизвестный цвет или роль в настройках SVG');
+      }
+    }
     total += new TextEncoder().encode(item.svg).length;
   }
   if (total > 8_000_000) throw new Error('Общий размер своих SVG — не больше 8 МБ');
@@ -82,9 +114,9 @@ export function validateCustomObjects(value: unknown, catalog: Catalog): asserts
 
 export function customLibrary(catalog: Catalog, items: CustomObject[] = []): Catalog {
   const objects: LibraryObject[] = items.map(item => {
-    const { width, height, viewBox } = readCustomSvg(item.svg);
-    const asset: SvgAsset = { url: item.id, source: item.name, sha256: '', bytes: item.svg.length, width, height, viewBox, pathCount: 0, elementCount: 0, colors: [], definitionIds: [], tags: {}, paintRoles: {} };
-    return { id: item.id, name: item.name, tags: [...item.tags, ...item.meanings], meanings: item.meanings, custom: true, detailStatus: 'no-proven-simplified-pair', note: 'Свой SVG: исходные цвета, один вариант для S/L и обеих ролей.', variants: { S: { main: asset, secondary: asset }, L: { main: asset, secondary: asset } } };
+    const { width, height, viewBox, colors } = readCustomSvg(item.svg);
+    const asset: SvgAsset = { url: item.id, source: item.name, sha256: '', bytes: item.svg.length, width, height, viewBox, pathCount: 0, elementCount: 0, colors, definitionIds: [], tags: {}, paintRoles: item.paintRoles ?? {} };
+    return { id: item.id, name: item.name, tags: [...item.tags, ...item.meanings], meanings: item.meanings, custom: true, detailStatus: 'no-proven-simplified-pair', note: 'Свой SVG: цвета по назначениям палитры, один вариант для S/L и обеих ролей.', variants: { S: { main: asset, secondary: asset }, L: { main: asset, secondary: asset } } };
   });
   return { ...catalog, objects: [...catalog.objects.filter(item => !item.custom), ...objects] };
 }

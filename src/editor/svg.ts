@@ -1,6 +1,7 @@
 import type { Catalog, Palette, PaintTarget, SvgAsset } from '../library/types.js';
 import { paintSubstitutions, selectObject } from '../library/index.js';
 import { activePalette, canvasSize, objectTransform, type Scene } from './model.js';
+import { normalizePaintColor, PAINT_ATTRIBUTES } from '../library/paint.js';
 
 export const SVG_NS = 'http://www.w3.org/2000/svg';
 export type AssetTexts = ReadonlyMap<string, string>;
@@ -24,7 +25,10 @@ export function preparedSvg(catalog: Catalog, asset: SvgAsset, text: string, pal
     for (const attribute of Array.from(node.attributes)) {
       const value = attribute.value;
       if (attribute.localName === 'id') node.setAttribute(attribute.name, idMap.get(value)!);
-      else if (['fill', 'stroke', 'stop-color'].includes(attribute.localName) && paints[normalizePaint(value)]) node.setAttribute(attribute.name, paints[normalizePaint(value)]!);
+      else if (PAINT_ATTRIBUTES.includes(attribute.localName) && paints[normalizePaintColor(value) ?? normalizePaint(value)]) {
+        const key = normalizePaintColor(value) ?? normalizePaint(value);
+        node.setAttribute(attribute.name, paints[key]! + (key.length === 9 ? key.slice(7) : ''));
+      }
       else if (value.includes('url(')) node.setAttribute(attribute.name, value.replace(/url\(\s*['"]?#([^)'"\s]+)['"]?\s*\)/g, (match, id: string) => idMap.has(id) ? `url(#${idMap.get(id)})` : match));
       else if (attribute.localName === 'href' && value.startsWith('#') && idMap.has(value.slice(1))) node.setAttribute(attribute.name, '#' + idMap.get(value.slice(1)));
     }
