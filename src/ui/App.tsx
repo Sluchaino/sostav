@@ -5,6 +5,7 @@ import { activePalette, canvasSize, compositionScale, createBlankScene, createEx
 import { backgroundMarkup, exportSvg, objectMarkup, preparedSvg, type AssetTexts } from '../editor/svg.js';
 import { customLibrary, customTexts, readCustomSvg, validateCustomObjects, MAX_SVG_BYTES, type CustomObject } from '../library/custom.js';
 import { CustomObjectDialog } from './CustomObjectDialog.js';
+import { CompositionPreview } from './CompositionPreview.js';
 import { PreflightDialog } from './PreflightDialog.js';
 import { AutoComposeDialog } from './AutoComposeDialog.js';
 
@@ -97,6 +98,7 @@ function Editor({ catalog: baseCatalog, texts: baseTexts }: { catalog: Catalog; 
   const [showHelp, setShowHelp] = useState(false);
   const [showAuto, setShowAuto] = useState(false);
   const [showPreflight, setShowPreflight] = useState(false);
+  const [showPreview, setShowPreview] = useState(false);
   const selectedSection = useRef<HTMLElement>(null);
   const [viewport, setViewport] = useState({ width: 900, height: 800 });
   const stageContainer = useRef<HTMLDivElement>(null);
@@ -231,7 +233,7 @@ function Editor({ catalog: baseCatalog, texts: baseTexts }: { catalog: Catalog; 
   }, [history.present]);
   useEffect(() => {
     function keydown(event: KeyboardEvent) {
-      if (showAuto || editingCustom || showPreflight) return;
+      if (showAuto || editingCustom || showPreflight || showPreview) return;
       const element = event.target as HTMLElement;
       if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 's') { event.preventDefault(); saveProject(); return; }
       if (['INPUT', 'TEXTAREA', 'SELECT'].includes(element.tagName) || element.isContentEditable) return;
@@ -320,7 +322,7 @@ function Editor({ catalog: baseCatalog, texts: baseTexts }: { catalog: Catalog; 
             </div>
           </div>
         </div>
-        <div className="canvas-status"><span><MousePointer2 size={14} />{selected ? 'Перетаскивайте, чтобы переместить' : `${countLabel(scene.objects.length)} на холсте`}</span><div className="zoom-controls"><IconButton icon={Minus} label="Уменьшить масштаб просмотра" onClick={() => setZoom(z => Math.max(0.4, +(z - 0.1).toFixed(1)))} disabled={zoom <= 0.4} /><span>{Math.round(zoom * 100)}%</span><IconButton icon={Plus} label="Увеличить масштаб просмотра" onClick={() => setZoom(z => Math.min(2, +(z + 0.1).toFixed(1)))} disabled={zoom >= 2} /><span className="toolbar-divider" /><IconButton icon={Maximize} label="Вписать холст в окно" onClick={() => setZoom(1)} /></div><button className="help-button" onClick={() => setShowHelp(true)}>Горячие клавиши <span>?</span></button></div>
+        <div className="canvas-status"><span><MousePointer2 size={14} />{selected ? 'Перетаскивайте, чтобы переместить' : `${countLabel(scene.objects.length)} на холсте`}</span><div className="zoom-controls"><IconButton icon={Minus} label="Уменьшить масштаб просмотра" onClick={() => setZoom(z => Math.max(0.4, +(z - 0.1).toFixed(1)))} disabled={zoom <= 0.4} /><span>{Math.round(zoom * 100)}%</span><IconButton icon={Plus} label="Увеличить масштаб просмотра" onClick={() => setZoom(z => Math.min(2, +(z + 0.1).toFixed(1)))} disabled={zoom >= 2} /><span className="toolbar-divider" /><IconButton icon={Frame} label="Вписать холст в окно" onClick={() => { setZoom(1); stageContainer.current?.scrollTo({ left: 0, top: 0 }); }} /><IconButton icon={Maximize} label="Посмотреть композицию на весь экран" onClick={() => setShowPreview(true)} /></div><button className="help-button" onClick={() => setShowHelp(true)}>Горячие клавиши <span>?</span></button></div>
       </main>
 
       <aside className="properties-panel" aria-label="Настройки иллюстрации">
@@ -340,6 +342,7 @@ function Editor({ catalog: baseCatalog, texts: baseTexts }: { catalog: Catalog; 
     <input ref={svgInput} type="file" accept=".svg,image/svg+xml" multiple hidden aria-label="Свои SVG" onChange={event => { void importSvgFiles(Array.from(event.target.files ?? [])); event.target.value = ''; }} />
     {editingCustom && scene.customObjects?.find(item => item.id === editingCustom) && <CustomObjectDialog key={editingCustom} object={scene.customObjects.find(item => item.id === editingCustom)!} catalog={catalog} palettes={[...catalog.palettes, ...scene.customPalettes]} paletteId={scene.paletteId} initialSection={customSection} onClose={() => setEditingCustom(null)} onSave={value => { commit(current => { const { interpretation: _old, selectionReview: _review, ...rest } = current; return { ...rest, customObjects: (current.customObjects ?? []).map(item => item.id === value.id ? value : item) }; }); setEditingCustom(null); setToast('Настройки SVG сохранены. Цвета применены на холсте.'); }} />}
     <input ref={projectInput} type="file" accept=".json,.sostav.json,application/json" hidden aria-label="Файл проекта" onChange={event => { void openFile(event.target.files?.[0], 'project'); event.target.value = ''; }} />
+    {showPreview && <CompositionPreview catalog={catalog} texts={texts} scene={scene} onClose={() => setShowPreview(false)} />}
     {showPreflight && <PreflightDialog catalog={catalog} scene={scene} onClose={() => setShowPreflight(false)} onExport={downloadSvg} onSelect={id => { setShowPreflight(false); setSelectedId(id); setZoom(1); setToast('Предмет выбран. Исправьте координаты, поворот или общий масштаб и повторите проверку.'); requestAnimationFrame(() => { selectedSection.current?.scrollIntoView({ block: 'nearest' }); selectedSection.current?.querySelector<HTMLInputElement>('input')?.focus(); }); }} onColors={id => { setShowPreflight(false); setCustomSection('colors'); setEditingCustom(id); }} />}
     {showAuto && <AutoComposeDialog catalog={catalog} texts={texts} scene={scene} onClose={() => setShowAuto(false)} onApply={next => { commit(next); setSelectedId([...next.objects].reverse().find(object => object.role === 'main')?.instanceId ?? null); setShowAuto(false); setToast('Композиция собрана. Её можно редактировать и скачать в SVG.'); }} />}
     <input ref={paletteInput} type="file" accept=".json,application/json" hidden aria-label="Файл палитры" onChange={event => { void openFile(event.target.files?.[0], 'palette'); event.target.value = ''; }} />

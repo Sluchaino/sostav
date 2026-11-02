@@ -1,6 +1,6 @@
 {
   "name": "illustration-constructor",
-  "version": "0.8.2",
+  "version": "0.8.3",
   "private": true,
   "type": "module",
   "description": "Векторный конструктор иллюстраций",
@@ -19,7 +19,6 @@
     "check": "npm run library:check && tsc --noEmit"
   },
   "dependencies": {
-    "@huggingface/transformers": "3.8.1",
     "@xmldom/xmldom": "^0.8.11",
     "lucide-react": "^1.66.0",
     "react": "^19.2.0",
@@ -31,10 +30,5 @@
     "@vitejs/plugin-react": "^5.1.0",
     "typescript": "^5.9.3",
     "vite": "^7.2.0"
-  },
-  "overrides": {
-    "@huggingface/transformers": {
-      "sharp": "0.35.5"
-    }
   }
 }
