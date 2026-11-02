@@ -1,0 +1,64 @@
+{
+  "version": 1,
+  "name": "Полёт мысли",
+  "size": "L",
+  "formatId": "portrait",
+  "paletteId": "aqua",
+  "customPalettes": [],
+  "compositionScale": 0.9148649785479935,
+  "backgroundVisible": true,
+  "objects": [
+    {
+      "instanceId": "theme-pen",
+      "objectId": "pen",
+      "role": "secondary",
+      "x": 0.5,
+      "y": 0.15221712795490872,
+      "rotation": 0
+    },
+    {
+      "instanceId": "theme-lamp",
+      "objectId": "lamp",
+      "role": "main",
+      "x": 0.5,
+      "y": 0.5907058130731051,
+      "rotation": 0
+    }
+  ],
+  "interpretation": {
+    "provider": "local",
+    "prompt": "Полёт мысли",
+    "status": "matched",
+    "summary": "Связал тему с понятиями: идеи и вдохновение.",
+    "concepts": [
+      {
+        "id": "idea",
+        "label": "Идеи и вдохновение",
+        "evidence": [
+          "полет",
+          "мысли"
+        ]
+      }
+    ],
+    "items": [
+      {
+        "objectId": "lamp",
+        "role": "main",
+        "reason": "Лампа служит метафорой озарения и новой идеи.",
+        "conceptIds": [
+          "idea"
+        ]
+      },
+      {
+        "objectId": "pen",
+        "role": "secondary",
+        "reason": "Ручка помогает передать фиксацию и развитие идеи.",
+        "conceptIds": [
+          "idea"
+        ]
+      }
+    ],
+    "excludedObjectIds": [],
+    "limitations": []
+  }
+}

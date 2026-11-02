@@ -1,5 +1,6 @@
 import type { Catalog, IllustrationSize, ObjectRole, Palette } from '../library/types.js';
 import { validatePalette } from '../library/index.js';
+import { validateMeaningResult, type MeaningResult } from './meaning.js';
 
 export interface SceneObject {
   instanceId: string;
@@ -21,6 +22,8 @@ export interface Scene {
   compositionScale: number;
   backgroundVisible: boolean;
   objects: SceneObject[];
+  /** Selection provenance, retained when manually editing the resulting scene. */
+  interpretation?: MeaningResult;
 }
 
 export type ExampleId = 'learning' | 'finance' | 'music';
@@ -86,6 +89,7 @@ export function validateScene(value: unknown, catalog: Catalog): asserts value i
   if (!value || typeof value !== 'object' || Array.isArray(value)) throw new Error('Файл должен содержать проект конструктора');
   const scene = value as Partial<Scene>;
   if (scene.version !== 1 || typeof scene.name !== 'string' || !scene.name.trim() || scene.name.length > 120) throw new Error('Неверная версия или название проекта');
+  if (scene.interpretation !== undefined) validateMeaningResult(scene.interpretation, catalog);
   if (scene.size !== 'S' && scene.size !== 'L') throw new Error('Неизвестный размер иллюстрации');
   if (!catalog.formats.some(item => item.id === scene.formatId)) throw new Error('Неизвестный формат холста');
   if (typeof scene.compositionScale !== 'number' || !Number.isFinite(scene.compositionScale) || scene.compositionScale < 0.15 || scene.compositionScale > 1.5) throw new Error('Недопустимый масштаб композиции');

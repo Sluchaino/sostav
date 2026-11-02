@@ -1,0 +1,64 @@
+{
+  "version": 1,
+  "name": "Финансовая подушка",
+  "size": "L",
+  "formatId": "landscape",
+  "paletteId": "peach",
+  "customPalettes": [],
+  "compositionScale": 1.5,
+  "backgroundVisible": true,
+  "objects": [
+    {
+      "instanceId": "theme-wallet",
+      "objectId": "wallet",
+      "role": "main",
+      "x": 0.38868884375,
+      "y": 0.5,
+      "rotation": 0
+    },
+    {
+      "instanceId": "theme-coin",
+      "objectId": "coin",
+      "role": "main",
+      "x": 0.7467611562500001,
+      "y": 0.5,
+      "rotation": 0
+    }
+  ],
+  "interpretation": {
+    "provider": "local",
+    "prompt": "Финансовая подушка",
+    "status": "matched",
+    "summary": "Связал тему с понятиями: деньги и сбережения.",
+    "concepts": [
+      {
+        "id": "finance",
+        "label": "Деньги и сбережения",
+        "evidence": [
+          "финансовая",
+          "подушка"
+        ]
+      }
+    ],
+    "items": [
+      {
+        "objectId": "wallet",
+        "role": "main",
+        "reason": "Кошелёк обозначает личные финансы и запас средств.",
+        "conceptIds": [
+          "finance"
+        ]
+      },
+      {
+        "objectId": "coin",
+        "role": "main",
+        "reason": "Монета поддерживает тему накоплений и ценности.",
+        "conceptIds": [
+          "finance"
+        ]
+      }
+    ],
+    "excludedObjectIds": [],
+    "limitations": []
+  }
+}

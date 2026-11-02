@@ -1,0 +1,66 @@
+{
+  "version": 1,
+  "name": "Собрать решение по частям",
+  "size": "L",
+  "formatId": "square",
+  "paletteId": "violet",
+  "customPalettes": [],
+  "compositionScale": 0.5846145575744544,
+  "backgroundVisible": true,
+  "objects": [
+    {
+      "instanceId": "theme-lamp",
+      "objectId": "lamp",
+      "role": "secondary",
+      "x": 0.5,
+      "y": 0.39501491775077946,
+      "rotation": 0
+    },
+    {
+      "instanceId": "theme-puzzle",
+      "objectId": "puzzle",
+      "role": "main",
+      "x": 0.5,
+      "y": 0.8432155144608107,
+      "rotation": 0
+    }
+  ],
+  "interpretation": {
+    "provider": "local",
+    "prompt": "Собрать решение по частям",
+    "status": "matched",
+    "summary": "Связал тему с понятиями: решение из частей.",
+    "concepts": [
+      {
+        "id": "solution",
+        "label": "Решение из частей",
+        "evidence": [
+          "собрать",
+          "решение",
+          "по",
+          "частям"
+        ]
+      }
+    ],
+    "items": [
+      {
+        "objectId": "puzzle",
+        "role": "main",
+        "reason": "Пазлы показывают, как отдельные части складываются в решение.",
+        "conceptIds": [
+          "solution"
+        ]
+      },
+      {
+        "objectId": "lamp",
+        "role": "secondary",
+        "reason": "Лампа дополняет найденное решение символом идеи.",
+        "conceptIds": [
+          "solution"
+        ]
+      }
+    ],
+    "excludedObjectIds": [],
+    "limitations": []
+  }
+}
