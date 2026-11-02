@@ -3,7 +3,7 @@ import { customLibrary, readCustomSvg, type CustomObject } from '../library/cust
 import type { Catalog, ColorRole, Palette } from '../library/types.js';
 import { preparedSvg } from '../editor/svg.js';
 
-function ColorPreview({ object, catalog, palette, original = false }: { object: CustomObject; catalog: Catalog; palette: Palette; original?: boolean }) {
+function ColorPreview({ object, catalog, palette, original = false }: { initialSection?: 'meaning' | 'colors'; object: CustomObject; catalog: Catalog; palette: Palette; original?: boolean }) {
   const id = useId().replace(/[^a-zA-Z0-9_-]/g, '');
   const markup = useMemo(() => {
     const source = original ? { ...object, paintRoles: {} } : object;
@@ -15,7 +15,7 @@ function ColorPreview({ object, catalog, palette, original = false }: { object: 
   return <div className="custom-color-preview" aria-label={original ? 'Исходный SVG' : 'SVG в выбранной палитре'} dangerouslySetInnerHTML={{ __html: markup }} />;
 }
 
-export function CustomObjectDialog({ object, catalog, palettes, paletteId, onSave, onClose }: { object: CustomObject; catalog: Catalog; palettes: Palette[]; paletteId: string; onSave: (value: CustomObject) => void; onClose: () => void }) {
+export function CustomObjectDialog({ object, catalog, palettes, paletteId, initialSection = 'meaning', onSave, onClose }: { initialSection?: 'meaning' | 'colors'; object: CustomObject; catalog: Catalog; palettes: Palette[]; paletteId: string; onSave: (value: CustomObject) => void; onClose: () => void }) {
   const [name, setName] = useState(object.name);
   const [tags, setTags] = useState(object.tags.join(', '));
   const [meanings, setMeanings] = useState(object.meanings.join(', '));
@@ -29,7 +29,7 @@ export function CustomObjectDialog({ object, catalog, palettes, paletteId, onSav
   const dialog = useRef<HTMLFormElement>(null);
   useEffect(() => {
     const previous = document.activeElement as HTMLElement | null;
-    dialog.current?.querySelector('input')?.focus();
+    dialog.current?.querySelector<HTMLElement>(initialSection === 'colors' ? 'select[aria-label="Палитра предпросмотра"]' : 'input')?.focus();
     return () => previous?.focus();
   }, []);
   const list = (value: string) => [...new Set(value.split(/[,;\n]/).map(word => word.trim()).filter(Boolean))];

@@ -1,0 +1,45 @@
+{
+  "version": 1,
+  "name": "Платное обучение",
+  "size": "L",
+  "formatId": "square",
+  "paletteId": "violet",
+  "customPalettes": [],
+  "compositionScale": 0.4943443884978967,
+  "backgroundVisible": true,
+  "objects": [
+    {
+      "instanceId": "review-0",
+      "objectId": "book",
+      "role": "main",
+      "x": 0.4491767961629406,
+      "y": 0.4662589000805006,
+      "rotation": -7
+    },
+    {
+      "instanceId": "review-1",
+      "objectId": "coin",
+      "role": "main",
+      "x": 0.8602599943572655,
+      "y": 0.7642652988838947,
+      "rotation": 5
+    }
+  ],
+  "selectionReview": {
+    "prompt": "Платное обучение",
+    "items": [
+      {
+        "objectId": "book",
+        "role": "main",
+        "origin": "rules",
+        "reason": "Книга передаёт обучение и знания."
+      },
+      {
+        "objectId": "coin",
+        "role": "main",
+        "origin": "manual",
+        "reason": "В демонстрационном сценарии кошелёк заменён монетой."
+      }
+    ]
+  }
+}

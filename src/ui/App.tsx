@@ -5,6 +5,7 @@ import { activePalette, canvasSize, compositionScale, createBlankScene, createEx
 import { backgroundMarkup, exportSvg, objectMarkup, preparedSvg, type AssetTexts } from '../editor/svg.js';
 import { customLibrary, customTexts, readCustomSvg, validateCustomObjects, MAX_SVG_BYTES, type CustomObject } from '../library/custom.js';
 import { CustomObjectDialog } from './CustomObjectDialog.js';
+import { PreflightDialog } from './PreflightDialog.js';
 import { AutoComposeDialog } from './AutoComposeDialog.js';
 
 const STORAGE_KEY = 'sostav-project-v1';
@@ -75,6 +76,7 @@ function Editor({ catalog: baseCatalog, texts: baseTexts }: { catalog: Catalog; 
   const scene = draft ?? history.present;
   const catalog = useMemo(() => customLibrary(baseCatalog, scene.customObjects), [baseCatalog, scene.customObjects]);
   const texts = useMemo(() => customTexts(baseTexts, scene.customObjects), [baseTexts, scene.customObjects]);
+  const [customSection, setCustomSection] = useState<'meaning' | 'colors'>('meaning');
   const [editingCustom, setEditingCustom] = useState<string | null>(null);
   const [importingSvg, setImportingSvg] = useState(false);
   const svgInput = useRef<HTMLInputElement>(null);
@@ -94,6 +96,8 @@ function Editor({ catalog: baseCatalog, texts: baseTexts }: { catalog: Catalog; 
   const [showExamples, setShowExamples] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
   const [showAuto, setShowAuto] = useState(false);
+  const [showPreflight, setShowPreflight] = useState(false);
+  const selectedSection = useRef<HTMLElement>(null);
   const [viewport, setViewport] = useState({ width: 900, height: 800 });
   const stageContainer = useRef<HTMLDivElement>(null);
   const stageRef = useRef<SVGSVGElement>(null);
@@ -150,8 +154,9 @@ function Editor({ catalog: baseCatalog, texts: baseTexts }: { catalog: Catalog; 
   }
   function loadExample(id: ExampleId) { const next = { ...createExample(id), customObjects: scene.customObjects ?? [] }; commit(next); setSelectedId(next.objects.at(-1)?.instanceId ?? null); setShowExamples(false); setToast('Открыт пример. Изменения можно отменить.'); }
   function saveProject() { download(fileName(scene.name) + '.sostav.json', JSON.stringify(persistableScene(scene), null, 2), 'application/json'); setToast('Проект сохранён. Его можно открыть и продолжить работу.'); }
-  function saveSvg() {
-    try { download(fileName(scene.name) + '.svg', exportSvg(catalog, texts, scene), 'image/svg+xml;charset=utf-8'); setToast('SVG скачан — предметы сохранены отдельными векторными группами'); }
+  function saveSvg() { setShowPreflight(true); }
+  function downloadSvg() {
+    try { download(fileName(scene.name) + '.svg', exportSvg(catalog, texts, scene), 'image/svg+xml;charset=utf-8'); setShowPreflight(false); setToast('SVG скачан — предметы сохранены отдельными векторными группами'); }
     catch (error) { setToast(errorMessage(error)); }
   }
   async function openFile(file: File | undefined, kind: 'project' | 'palette') {
@@ -197,7 +202,7 @@ function Editor({ catalog: baseCatalog, texts: baseTexts }: { catalog: Catalog; 
         validateCustomObjects(customObjects, baseCatalog);
         return { ...current, customObjects };
       });
-      setTab('objects'); setQuery(''); setEditingCustom(additions[0]!.id);
+      setTab('objects'); setQuery(''); setCustomSection('meaning'); setEditingCustom(additions[0]!.id);
       setToast(`Загружено SVG: ${additions.length}. Заполните смыслы каждой картинки.`);
     } catch (error) { setToast(errorMessage(error)); }
     finally { setImportingSvg(false); }
@@ -226,7 +231,7 @@ function Editor({ catalog: baseCatalog, texts: baseTexts }: { catalog: Catalog; 
   }, [history.present]);
   useEffect(() => {
     function keydown(event: KeyboardEvent) {
-      if (showAuto || editingCustom) return;
+      if (showAuto || editingCustom || showPreflight) return;
       const element = event.target as HTMLElement;
       if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 's') { event.preventDefault(); saveProject(); return; }
       if (['INPUT', 'TEXTAREA', 'SELECT'].includes(element.tagName) || element.isContentEditable) return;
@@ -293,7 +298,7 @@ function Editor({ catalog: baseCatalog, texts: baseTexts }: { catalog: Catalog; 
           <button className="upload-svg button secondary" aria-label="Загрузить свои SVG" aria-busy={importingSvg} title="Загрузить свои SVG" disabled={importingSvg} onClick={() => svgInput.current?.click()}><Upload size={15} /><span className="upload-svg-full" aria-hidden="true">{importingSvg ? 'Загружаем…' : 'Загрузить свои SVG'}</span><span className="upload-svg-compact" aria-hidden="true">{importingSvg ? 'Загрузка…' : 'Свои SVG'}</span></button>
           <label className="search-field"><Search size={17} /><input aria-label="Поиск предметов" placeholder="Название или смысл…" value={query} onChange={event => setQuery(event.target.value)} />{query && <button aria-label="Очистить поиск" onClick={() => setQuery('')}><X size={14} /></button>}</label>
           <div className="role-switch" aria-label="Роль добавляемых предметов"><button className={addRole === 'main' ? 'active' : ''} onClick={() => setAddRole('main')} aria-pressed={addRole === 'main'}><span className="role-dot main" />Главные</button><button className={addRole === 'secondary' ? 'active' : ''} onClick={() => setAddRole('secondary')} aria-pressed={addRole === 'secondary'}><span className="role-dot secondary" />Фоновые</button></div>
-          <div className="object-grid">{visibleObjects.map(object => <div className="library-object" key={object.id}><button className="object-card" key={object.id} onClick={() => addObject(object.id)} aria-label={`Добавить: ${object.name}`}><span className="object-image"><AssetPreview catalog={catalog} texts={texts} asset={object.variants[scene.size][addRole]} palette={palette} /><span className="add-badge"><Plus size={16} /></span></span><span className="object-name">{object.name}</span></button>{object.custom && <div className="custom-card-actions"><button onClick={() => setEditingCustom(object.id)} aria-label={`Смыслы: ${object.name}`}>Смыслы и цвета</button><button onClick={() => removeCustom(object.id)} aria-label={`Удалить из библиотеки: ${object.name}`}><Trash2 size={12} /></button></div>}</div>)}{!visibleObjects.length && <div className="empty-search"><Search size={24} /><p>Ничего не найдено</p><span>Попробуйте «книга» или «работа»</span></div>}</div>
+          <div className="object-grid">{visibleObjects.map(object => <div className="library-object" key={object.id}><button className="object-card" key={object.id} onClick={() => addObject(object.id)} aria-label={`Добавить: ${object.name}`}><span className="object-image"><AssetPreview catalog={catalog} texts={texts} asset={object.variants[scene.size][addRole]} palette={palette} /><span className="add-badge"><Plus size={16} /></span></span><span className="object-name">{object.name}</span></button>{object.custom && <div className="custom-card-actions"><button onClick={() => { setCustomSection('meaning'); setEditingCustom(object.id); }} aria-label={`Смыслы: ${object.name}`}>Смыслы и цвета</button><button onClick={() => removeCustom(object.id)} aria-label={`Удалить из библиотеки: ${object.name}`}><Trash2 size={12} /></button></div>}</div>)}{!visibleObjects.length && <div className="empty-search"><Search size={24} /><p>Ничего не найдено</p><span>Попробуйте «книга» или «работа»</span></div>}</div>
         </> : <div className="background-list"><p className="field-hint">Готовые фоны со своей цветовой схемой.</p>{catalog.backgrounds.map(background => <button className={`background-card ${scene.paletteId === background.paletteId && scene.backgroundVisible ? 'active' : ''}`} key={background.id} onClick={() => patch({ paletteId: background.paletteId, backgroundVisible: true })}><AssetPreview catalog={catalog} texts={texts} asset={background.variants[scene.size]} palette={catalog.palettes.find(p => p.id === background.paletteId)!} background /><span>{background.name}</span>{scene.paletteId === background.paletteId && scene.backgroundVisible && <Check size={16} />}</button>)}<button className={`transparent-background ${!scene.backgroundVisible ? 'active' : ''}`} onClick={() => patch({ backgroundVisible: false })}><EyeOff size={17} />Прозрачный фон</button></div>}
         <div className="library-footer"><span className="tiny-icon"><Layers3 size={15} /></span><span>Только исходные векторы<br /><strong>Без генерации новых объектов</strong></span></div>
       </aside>
@@ -323,7 +328,7 @@ function Editor({ catalog: baseCatalog, texts: baseTexts }: { catalog: Catalog; 
         <section className="property-section"><div className="section-title"><h3>Размер иллюстрации</h3><span className="subtle-label">ДЕТАЛИЗАЦИЯ</span></div><div className="size-switch">{(['S', 'L'] as const).map(size => <button key={size} aria-pressed={scene.size === size} className={scene.size === size ? 'active' : ''} onClick={() => patch({ size })}><span>{size}</span><small>{size === 'S' ? 'Компактная' : 'Подробная'}</small>{scene.size === size && <Check size={14} />}</button>)}</div><p className="field-hint">При смене размера подставляем соответствующие исходные SVG.</p></section>
         <section className="property-section"><div className="section-title"><h3>Цветовая схема</h3><span className="count-badge">{catalog.palettes.length + scene.customPalettes.length}</span></div><div className="palette-list">{[...catalog.palettes, ...scene.customPalettes].map(item => <button className={`palette-option ${scene.paletteId === item.id ? 'active' : ''}`} key={item.id} aria-pressed={scene.paletteId === item.id} onClick={() => patch({ paletteId: item.id })}><span className="palette-swatches">{(['background.base', 'background.strong', 'object.primary', 'object.secondary'] as const).map(role => <i key={role} style={{ background: item.colors[role] }} />)}</span><span>{item.name}</span>{scene.paletteId === item.id && <Check size={15} />}</button>)}</div><button className="upload-palette" onClick={() => paletteInput.current?.click()}><Upload size={14} />Загрузить палитру <span>JSON</span></button></section>
         <section className="property-section composition-section"><div className="section-title"><h3>Композиция</h3></div><label className="toggle-row"><span>Показывать фон</span><button className={`toggle ${scene.backgroundVisible ? 'on' : ''}`} role="switch" aria-label="Показывать фон" aria-checked={scene.backgroundVisible} onClick={() => patch({ backgroundVisible: !scene.backgroundVisible })}><span /></button></label><div className="range-heading"><label htmlFor="composition-scale">Общий масштаб</label><span>{Math.round(scene.compositionScale * 100)}%</span></div><input id="composition-scale" aria-label="Общий масштаб композиции" type="range" min="15" max="150" value={Math.round(scene.compositionScale * 100)} onChange={event => patch({ compositionScale: Number(event.target.value) / 100 })} /><p className="field-hint">Соотношение размеров предметов сохраняется.</p></section>
-        <section className="property-section selected-section"><div className="section-title"><h3>{selectedDefinition?.name ?? 'Предмет'}</h3>{selected && <span className="selected-label">ВЫБРАН</span>}</div>{selected ? <>
+        <section ref={selectedSection} className="property-section selected-section"><div className="section-title"><h3>{selectedDefinition?.name ?? 'Предмет'}</h3>{selected && <span className="selected-label">ВЫБРАН</span>}</div>{selected ? <>
           <div className="role-switch property-role"><button aria-pressed={selected.role === 'main'} className={selected.role === 'main' ? 'active' : ''} onClick={() => updateSelected({ role: 'main' })}><span className="role-dot main" />Главный</button><button aria-pressed={selected.role === 'secondary'} className={selected.role === 'secondary' ? 'active' : ''} onClick={() => updateSelected({ role: 'secondary' })}><span className="role-dot secondary" />Фоновый</button></div>
           <div className="coordinates"><label><span>X</span><input aria-label="Координата X" type="number" min={-width * 10} max={width * 10} value={Math.round(selected.x * width)} onChange={event => { const v = event.target.valueAsNumber; if (Number.isFinite(v)) updateSelected({ x: Math.max(-10, Math.min(10, v / width)) }); }} /></label><label><span>Y</span><input aria-label="Координата Y" type="number" min={-height * 10} max={height * 10} value={Math.round(selected.y * height)} onChange={event => { const v = event.target.valueAsNumber; if (Number.isFinite(v)) updateSelected({ y: Math.max(-10, Math.min(10, v / height)) }); }} /></label></div>
           <div className="rotation-row"><label htmlFor="rotation">Поворот</label><div><input id="rotation" aria-label="Поворот предмета" type="number" min="-180" max="180" value={Math.round(selected.rotation)} onChange={event => { const v = event.target.valueAsNumber; if (Number.isFinite(v)) updateSelected({ rotation: Math.max(-180, Math.min(180, v)) }); }} /><span>°</span><IconButton icon={RotateCcw} label="Сбросить поворот" onClick={() => updateSelected({ rotation: 0 })} /></div></div>
@@ -333,8 +338,9 @@ function Editor({ catalog: baseCatalog, texts: baseTexts }: { catalog: Catalog; 
       </aside>
     </div>
     <input ref={svgInput} type="file" accept=".svg,image/svg+xml" multiple hidden aria-label="Свои SVG" onChange={event => { void importSvgFiles(Array.from(event.target.files ?? [])); event.target.value = ''; }} />
-    {editingCustom && scene.customObjects?.find(item => item.id === editingCustom) && <CustomObjectDialog key={editingCustom} object={scene.customObjects.find(item => item.id === editingCustom)!} catalog={catalog} palettes={[...catalog.palettes, ...scene.customPalettes]} paletteId={scene.paletteId} onClose={() => setEditingCustom(null)} onSave={value => { commit(current => { const { interpretation: _old, selectionReview: _review, ...rest } = current; return { ...rest, customObjects: (current.customObjects ?? []).map(item => item.id === value.id ? value : item) }; }); setEditingCustom(null); setToast('Настройки SVG сохранены. Цвета применены на холсте.'); }} />}
+    {editingCustom && scene.customObjects?.find(item => item.id === editingCustom) && <CustomObjectDialog key={editingCustom} object={scene.customObjects.find(item => item.id === editingCustom)!} catalog={catalog} palettes={[...catalog.palettes, ...scene.customPalettes]} paletteId={scene.paletteId} initialSection={customSection} onClose={() => setEditingCustom(null)} onSave={value => { commit(current => { const { interpretation: _old, selectionReview: _review, ...rest } = current; return { ...rest, customObjects: (current.customObjects ?? []).map(item => item.id === value.id ? value : item) }; }); setEditingCustom(null); setToast('Настройки SVG сохранены. Цвета применены на холсте.'); }} />}
     <input ref={projectInput} type="file" accept=".json,.sostav.json,application/json" hidden aria-label="Файл проекта" onChange={event => { void openFile(event.target.files?.[0], 'project'); event.target.value = ''; }} />
+    {showPreflight && <PreflightDialog catalog={catalog} scene={scene} onClose={() => setShowPreflight(false)} onExport={downloadSvg} onSelect={id => { setShowPreflight(false); setSelectedId(id); setZoom(1); setToast('Предмет выбран. Исправьте координаты, поворот или общий масштаб и повторите проверку.'); requestAnimationFrame(() => { selectedSection.current?.scrollIntoView({ block: 'nearest' }); selectedSection.current?.querySelector<HTMLInputElement>('input')?.focus(); }); }} onColors={id => { setShowPreflight(false); setCustomSection('colors'); setEditingCustom(id); }} />}
     {showAuto && <AutoComposeDialog catalog={catalog} texts={texts} scene={scene} onClose={() => setShowAuto(false)} onApply={next => { commit(next); setSelectedId([...next.objects].reverse().find(object => object.role === 'main')?.instanceId ?? null); setShowAuto(false); setToast('Композиция собрана. Её можно редактировать и скачать в SVG.'); }} />}
     <input ref={paletteInput} type="file" accept=".json,application/json" hidden aria-label="Файл палитры" onChange={event => { void openFile(event.target.files?.[0], 'palette'); event.target.value = ''; }} />
     {toast && <div className="toast" role="status"><CheckCheck size={17} /><span>{toast}</span><button aria-label="Закрыть уведомление" onClick={() => setToast('')}><X size={14} /></button></div>}
