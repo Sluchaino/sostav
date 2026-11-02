@@ -1,0 +1,997 @@
+{
+  "schemaVersion": 1,
+  "annotation": "New author-defined phrases frozen before fallback inference, not user-reviewed. Prior 90-case test was already seen; do not treat it as an independent test for this experiment.",
+  "cases": [
+    {
+      "id": "fallback-paraphrase-01",
+      "split": "calibration",
+      "category": "paraphrase",
+      "library": "base",
+      "prompt": "Хочу научиться незнакомому ремеслу",
+      "requiredGroups": [
+        [
+          "book"
+        ]
+      ],
+      "allowed": [
+        "book",
+        "lamp",
+        "pen"
+      ],
+      "forbidden": [],
+      "expectAbstain": false
+    },
+    {
+      "id": "fallback-paraphrase-02",
+      "split": "calibration",
+      "category": "paraphrase",
+      "library": "base",
+      "prompt": "Сберечь часть зарплаты до отпуска",
+      "requiredGroups": [
+        [
+          "wallet",
+          "coin"
+        ]
+      ],
+      "allowed": [
+        "coin",
+        "wallet"
+      ],
+      "forbidden": [],
+      "expectAbstain": false
+    },
+    {
+      "id": "fallback-paraphrase-03",
+      "split": "calibration",
+      "category": "paraphrase",
+      "library": "base",
+      "prompt": "Услышать любимый альбом в дороге",
+      "requiredGroups": [
+        [
+          "headphones"
+        ]
+      ],
+      "allowed": [
+        "headphones",
+        "phone"
+      ],
+      "forbidden": [],
+      "expectAbstain": false
+    },
+    {
+      "id": "fallback-paraphrase-04",
+      "split": "test",
+      "category": "paraphrase",
+      "library": "base",
+      "prompt": "Оставить свои мысли в письменном виде",
+      "requiredGroups": [
+        [
+          "pen"
+        ]
+      ],
+      "allowed": [
+        "book",
+        "pen"
+      ],
+      "forbidden": [],
+      "expectAbstain": false
+    },
+    {
+      "id": "fallback-paraphrase-05",
+      "split": "test",
+      "category": "paraphrase",
+      "library": "base",
+      "prompt": "Держать бумаги аккуратно разложенными",
+      "requiredGroups": [
+        [
+          "folder"
+        ]
+      ],
+      "allowed": [
+        "folder",
+        "pen"
+      ],
+      "forbidden": [],
+      "expectAbstain": false
+    },
+    {
+      "id": "fallback-paraphrase-06",
+      "split": "test",
+      "category": "paraphrase",
+      "library": "base",
+      "prompt": "Позвонить родителям из другого города",
+      "requiredGroups": [
+        [
+          "phone"
+        ]
+      ],
+      "allowed": [
+        "headphones",
+        "phone"
+      ],
+      "forbidden": [],
+      "expectAbstain": false
+    },
+    {
+      "id": "fallback-paraphrase-07",
+      "split": "test",
+      "category": "paraphrase",
+      "library": "base",
+      "prompt": "Удивить маму красивым букетом",
+      "requiredGroups": [
+        [
+          "flower-vase"
+        ]
+      ],
+      "allowed": [
+        "flower-vase"
+      ],
+      "forbidden": [],
+      "expectAbstain": false
+    },
+    {
+      "id": "fallback-paraphrase-08",
+      "split": "test",
+      "category": "paraphrase",
+      "library": "base",
+      "prompt": "Побыть наедине с любимой мелодией",
+      "requiredGroups": [
+        [
+          "headphones"
+        ]
+      ],
+      "allowed": [
+        "headphones",
+        "phone"
+      ],
+      "forbidden": [],
+      "expectAbstain": false
+    },
+    {
+      "id": "fallback-paraphrase-09",
+      "split": "test",
+      "category": "paraphrase",
+      "library": "base",
+      "prompt": "Придумать нестандартный выход",
+      "requiredGroups": [
+        [
+          "lamp",
+          "puzzle"
+        ]
+      ],
+      "allowed": [
+        "lamp",
+        "pen",
+        "puzzle"
+      ],
+      "forbidden": [],
+      "expectAbstain": false
+    },
+    {
+      "id": "fallback-paraphrase-10",
+      "split": "test",
+      "category": "paraphrase",
+      "library": "base",
+      "prompt": "Получить диплом новой специальности",
+      "requiredGroups": [
+        [
+          "book"
+        ]
+      ],
+      "allowed": [
+        "book",
+        "folder",
+        "pen"
+      ],
+      "forbidden": [],
+      "expectAbstain": false
+    },
+    {
+      "id": "fallback-metaphor-01",
+      "split": "calibration",
+      "category": "metaphor",
+      "library": "base",
+      "prompt": "Разжечь огонь любознательности",
+      "requiredGroups": [
+        [
+          "book",
+          "lamp"
+        ]
+      ],
+      "allowed": [
+        "book",
+        "lamp",
+        "pen"
+      ],
+      "forbidden": [],
+      "expectAbstain": false
+    },
+    {
+      "id": "fallback-metaphor-02",
+      "split": "calibration",
+      "category": "metaphor",
+      "library": "base",
+      "prompt": "Сплести нити общего дела",
+      "requiredGroups": [
+        [
+          "puzzle"
+        ]
+      ],
+      "allowed": [
+        "folder",
+        "pen",
+        "phone",
+        "puzzle"
+      ],
+      "forbidden": [],
+      "expectAbstain": false
+    },
+    {
+      "id": "fallback-metaphor-03",
+      "split": "calibration",
+      "category": "metaphor",
+      "library": "base",
+      "prompt": "Создать тихую гавань для души",
+      "requiredGroups": [
+        [
+          "headphones",
+          "book",
+          "flower-vase"
+        ]
+      ],
+      "allowed": [
+        "book",
+        "flower-vase",
+        "headphones"
+      ],
+      "forbidden": [],
+      "expectAbstain": false
+    },
+    {
+      "id": "fallback-metaphor-04",
+      "split": "test",
+      "category": "metaphor",
+      "library": "base",
+      "prompt": "Собрать разрозненные кусочки в целое",
+      "requiredGroups": [
+        [
+          "puzzle"
+        ]
+      ],
+      "allowed": [
+        "lamp",
+        "puzzle"
+      ],
+      "forbidden": [],
+      "expectAbstain": false
+    },
+    {
+      "id": "fallback-metaphor-05",
+      "split": "test",
+      "category": "metaphor",
+      "library": "base",
+      "prompt": "Посеять зёрна будущего достатка",
+      "requiredGroups": [
+        [
+          "coin",
+          "wallet"
+        ]
+      ],
+      "allowed": [
+        "coin",
+        "wallet"
+      ],
+      "forbidden": [],
+      "expectAbstain": false
+    },
+    {
+      "id": "fallback-metaphor-06",
+      "split": "test",
+      "category": "metaphor",
+      "library": "base",
+      "prompt": "Пролить свет на сложный вопрос",
+      "requiredGroups": [
+        [
+          "lamp"
+        ]
+      ],
+      "allowed": [
+        "book",
+        "lamp",
+        "puzzle"
+      ],
+      "forbidden": [],
+      "expectAbstain": false
+    },
+    {
+      "id": "fallback-metaphor-07",
+      "split": "test",
+      "category": "metaphor",
+      "library": "base",
+      "prompt": "Дать мыслям форму на листе",
+      "requiredGroups": [
+        [
+          "pen"
+        ]
+      ],
+      "allowed": [
+        "book",
+        "lamp",
+        "pen"
+      ],
+      "forbidden": [],
+      "expectAbstain": false
+    },
+    {
+      "id": "fallback-metaphor-08",
+      "split": "test",
+      "category": "metaphor",
+      "library": "base",
+      "prompt": "Открыть дверь в мир знаний",
+      "requiredGroups": [
+        [
+          "book"
+        ]
+      ],
+      "allowed": [
+        "book",
+        "lamp",
+        "phone"
+      ],
+      "forbidden": [],
+      "expectAbstain": false
+    },
+    {
+      "id": "fallback-metaphor-09",
+      "split": "test",
+      "category": "metaphor",
+      "library": "base",
+      "prompt": "Протянуть мост между людьми",
+      "requiredGroups": [
+        [
+          "phone",
+          "puzzle"
+        ]
+      ],
+      "allowed": [
+        "headphones",
+        "phone",
+        "puzzle"
+      ],
+      "forbidden": [],
+      "expectAbstain": false
+    },
+    {
+      "id": "fallback-metaphor-10",
+      "split": "test",
+      "category": "metaphor",
+      "library": "base",
+      "prompt": "Сохранить тепло домашнего очага",
+      "requiredGroups": [
+        [
+          "flower-vase"
+        ]
+      ],
+      "allowed": [
+        "book",
+        "flower-vase"
+      ],
+      "forbidden": [],
+      "expectAbstain": false
+    },
+    {
+      "id": "fallback-unknown-01",
+      "split": "calibration",
+      "category": "unknown",
+      "library": "base",
+      "prompt": "Лунный посадочный модуль",
+      "requiredGroups": [],
+      "allowed": [],
+      "forbidden": [],
+      "expectAbstain": true
+    },
+    {
+      "id": "fallback-unknown-02",
+      "split": "calibration",
+      "category": "unknown",
+      "library": "base",
+      "prompt": "Песчаная буря в пустыне",
+      "requiredGroups": [],
+      "allowed": [],
+      "forbidden": [],
+      "expectAbstain": true
+    },
+    {
+      "id": "fallback-unknown-03",
+      "split": "calibration",
+      "category": "unknown",
+      "library": "base",
+      "prompt": "Дрессировка щенка",
+      "requiredGroups": [],
+      "allowed": [],
+      "forbidden": [],
+      "expectAbstain": true
+    },
+    {
+      "id": "fallback-unknown-04",
+      "split": "test",
+      "category": "unknown",
+      "library": "base",
+      "prompt": "Как испечь яблочный пирог",
+      "requiredGroups": [],
+      "allowed": [],
+      "forbidden": [],
+      "expectAbstain": true
+    },
+    {
+      "id": "fallback-unknown-05",
+      "split": "test",
+      "category": "unknown",
+      "library": "base",
+      "prompt": "Перелёт журавлей на юг",
+      "requiredGroups": [],
+      "allowed": [],
+      "forbidden": [],
+      "expectAbstain": true
+    },
+    {
+      "id": "fallback-unknown-06",
+      "split": "test",
+      "category": "unknown",
+      "library": "base",
+      "prompt": "Подземный вулканический разлом",
+      "requiredGroups": [],
+      "allowed": [],
+      "forbidden": [],
+      "expectAbstain": true
+    },
+    {
+      "id": "fallback-unknown-07",
+      "split": "test",
+      "category": "unknown",
+      "library": "base",
+      "prompt": "Беговой марафон по лесу",
+      "requiredGroups": [],
+      "allowed": [],
+      "forbidden": [],
+      "expectAbstain": true
+    },
+    {
+      "id": "fallback-unknown-08",
+      "split": "test",
+      "category": "unknown",
+      "library": "base",
+      "prompt": "Смена автомобильных шин",
+      "requiredGroups": [],
+      "allowed": [],
+      "forbidden": [],
+      "expectAbstain": true
+    },
+    {
+      "id": "fallback-unknown-09",
+      "split": "test",
+      "category": "unknown",
+      "library": "base",
+      "prompt": "Ловля рыбы на озере",
+      "requiredGroups": [],
+      "allowed": [],
+      "forbidden": [],
+      "expectAbstain": true
+    },
+    {
+      "id": "fallback-unknown-10",
+      "split": "test",
+      "category": "unknown",
+      "library": "base",
+      "prompt": "Парусная яхта на рассвете",
+      "requiredGroups": [],
+      "allowed": [],
+      "forbidden": [],
+      "expectAbstain": true
+    },
+    {
+      "id": "fallback-ambiguous-01",
+      "split": "calibration",
+      "category": "ambiguous",
+      "library": "base",
+      "prompt": "Смена",
+      "requiredGroups": [],
+      "allowed": [],
+      "forbidden": [],
+      "expectAbstain": true
+    },
+    {
+      "id": "fallback-ambiguous-02",
+      "split": "calibration",
+      "category": "ambiguous",
+      "library": "base",
+      "prompt": "Ступень",
+      "requiredGroups": [],
+      "allowed": [],
+      "forbidden": [],
+      "expectAbstain": true
+    },
+    {
+      "id": "fallback-ambiguous-03",
+      "split": "calibration",
+      "category": "ambiguous",
+      "library": "base",
+      "prompt": "Сеть",
+      "requiredGroups": [],
+      "allowed": [],
+      "forbidden": [],
+      "expectAbstain": true
+    },
+    {
+      "id": "fallback-ambiguous-04",
+      "split": "test",
+      "category": "ambiguous",
+      "library": "base",
+      "prompt": "Баланс",
+      "requiredGroups": [],
+      "allowed": [],
+      "forbidden": [],
+      "expectAbstain": true
+    },
+    {
+      "id": "fallback-ambiguous-05",
+      "split": "test",
+      "category": "ambiguous",
+      "library": "base",
+      "prompt": "Поток",
+      "requiredGroups": [],
+      "allowed": [],
+      "forbidden": [],
+      "expectAbstain": true
+    },
+    {
+      "id": "fallback-ambiguous-06",
+      "split": "test",
+      "category": "ambiguous",
+      "library": "base",
+      "prompt": "Запас",
+      "requiredGroups": [],
+      "allowed": [],
+      "forbidden": [],
+      "expectAbstain": true
+    },
+    {
+      "id": "fallback-ambiguous-07",
+      "split": "test",
+      "category": "ambiguous",
+      "library": "base",
+      "prompt": "Волна",
+      "requiredGroups": [],
+      "allowed": [],
+      "forbidden": [],
+      "expectAbstain": true
+    },
+    {
+      "id": "fallback-ambiguous-08",
+      "split": "test",
+      "category": "ambiguous",
+      "library": "base",
+      "prompt": "Опора",
+      "requiredGroups": [],
+      "allowed": [],
+      "forbidden": [],
+      "expectAbstain": true
+    },
+    {
+      "id": "fallback-ambiguous-09",
+      "split": "test",
+      "category": "ambiguous",
+      "library": "base",
+      "prompt": "Вектор",
+      "requiredGroups": [],
+      "allowed": [],
+      "forbidden": [],
+      "expectAbstain": true
+    },
+    {
+      "id": "fallback-ambiguous-10",
+      "split": "test",
+      "category": "ambiguous",
+      "library": "base",
+      "prompt": "Проводник",
+      "requiredGroups": [],
+      "allowed": [],
+      "forbidden": [],
+      "expectAbstain": true
+    },
+    {
+      "id": "fallback-negation-01",
+      "split": "calibration",
+      "category": "negation",
+      "library": "base",
+      "prompt": "Осваивать новое ремесло, без телефона",
+      "requiredGroups": [
+        [
+          "book"
+        ]
+      ],
+      "allowed": [
+        "book",
+        "lamp",
+        "pen"
+      ],
+      "forbidden": [
+        "phone"
+      ],
+      "expectAbstain": false
+    },
+    {
+      "id": "fallback-negation-02",
+      "split": "calibration",
+      "category": "negation",
+      "library": "base",
+      "prompt": "Слушать мелодии, не используй смартфон",
+      "requiredGroups": [
+        [
+          "headphones"
+        ]
+      ],
+      "allowed": [
+        "headphones"
+      ],
+      "forbidden": [
+        "phone"
+      ],
+      "expectAbstain": false
+    },
+    {
+      "id": "fallback-negation-03",
+      "split": "calibration",
+      "category": "negation",
+      "library": "base",
+      "prompt": "Навести порядок в бумагах, без ручки",
+      "requiredGroups": [
+        [
+          "folder"
+        ]
+      ],
+      "allowed": [
+        "book",
+        "folder"
+      ],
+      "forbidden": [
+        "pen"
+      ],
+      "expectAbstain": false
+    },
+    {
+      "id": "fallback-negation-04",
+      "split": "test",
+      "category": "negation",
+      "library": "base",
+      "prompt": "Побыть в тишине, без наушников",
+      "requiredGroups": [
+        [
+          "book",
+          "flower-vase"
+        ]
+      ],
+      "allowed": [
+        "book",
+        "flower-vase"
+      ],
+      "forbidden": [
+        "headphones"
+      ],
+      "expectAbstain": false
+    },
+    {
+      "id": "fallback-negation-05",
+      "split": "test",
+      "category": "negation",
+      "library": "base",
+      "prompt": "Учиться за ноль рублей",
+      "requiredGroups": [
+        [
+          "book"
+        ]
+      ],
+      "allowed": [
+        "book",
+        "lamp",
+        "pen"
+      ],
+      "forbidden": [
+        "wallet",
+        "coin"
+      ],
+      "expectAbstain": false
+    },
+    {
+      "id": "fallback-negation-06",
+      "split": "test",
+      "category": "negation",
+      "library": "base",
+      "prompt": "Покупки без наличных монет",
+      "requiredGroups": [
+        [
+          "wallet",
+          "phone"
+        ]
+      ],
+      "allowed": [
+        "phone",
+        "wallet"
+      ],
+      "forbidden": [
+        "coin"
+      ],
+      "expectAbstain": false
+    },
+    {
+      "id": "fallback-negation-07",
+      "split": "test",
+      "category": "negation",
+      "library": "base",
+      "prompt": "Не добавляй книгу, хочу придумать идею",
+      "requiredGroups": [
+        [
+          "lamp"
+        ]
+      ],
+      "allowed": [
+        "lamp",
+        "pen",
+        "puzzle"
+      ],
+      "forbidden": [
+        "book"
+      ],
+      "expectAbstain": false
+    },
+    {
+      "id": "fallback-negation-08",
+      "split": "test",
+      "category": "negation",
+      "library": "base",
+      "prompt": "Без музыки, хочу разложить документы",
+      "requiredGroups": [
+        [
+          "folder"
+        ]
+      ],
+      "allowed": [
+        "folder",
+        "pen"
+      ],
+      "forbidden": [
+        "headphones"
+      ],
+      "expectAbstain": false
+    },
+    {
+      "id": "fallback-negation-09",
+      "split": "test",
+      "category": "negation",
+      "library": "base",
+      "prompt": "Письмо другу без смартфона",
+      "requiredGroups": [
+        [
+          "pen"
+        ]
+      ],
+      "allowed": [
+        "book",
+        "pen"
+      ],
+      "forbidden": [
+        "phone"
+      ],
+      "expectAbstain": false
+    },
+    {
+      "id": "fallback-negation-10",
+      "split": "test",
+      "category": "negation",
+      "library": "base",
+      "prompt": "Отложить деньги, не используй монету",
+      "requiredGroups": [
+        [
+          "wallet"
+        ]
+      ],
+      "allowed": [
+        "wallet"
+      ],
+      "forbidden": [
+        "coin"
+      ],
+      "expectAbstain": false
+    },
+    {
+      "id": "fallback-custom_library-01",
+      "split": "calibration",
+      "category": "custom_library",
+      "library": "with-ladder",
+      "prompt": "Продвигаться по карьерной лестнице",
+      "requiredGroups": [
+        [
+          "custom-ladder"
+        ]
+      ],
+      "allowed": [
+        "book",
+        "custom-ladder",
+        "folder",
+        "pen"
+      ],
+      "forbidden": [],
+      "expectAbstain": false
+    },
+    {
+      "id": "fallback-custom_library-02",
+      "split": "calibration",
+      "category": "custom_library",
+      "library": "with-ladder",
+      "prompt": "Маленькими шагами к большой вершине",
+      "requiredGroups": [
+        [
+          "custom-ladder"
+        ]
+      ],
+      "allowed": [
+        "custom-ladder"
+      ],
+      "forbidden": [],
+      "expectAbstain": false
+    },
+    {
+      "id": "fallback-custom_library-03",
+      "split": "calibration",
+      "category": "custom_library",
+      "library": "with-ladder",
+      "prompt": "Взойти на следующую ступень мастерства",
+      "requiredGroups": [
+        [
+          "custom-ladder"
+        ]
+      ],
+      "allowed": [
+        "book",
+        "custom-ladder"
+      ],
+      "forbidden": [],
+      "expectAbstain": false
+    },
+    {
+      "id": "fallback-custom_library-04",
+      "split": "test",
+      "category": "custom_library",
+      "library": "with-ladder",
+      "prompt": "Постепенно подниматься к желаемому",
+      "requiredGroups": [
+        [
+          "custom-ladder"
+        ]
+      ],
+      "allowed": [
+        "custom-ladder"
+      ],
+      "forbidden": [],
+      "expectAbstain": false
+    },
+    {
+      "id": "fallback-custom_library-05",
+      "split": "test",
+      "category": "custom_library",
+      "library": "with-ladder",
+      "prompt": "От стажёра до руководителя",
+      "requiredGroups": [
+        [
+          "custom-ladder"
+        ]
+      ],
+      "allowed": [
+        "book",
+        "custom-ladder",
+        "folder",
+        "pen"
+      ],
+      "forbidden": [],
+      "expectAbstain": false
+    },
+    {
+      "id": "fallback-custom_library-06",
+      "split": "test",
+      "category": "custom_library",
+      "library": "with-ladder",
+      "prompt": "Достичь вершины в своей профессии",
+      "requiredGroups": [
+        [
+          "custom-ladder"
+        ]
+      ],
+      "allowed": [
+        "book",
+        "custom-ladder",
+        "folder"
+      ],
+      "forbidden": [],
+      "expectAbstain": false
+    },
+    {
+      "id": "fallback-custom_library-07",
+      "split": "test",
+      "category": "custom_library",
+      "library": "with-ladder",
+      "prompt": "Новый виток профессионального роста",
+      "requiredGroups": [
+        [
+          "custom-ladder",
+          "book"
+        ]
+      ],
+      "allowed": [
+        "book",
+        "custom-ladder",
+        "lamp",
+        "pen"
+      ],
+      "forbidden": [],
+      "expectAbstain": false
+    },
+    {
+      "id": "fallback-custom_library-08",
+      "split": "test",
+      "category": "custom_library",
+      "library": "with-ladder",
+      "prompt": "Учиться, не используй лестницу",
+      "requiredGroups": [
+        [
+          "book"
+        ]
+      ],
+      "allowed": [
+        "book",
+        "lamp",
+        "pen"
+      ],
+      "forbidden": [
+        "custom-ladder"
+      ],
+      "expectAbstain": false
+    },
+    {
+      "id": "fallback-custom_library-09",
+      "split": "test",
+      "category": "custom_library",
+      "library": "with-ladder",
+      "prompt": "Подниматься по ступеням",
+      "requiredGroups": [
+        [
+          "custom-ladder"
+        ]
+      ],
+      "allowed": [
+        "custom-ladder"
+      ],
+      "forbidden": [],
+      "expectAbstain": false
+    },
+    {
+      "id": "fallback-custom_library-10",
+      "split": "test",
+      "category": "custom_library",
+      "library": "with-ladder",
+      "prompt": "Найти свой следующий шаг в карьере",
+      "requiredGroups": [
+        [
+          "custom-ladder"
+        ]
+      ],
+      "allowed": [
+        "book",
+        "custom-ladder",
+        "folder",
+        "pen"
+      ],
+      "forbidden": [],
+      "expectAbstain": false
+    }
+  ]
+}
