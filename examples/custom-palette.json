@@ -1,0 +1,14 @@
+{
+  "id": "blueberry",
+  "name": "Черничная",
+  "colors": {
+    "background.base": "#E7EAF8",
+    "background.medium": "#B7C0E5",
+    "background.strong": "#5368AB",
+    "object.primary": "#FFE2A3",
+    "object.secondary": "#ECA1AA",
+    "object.soft": "#FFE4E5",
+    "neutral.ink": "#181817",
+    "neutral.paper": "#FFFFFF"
+  }
+}

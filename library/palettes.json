@@ -1,0 +1,30 @@
+{
+  "basePaletteId": "violet",
+  "roles": {
+    "background.base": { "label": "Основной фон", "targets": ["background", "object"], "editable": true },
+    "background.medium": { "label": "Средний тон фона", "targets": ["background", "object"], "editable": true },
+    "background.strong": { "label": "Насыщенный тон фона", "targets": ["background", "object"], "editable": true },
+    "object.primary": { "label": "Основной акцент предмета", "targets": ["object"], "editable": true },
+    "object.secondary": { "label": "Дополнительный акцент предмета", "targets": ["object"], "editable": true },
+    "object.soft": { "label": "Светлый акцент предмета", "targets": ["object"], "editable": true },
+    "neutral.ink": { "label": "Контуры и тени", "targets": ["object"], "editable": false },
+    "neutral.paper": { "label": "Белые участки", "targets": ["background", "object"], "editable": false }
+  },
+  "schemes": [
+    {
+      "id": "violet", "name": "Сиреневая", "sourceBackground": "Фон.svg",
+      "sourceSwatches": { "S": "Group 2136136338.svg", "L": "Group 2136136332.svg" },
+      "colors": { "background.base": "#D7CDF5", "background.medium": "#AA9BF0", "background.strong": "#7864D7", "object.primary": "#F9ECB0", "object.secondary": "#F9A3AA", "object.soft": "#FFE3E1", "neutral.ink": "#181817", "neutral.paper": "#FFFFFF" }
+    },
+    {
+      "id": "peach", "name": "Персиковая", "sourceBackground": "Фон-2.svg",
+      "sourceSwatches": { "S": "Group 2136136339.svg", "L": "Group 2136136333.svg" },
+      "colors": { "background.base": "#FDD7B9", "background.medium": "#FAC896", "background.strong": "#D27532", "object.primary": "#F9ECB0", "object.secondary": "#80DADA", "object.soft": "#BEEBEB", "neutral.ink": "#181817", "neutral.paper": "#FFFFFF" }
+    },
+    {
+      "id": "aqua", "name": "Бирюзовая", "sourceBackground": "Фон-1.svg",
+      "sourceSwatches": { "S": "Group 2136136340.svg", "L": "Group 2136136334.svg" },
+      "colors": { "background.base": "#BEEBEB", "background.medium": "#80DADA", "background.strong": "#5ABEBE", "object.primary": "#FFD4F2", "object.secondary": "#6D7BFC", "object.soft": "#B6C6FE", "neutral.ink": "#181817", "neutral.paper": "#FFFFFF" }
+    }
+  ]
+}

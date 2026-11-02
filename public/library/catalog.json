@@ -1,0 +1,1882 @@
+{
+  "schemaVersion": 1,
+  "basePaletteId": "violet",
+  "sizeMappingStatus": "working-assumption",
+  "sizes": {
+    "S": {
+      "label": "Малая иллюстрация",
+      "referenceFrame": {
+        "width": 500,
+        "height": 500
+      }
+    },
+    "L": {
+      "label": "Большая иллюстрация",
+      "referenceFrame": {
+        "width": 1000,
+        "height": 1000
+      }
+    }
+  },
+  "formats": [
+    {
+      "id": "square",
+      "width": 1000,
+      "height": 1000
+    },
+    {
+      "id": "landscape",
+      "width": 1200,
+      "height": 630
+    },
+    {
+      "id": "portrait",
+      "width": 800,
+      "height": 1200
+    }
+  ],
+  "geometryPolicy": {
+    "preservePaths": true,
+    "preserveRelativeSizes": true,
+    "independentObjectScaling": false,
+    "coordinateSpace": "source-viewBox",
+    "sceneScaling": "uniform",
+    "allowRotation": true
+  },
+  "colorRoles": {
+    "background.base": {
+      "label": "Основной фон",
+      "targets": [
+        "background",
+        "object"
+      ],
+      "editable": true
+    },
+    "background.medium": {
+      "label": "Средний тон фона",
+      "targets": [
+        "background",
+        "object"
+      ],
+      "editable": true
+    },
+    "background.strong": {
+      "label": "Насыщенный тон фона",
+      "targets": [
+        "background",
+        "object"
+      ],
+      "editable": true
+    },
+    "object.primary": {
+      "label": "Основной акцент предмета",
+      "targets": [
+        "object"
+      ],
+      "editable": true
+    },
+    "object.secondary": {
+      "label": "Дополнительный акцент предмета",
+      "targets": [
+        "object"
+      ],
+      "editable": true
+    },
+    "object.soft": {
+      "label": "Светлый акцент предмета",
+      "targets": [
+        "object"
+      ],
+      "editable": true
+    },
+    "neutral.ink": {
+      "label": "Контуры и тени",
+      "targets": [
+        "object"
+      ],
+      "editable": false
+    },
+    "neutral.paper": {
+      "label": "Белые участки",
+      "targets": [
+        "background",
+        "object"
+      ],
+      "editable": false
+    }
+  },
+  "palettes": [
+    {
+      "id": "violet",
+      "name": "Сиреневая",
+      "colors": {
+        "background.base": "#D7CDF5",
+        "background.medium": "#AA9BF0",
+        "background.strong": "#7864D7",
+        "object.primary": "#F9ECB0",
+        "object.secondary": "#F9A3AA",
+        "object.soft": "#FFE3E1",
+        "neutral.ink": "#181817",
+        "neutral.paper": "#FFFFFF"
+      }
+    },
+    {
+      "id": "peach",
+      "name": "Персиковая",
+      "colors": {
+        "background.base": "#FDD7B9",
+        "background.medium": "#FAC896",
+        "background.strong": "#D27532",
+        "object.primary": "#F9ECB0",
+        "object.secondary": "#80DADA",
+        "object.soft": "#BEEBEB",
+        "neutral.ink": "#181817",
+        "neutral.paper": "#FFFFFF"
+      }
+    },
+    {
+      "id": "aqua",
+      "name": "Бирюзовая",
+      "colors": {
+        "background.base": "#BEEBEB",
+        "background.medium": "#80DADA",
+        "background.strong": "#5ABEBE",
+        "object.primary": "#FFD4F2",
+        "object.secondary": "#6D7BFC",
+        "object.soft": "#B6C6FE",
+        "neutral.ink": "#181817",
+        "neutral.paper": "#FFFFFF"
+      }
+    }
+  ],
+  "objects": [
+    {
+      "id": "flower-vase",
+      "name": "Ваза с цветами",
+      "tags": [
+        "цветы",
+        "ваза",
+        "подарок",
+        "забота",
+        "праздник",
+        "уют"
+      ],
+      "detailStatus": "no-proven-simplified-pair",
+      "note": "Визуально одинаковая детализация; 131/131 контур.",
+      "variants": {
+        "S": {
+          "main": {
+            "url": "/library/objects/flower-vase/S/main.svg",
+            "source": "Библиотека компонентов/Размер L/Главные объекты/Тестовое _ иллюстрации/Ваза с цветами.svg",
+            "sha256": "8dc8a0050327c8102ebbf0e46c0b869329ba4fd5815a695cf6474e5f1d389f71",
+            "bytes": 61796,
+            "width": 324,
+            "height": 409,
+            "viewBox": [
+              0,
+              0,
+              324,
+              409
+            ],
+            "pathCount": 131,
+            "elementCount": 132,
+            "colors": [
+              "#181817",
+              "#AA9BF0",
+              "#F9A3AA",
+              "#F9ECB0",
+              "#FFFFFF"
+            ],
+            "definitionIds": [],
+            "tags": {
+              "svg": 1,
+              "path": 131
+            },
+            "paintRoles": {
+              "#181817": "neutral.ink",
+              "#AA9BF0": "background.medium",
+              "#F9A3AA": "object.secondary",
+              "#F9ECB0": "object.primary",
+              "#FFFFFF": "neutral.paper"
+            }
+          },
+          "secondary": {
+            "url": "/library/objects/flower-vase/S/secondary.svg",
+            "source": "Библиотека компонентов/Размер L/Фоновые объекты/Тестовое _ иллюстрации (1)/Ваза с цветами.svg",
+            "sha256": "a94baa3a6026397fd6867dcabcf3a229c670d71a2f4be718c8d688778d7ffbf6",
+            "bytes": 61892,
+            "width": 324,
+            "height": 409,
+            "viewBox": [
+              0,
+              0,
+              324,
+              409
+            ],
+            "pathCount": 131,
+            "elementCount": 132,
+            "colors": [
+              "#7864D7",
+              "#D7CDF5"
+            ],
+            "definitionIds": [],
+            "tags": {
+              "svg": 1,
+              "path": 131
+            },
+            "paintRoles": {
+              "#7864D7": "background.strong",
+              "#D7CDF5": "background.base"
+            }
+          }
+        },
+        "L": {
+          "main": {
+            "url": "/library/objects/flower-vase/L/main.svg",
+            "source": "Библиотека компонентов/Размер S/Главные объекты/Тестовое _ иллюстрации (2)/Ваза с цветами.svg",
+            "sha256": "61b53b61ed3100249ba2c89f314eadaa8be6f31549ed871905779258a1a3e739",
+            "bytes": 61792,
+            "width": 591,
+            "height": 748,
+            "viewBox": [
+              0,
+              0,
+              591,
+              748
+            ],
+            "pathCount": 131,
+            "elementCount": 132,
+            "colors": [
+              "#181817",
+              "#AA9BF0",
+              "#F9A3AA",
+              "#F9ECB0",
+              "#FFFFFF"
+            ],
+            "definitionIds": [],
+            "tags": {
+              "svg": 1,
+              "path": 131
+            },
+            "paintRoles": {
+              "#181817": "neutral.ink",
+              "#AA9BF0": "background.medium",
+              "#F9A3AA": "object.secondary",
+              "#F9ECB0": "object.primary",
+              "#FFFFFF": "neutral.paper"
+            }
+          },
+          "secondary": {
+            "url": "/library/objects/flower-vase/L/secondary.svg",
+            "source": "Библиотека компонентов/Размер S/Фоновые объекты/Тестовое _ иллюстрации (3)/Ваза с цветами.svg",
+            "sha256": "13628cfeb28e73334c68ded69e348b89ebc81ea4b59cacb8a5f3408279d783a4",
+            "bytes": 61852,
+            "width": 591,
+            "height": 748,
+            "viewBox": [
+              0,
+              0,
+              591,
+              748
+            ],
+            "pathCount": 131,
+            "elementCount": 132,
+            "colors": [
+              "#7864D7",
+              "#D7CDF5"
+            ],
+            "definitionIds": [],
+            "tags": {
+              "svg": 1,
+              "path": 131
+            },
+            "paintRoles": {
+              "#7864D7": "background.strong",
+              "#D7CDF5": "background.base"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "book",
+      "name": "Книга",
+      "tags": [
+        "книга",
+        "учёба",
+        "обучение",
+        "знания",
+        "чтение",
+        "образование"
+      ],
+      "detailStatus": "simplified-main-pair",
+      "note": "В текущем S 53 контура, в L 51; небольшие различия деталей страниц. Фоновые: 53/54, упрощение не подтверждено.",
+      "variants": {
+        "S": {
+          "main": {
+            "url": "/library/objects/book/S/main.svg",
+            "source": "Библиотека компонентов/Размер L/Главные объекты/Тестовое _ иллюстрации/Книга.svg",
+            "sha256": "861fe0817abff8552212eb3817d2e03363c279787937493af6a861cd4ce544da",
+            "bytes": 27133,
+            "width": 723,
+            "height": 489,
+            "viewBox": [
+              0,
+              0,
+              723,
+              489
+            ],
+            "pathCount": 51,
+            "elementCount": 52,
+            "colors": [
+              "#181817",
+              "#F9A3AA",
+              "#F9ECB0",
+              "#FFFFFF"
+            ],
+            "definitionIds": [],
+            "tags": {
+              "svg": 1,
+              "path": 51
+            },
+            "paintRoles": {
+              "#181817": "neutral.ink",
+              "#F9A3AA": "object.secondary",
+              "#F9ECB0": "object.primary",
+              "#FFFFFF": "neutral.paper"
+            }
+          },
+          "secondary": {
+            "url": "/library/objects/book/S/secondary.svg",
+            "source": "Библиотека компонентов/Размер L/Фоновые объекты/Тестовое _ иллюстрации (1)/Книга.svg",
+            "sha256": "e67afd9b7967394b81ebb63ff6a363b1015e57f3e204dee3c141e59ccbdf19e6",
+            "bytes": 28568,
+            "width": 723,
+            "height": 489,
+            "viewBox": [
+              0,
+              0,
+              723,
+              489
+            ],
+            "pathCount": 54,
+            "elementCount": 55,
+            "colors": [
+              "#7864D7",
+              "#D7CDF5"
+            ],
+            "definitionIds": [],
+            "tags": {
+              "svg": 1,
+              "path": 54
+            },
+            "paintRoles": {
+              "#7864D7": "background.strong",
+              "#D7CDF5": "background.base"
+            }
+          }
+        },
+        "L": {
+          "main": {
+            "url": "/library/objects/book/L/main.svg",
+            "source": "Библиотека компонентов/Размер S/Главные объекты/Тестовое _ иллюстрации (2)/Книга.svg",
+            "sha256": "68829d512f20f3f8f4007cd0222a67c4caf2e520c798f0d25b341b0bac329e34",
+            "bytes": 28238,
+            "width": 1446,
+            "height": 977,
+            "viewBox": [
+              0,
+              0,
+              1446,
+              977
+            ],
+            "pathCount": 53,
+            "elementCount": 54,
+            "colors": [
+              "#181817",
+              "#F9A3AA",
+              "#F9ECB0",
+              "#FFE3E1",
+              "#FFFFFF"
+            ],
+            "definitionIds": [],
+            "tags": {
+              "svg": 1,
+              "path": 53
+            },
+            "paintRoles": {
+              "#181817": "neutral.ink",
+              "#F9A3AA": "object.secondary",
+              "#F9ECB0": "object.primary",
+              "#FFE3E1": "object.soft",
+              "#FFFFFF": "neutral.paper"
+            }
+          },
+          "secondary": {
+            "url": "/library/objects/book/L/secondary.svg",
+            "source": "Библиотека компонентов/Размер S/Фоновые объекты/Тестовое _ иллюстрации (3)/Книга.svg",
+            "sha256": "40dbb5f7ba177336a61c6ad30830ff1213001f5bcc88db97a964d7ef19691ca8",
+            "bytes": 28265,
+            "width": 1446,
+            "height": 977,
+            "viewBox": [
+              0,
+              0,
+              1446,
+              977
+            ],
+            "pathCount": 53,
+            "elementCount": 54,
+            "colors": [
+              "#7864D7",
+              "#D7CDF5"
+            ],
+            "definitionIds": [],
+            "tags": {
+              "svg": 1,
+              "path": 53
+            },
+            "paintRoles": {
+              "#7864D7": "background.strong",
+              "#D7CDF5": "background.base"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "wallet",
+      "name": "Кошелек",
+      "tags": [
+        "кошелёк",
+        "кошелек",
+        "деньги",
+        "покупки",
+        "финансы",
+        "оплата"
+      ],
+      "detailStatus": "simplified-main-pair",
+      "note": "В текущем S есть круглая кнопка на застёжке; в главном L её нет. В фоновых S/L кнопка есть.",
+      "variants": {
+        "S": {
+          "main": {
+            "url": "/library/objects/wallet/S/main.svg",
+            "source": "Библиотека компонентов/Размер L/Главные объекты/Тестовое _ иллюстрации/Кошелек.svg",
+            "sha256": "7d4286ccbc485f017848a83fc4ee6bf6fb0393080912eddd7bb41734fa4b1e46",
+            "bytes": 31284,
+            "width": 316,
+            "height": 199,
+            "viewBox": [
+              0,
+              0,
+              316,
+              199
+            ],
+            "pathCount": 83,
+            "elementCount": 84,
+            "colors": [
+              "#181817",
+              "#D7CDF5",
+              "#F9ECB0",
+              "#FFFFFF"
+            ],
+            "definitionIds": [],
+            "tags": {
+              "svg": 1,
+              "path": 83
+            },
+            "paintRoles": {
+              "#181817": "neutral.ink",
+              "#D7CDF5": "background.base",
+              "#F9ECB0": "object.primary",
+              "#FFFFFF": "neutral.paper"
+            }
+          },
+          "secondary": {
+            "url": "/library/objects/wallet/S/secondary.svg",
+            "source": "Библиотека компонентов/Размер L/Фоновые объекты/Тестовое _ иллюстрации (1)/Кошелек.svg",
+            "sha256": "67e7b2d7ed6908fac70d9b6fb9b7e066fd93eb421e0cde1a9811676d103e62c6",
+            "bytes": 32184,
+            "width": 316,
+            "height": 199,
+            "viewBox": [
+              0,
+              0,
+              316,
+              199
+            ],
+            "pathCount": 86,
+            "elementCount": 87,
+            "colors": [
+              "#7864D7",
+              "#D7CDF5"
+            ],
+            "definitionIds": [],
+            "tags": {
+              "svg": 1,
+              "path": 86
+            },
+            "paintRoles": {
+              "#7864D7": "background.strong",
+              "#D7CDF5": "background.base"
+            }
+          }
+        },
+        "L": {
+          "main": {
+            "url": "/library/objects/wallet/L/main.svg",
+            "source": "Библиотека компонентов/Размер S/Главные объекты/Тестовое _ иллюстрации (2)/Кошелек.svg",
+            "sha256": "2ce2224df5563d73ef064d1b9e71438ecf464aac57b23b1424e7ed1e08e99bcd",
+            "bytes": 32140,
+            "width": 631,
+            "height": 397,
+            "viewBox": [
+              0,
+              0,
+              631,
+              397
+            ],
+            "pathCount": 86,
+            "elementCount": 87,
+            "colors": [
+              "#181817",
+              "#D7CDF5",
+              "#F9ECB0",
+              "#FFFFFF"
+            ],
+            "definitionIds": [],
+            "tags": {
+              "svg": 1,
+              "path": 86
+            },
+            "paintRoles": {
+              "#181817": "neutral.ink",
+              "#D7CDF5": "background.base",
+              "#F9ECB0": "object.primary",
+              "#FFFFFF": "neutral.paper"
+            }
+          },
+          "secondary": {
+            "url": "/library/objects/wallet/L/secondary.svg",
+            "source": "Библиотека компонентов/Размер S/Фоновые объекты/Тестовое _ иллюстрации (3)/Кошелек.svg",
+            "sha256": "fc9c1e0615a5fff73e9033b19e71238d0a6b92f3c80aacbcde2eab022e6535a3",
+            "bytes": 32185,
+            "width": 631,
+            "height": 397,
+            "viewBox": [
+              0,
+              0,
+              631,
+              397
+            ],
+            "pathCount": 86,
+            "elementCount": 87,
+            "colors": [
+              "#7864D7",
+              "#D7CDF5"
+            ],
+            "definitionIds": [],
+            "tags": {
+              "svg": 1,
+              "path": 86
+            },
+            "paintRoles": {
+              "#7864D7": "background.strong",
+              "#D7CDF5": "background.base"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "lamp",
+      "name": "Лампа",
+      "tags": [
+        "лампа",
+        "свет",
+        "идея",
+        "работа",
+        "рабочее место"
+      ],
+      "detailStatus": "no-proven-simplified-pair",
+      "note": "Визуально одинаковая детализация; 27/27 контуров.",
+      "variants": {
+        "S": {
+          "main": {
+            "url": "/library/objects/lamp/S/main.svg",
+            "source": "Библиотека компонентов/Размер L/Главные объекты/Тестовое _ иллюстрации/Лампа.svg",
+            "sha256": "917f86b7df1e2ac24c8546bd8c444d94f9281a368d8d6bf8f01cfea0794eafd2",
+            "bytes": 15746,
+            "width": 473,
+            "height": 565,
+            "viewBox": [
+              0,
+              0,
+              473,
+              565
+            ],
+            "pathCount": 27,
+            "elementCount": 28,
+            "colors": [
+              "#181817",
+              "#D7CDF5",
+              "#F9A3AA",
+              "#F9ECB0",
+              "#FFFFFF"
+            ],
+            "definitionIds": [],
+            "tags": {
+              "svg": 1,
+              "path": 27
+            },
+            "paintRoles": {
+              "#181817": "neutral.ink",
+              "#D7CDF5": "background.base",
+              "#F9A3AA": "object.secondary",
+              "#F9ECB0": "object.primary",
+              "#FFFFFF": "neutral.paper"
+            }
+          },
+          "secondary": {
+            "url": "/library/objects/lamp/S/secondary.svg",
+            "source": "Библиотека компонентов/Размер L/Фоновые объекты/Тестовое _ иллюстрации (1)/Лампа.svg",
+            "sha256": "17c10fcb447aba0c4bb8994073752f84b3c4e763a5a29598808b3d57b885dfe8",
+            "bytes": 15769,
+            "width": 473,
+            "height": 565,
+            "viewBox": [
+              0,
+              0,
+              473,
+              565
+            ],
+            "pathCount": 27,
+            "elementCount": 28,
+            "colors": [
+              "#7864D7",
+              "#D7CDF5"
+            ],
+            "definitionIds": [],
+            "tags": {
+              "svg": 1,
+              "path": 27
+            },
+            "paintRoles": {
+              "#7864D7": "background.strong",
+              "#D7CDF5": "background.base"
+            }
+          }
+        },
+        "L": {
+          "main": {
+            "url": "/library/objects/lamp/L/main.svg",
+            "source": "Библиотека компонентов/Размер S/Главные объекты/Тестовое _ иллюстрации (2)/Лампа.svg",
+            "sha256": "046415a0303750389e6bdc35c42111d1c86d14ff1f27b1997c78aa1716d677f5",
+            "bytes": 15741,
+            "width": 946,
+            "height": 1129,
+            "viewBox": [
+              0,
+              0,
+              946,
+              1129
+            ],
+            "pathCount": 27,
+            "elementCount": 28,
+            "colors": [
+              "#181817",
+              "#D7CDF5",
+              "#F9A3AA",
+              "#F9ECB0",
+              "#FFFFFF"
+            ],
+            "definitionIds": [],
+            "tags": {
+              "svg": 1,
+              "path": 27
+            },
+            "paintRoles": {
+              "#181817": "neutral.ink",
+              "#D7CDF5": "background.base",
+              "#F9A3AA": "object.secondary",
+              "#F9ECB0": "object.primary",
+              "#FFFFFF": "neutral.paper"
+            }
+          },
+          "secondary": {
+            "url": "/library/objects/lamp/L/secondary.svg",
+            "source": "Библиотека компонентов/Размер S/Фоновые объекты/Тестовое _ иллюстрации (3)/Лампа.svg",
+            "sha256": "de5957aca823b48a4d5648323b5ecd2ef7a4bdec99994d47f62e113d9837c7be",
+            "bytes": 15766,
+            "width": 946,
+            "height": 1129,
+            "viewBox": [
+              0,
+              0,
+              946,
+              1129
+            ],
+            "pathCount": 27,
+            "elementCount": 28,
+            "colors": [
+              "#7864D7",
+              "#D7CDF5"
+            ],
+            "definitionIds": [],
+            "tags": {
+              "svg": 1,
+              "path": 27
+            },
+            "paintRoles": {
+              "#7864D7": "background.strong",
+              "#D7CDF5": "background.base"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "coin",
+      "name": "Монета",
+      "tags": [
+        "монета",
+        "деньги",
+        "сбережения",
+        "безопасность",
+        "защита"
+      ],
+      "detailStatus": "simplified-main-pair",
+      "note": "В главном S есть замок; в главном L нет. В фоновых S/L замок есть.",
+      "variants": {
+        "S": {
+          "main": {
+            "url": "/library/objects/coin/S/main.svg",
+            "source": "Библиотека компонентов/Размер L/Главные объекты/Тестовое _ иллюстрации/Монета.svg",
+            "sha256": "30304fba87a87548cbd09061c19764c45caf051094cea17194e9ae25de532c13",
+            "bytes": 60889,
+            "width": 153,
+            "height": 101,
+            "viewBox": [
+              0,
+              0,
+              153,
+              101
+            ],
+            "pathCount": 130,
+            "elementCount": 131,
+            "colors": [
+              "#181817",
+              "#F9ECB0",
+              "#FFFFFF"
+            ],
+            "definitionIds": [],
+            "tags": {
+              "svg": 1,
+              "path": 130
+            },
+            "paintRoles": {
+              "#181817": "neutral.ink",
+              "#F9ECB0": "object.primary",
+              "#FFFFFF": "neutral.paper"
+            }
+          },
+          "secondary": {
+            "url": "/library/objects/coin/S/secondary.svg",
+            "source": "Библиотека компонентов/Размер L/Фоновые объекты/Тестовое _ иллюстрации (1)/Монета.svg",
+            "sha256": "9bb11014607170341c110b3739d941ca07341991adb45d17c8aa643f4579c003",
+            "bytes": 63694,
+            "width": 153,
+            "height": 101,
+            "viewBox": [
+              0,
+              0,
+              153,
+              101
+            ],
+            "pathCount": 136,
+            "elementCount": 137,
+            "colors": [
+              "#7864D7",
+              "#D7CDF5"
+            ],
+            "definitionIds": [],
+            "tags": {
+              "svg": 1,
+              "path": 136
+            },
+            "paintRoles": {
+              "#7864D7": "background.strong",
+              "#D7CDF5": "background.base"
+            }
+          }
+        },
+        "L": {
+          "main": {
+            "url": "/library/objects/coin/L/main.svg",
+            "source": "Библиотека компонентов/Размер S/Главные объекты/Тестовое _ иллюстрации (2)/Монета.svg",
+            "sha256": "586739a9eda53b8c8244f04a636cf7ef07e27b7242fde5650d1894505113f248",
+            "bytes": 63560,
+            "width": 287,
+            "height": 189,
+            "viewBox": [
+              0,
+              0,
+              287,
+              189
+            ],
+            "pathCount": 136,
+            "elementCount": 137,
+            "colors": [
+              "#181817",
+              "#F9ECB0",
+              "#FFFFFF"
+            ],
+            "definitionIds": [],
+            "tags": {
+              "svg": 1,
+              "path": 136
+            },
+            "paintRoles": {
+              "#181817": "neutral.ink",
+              "#F9ECB0": "object.primary",
+              "#FFFFFF": "neutral.paper"
+            }
+          },
+          "secondary": {
+            "url": "/library/objects/coin/L/secondary.svg",
+            "source": "Библиотека компонентов/Размер S/Фоновые объекты/Тестовое _ иллюстрации (3)/Монета.svg",
+            "sha256": "81a2baf3f608bda1cfe57d73d71382e3cfb2d541f5b7710e91f30e7d2c54c4ef",
+            "bytes": 63591,
+            "width": 287,
+            "height": 189,
+            "viewBox": [
+              0,
+              0,
+              287,
+              189
+            ],
+            "pathCount": 136,
+            "elementCount": 137,
+            "colors": [
+              "#7864D7",
+              "#D7CDF5"
+            ],
+            "definitionIds": [],
+            "tags": {
+              "svg": 1,
+              "path": 136
+            },
+            "paintRoles": {
+              "#7864D7": "background.strong",
+              "#D7CDF5": "background.base"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "headphones",
+      "name": "Наушники",
+      "tags": [
+        "наушники",
+        "музыка",
+        "звук",
+        "подкаст",
+        "отдых"
+      ],
+      "detailStatus": "simplified-main-pair",
+      "note": "В главном S есть дополнительное цветовое оформление чашки, в L оно отсутствует; 84/79 контуров. Фоновые S/L сохраняют детали.",
+      "variants": {
+        "S": {
+          "main": {
+            "url": "/library/objects/headphones/S/main.svg",
+            "source": "Библиотека компонентов/Размер L/Главные объекты/Тестовое _ иллюстрации/Наушники.svg",
+            "sha256": "2ea8818acf331d794f702e57bcd61d9202cc06a507bf45b466af260fe5b479b5",
+            "bytes": 43925,
+            "width": 445,
+            "height": 346,
+            "viewBox": [
+              0,
+              0,
+              445,
+              346
+            ],
+            "pathCount": 79,
+            "elementCount": 80,
+            "colors": [
+              "#181817",
+              "#D7CDF5",
+              "#FFFFFF"
+            ],
+            "definitionIds": [],
+            "tags": {
+              "svg": 1,
+              "path": 79
+            },
+            "paintRoles": {
+              "#181817": "neutral.ink",
+              "#D7CDF5": "background.base",
+              "#FFFFFF": "neutral.paper"
+            }
+          },
+          "secondary": {
+            "url": "/library/objects/headphones/S/secondary.svg",
+            "source": "Библиотека компонентов/Размер L/Фоновые объекты/Тестовое _ иллюстрации (1)/Наушники.svg",
+            "sha256": "24c42387a6c5a50e2e1f930ba0d9d5be0881c0bc4f66eed0d7e9cd50827892dc",
+            "bytes": 47503,
+            "width": 445,
+            "height": 346,
+            "viewBox": [
+              0,
+              0,
+              445,
+              346
+            ],
+            "pathCount": 84,
+            "elementCount": 85,
+            "colors": [
+              "#7864D7",
+              "#D7CDF5"
+            ],
+            "definitionIds": [],
+            "tags": {
+              "svg": 1,
+              "path": 84
+            },
+            "paintRoles": {
+              "#7864D7": "background.strong",
+              "#D7CDF5": "background.base"
+            }
+          }
+        },
+        "L": {
+          "main": {
+            "url": "/library/objects/headphones/L/main.svg",
+            "source": "Библиотека компонентов/Размер S/Главные объекты/Тестовое _ иллюстрации (2)/Наушники.svg",
+            "sha256": "92331c4dd96e99ad1464e62e8ef5d3e00dc3017d66d0f92012da993d2d1cb35a",
+            "bytes": 47469,
+            "width": 889,
+            "height": 692,
+            "viewBox": [
+              0,
+              0,
+              889,
+              692
+            ],
+            "pathCount": 84,
+            "elementCount": 85,
+            "colors": [
+              "#181817",
+              "#D7CDF5",
+              "#F9ECB0",
+              "#FFFFFF"
+            ],
+            "definitionIds": [],
+            "tags": {
+              "svg": 1,
+              "path": 84
+            },
+            "paintRoles": {
+              "#181817": "neutral.ink",
+              "#D7CDF5": "background.base",
+              "#F9ECB0": "object.primary",
+              "#FFFFFF": "neutral.paper"
+            }
+          },
+          "secondary": {
+            "url": "/library/objects/headphones/L/secondary.svg",
+            "source": "Библиотека компонентов/Размер S/Фоновые объекты/Тестовое _ иллюстрации (3)/Наушники.svg",
+            "sha256": "b7d7b514669180eb6bdd09450b6763328b24bbfe400a2a42f84c7b2e9503be94",
+            "bytes": 47494,
+            "width": 889,
+            "height": 692,
+            "viewBox": [
+              0,
+              0,
+              889,
+              692
+            ],
+            "pathCount": 84,
+            "elementCount": 85,
+            "colors": [
+              "#7864D7",
+              "#D7CDF5"
+            ],
+            "definitionIds": [],
+            "tags": {
+              "svg": 1,
+              "path": 84
+            },
+            "paintRoles": {
+              "#7864D7": "background.strong",
+              "#D7CDF5": "background.base"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "puzzle",
+      "name": "Пазлы",
+      "tags": [
+        "пазлы",
+        "пазл",
+        "решение",
+        "связь",
+        "команда",
+        "сотрудничество"
+      ],
+      "detailStatus": "no-proven-simplified-pair",
+      "note": "Визуально одинаковая детализация; 57/57 контуров.",
+      "variants": {
+        "S": {
+          "main": {
+            "url": "/library/objects/puzzle/S/main.svg",
+            "source": "Библиотека компонентов/Размер L/Главные объекты/Тестовое _ иллюстрации/Пазлы.svg",
+            "sha256": "b12beb5951f6dfde0e864cb61769a3904cb9f47fb8e3cf81a10d9d76c2ef0706",
+            "bytes": 34007,
+            "width": 273,
+            "height": 157,
+            "viewBox": [
+              0,
+              0,
+              273,
+              157
+            ],
+            "pathCount": 57,
+            "elementCount": 58,
+            "colors": [
+              "#181817",
+              "#D7CDF5",
+              "#F9A3AA",
+              "#F9ECB0",
+              "#FFFFFF"
+            ],
+            "definitionIds": [],
+            "tags": {
+              "svg": 1,
+              "path": 57
+            },
+            "paintRoles": {
+              "#181817": "neutral.ink",
+              "#D7CDF5": "background.base",
+              "#F9A3AA": "object.secondary",
+              "#F9ECB0": "object.primary",
+              "#FFFFFF": "neutral.paper"
+            }
+          },
+          "secondary": {
+            "url": "/library/objects/puzzle/S/secondary.svg",
+            "source": "Библиотека компонентов/Размер L/Фоновые объекты/Тестовое _ иллюстрации (1)/Пазлы.svg",
+            "sha256": "4933d8f7c5240d5bc438c93710ee0273f15fb38b3d015162f0da7823222a92ec",
+            "bytes": 34065,
+            "width": 273,
+            "height": 157,
+            "viewBox": [
+              0,
+              0,
+              273,
+              157
+            ],
+            "pathCount": 57,
+            "elementCount": 58,
+            "colors": [
+              "#7864D7",
+              "#D7CDF5"
+            ],
+            "definitionIds": [],
+            "tags": {
+              "svg": 1,
+              "path": 57
+            },
+            "paintRoles": {
+              "#7864D7": "background.strong",
+              "#D7CDF5": "background.base"
+            }
+          }
+        },
+        "L": {
+          "main": {
+            "url": "/library/objects/puzzle/L/main.svg",
+            "source": "Библиотека компонентов/Размер S/Главные объекты/Тестовое _ иллюстрации (2)/Пазлы.svg",
+            "sha256": "aa421956a60050153ae59b326b6bf7292047ac9b31f36382108092f436d453c5",
+            "bytes": 33966,
+            "width": 545,
+            "height": 314,
+            "viewBox": [
+              0,
+              0,
+              545,
+              314
+            ],
+            "pathCount": 57,
+            "elementCount": 58,
+            "colors": [
+              "#181817",
+              "#F9A3AA",
+              "#F9ECB0",
+              "#FFFFFF"
+            ],
+            "definitionIds": [],
+            "tags": {
+              "svg": 1,
+              "path": 57
+            },
+            "paintRoles": {
+              "#181817": "neutral.ink",
+              "#F9A3AA": "object.secondary",
+              "#F9ECB0": "object.primary",
+              "#FFFFFF": "neutral.paper"
+            }
+          },
+          "secondary": {
+            "url": "/library/objects/puzzle/L/secondary.svg",
+            "source": "Библиотека компонентов/Размер S/Фоновые объекты/Тестовое _ иллюстрации (3)/Пазлы.svg",
+            "sha256": "822607ace9afa60fb3ba0c5f30fb3ac141d5ad2858ffbdd92629f6fc7982cf78",
+            "bytes": 34016,
+            "width": 545,
+            "height": 314,
+            "viewBox": [
+              0,
+              0,
+              545,
+              314
+            ],
+            "pathCount": 57,
+            "elementCount": 58,
+            "colors": [
+              "#7864D7",
+              "#D7CDF5"
+            ],
+            "definitionIds": [],
+            "tags": {
+              "svg": 1,
+              "path": 57
+            },
+            "paintRoles": {
+              "#7864D7": "background.strong",
+              "#D7CDF5": "background.base"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "folder",
+      "name": "Папка",
+      "tags": [
+        "папка",
+        "документы",
+        "хранение",
+        "порядок",
+        "работа"
+      ],
+      "detailStatus": "simplified-main-pair",
+      "note": "В главном S есть отверстие и линия на листе; в главном L они отсутствуют. В фоновых S/L детали есть.",
+      "variants": {
+        "S": {
+          "main": {
+            "url": "/library/objects/folder/S/main.svg",
+            "source": "Библиотека компонентов/Размер L/Главные объекты/Тестовое _ иллюстрации/Папка.svg",
+            "sha256": "2cc2d67c7cb5949b98b35f87f02f9267b10666752d4e338b1225382cf1b678c4",
+            "bytes": 13308,
+            "width": 621,
+            "height": 330,
+            "viewBox": [
+              0,
+              0,
+              621,
+              330
+            ],
+            "pathCount": 20,
+            "elementCount": 21,
+            "colors": [
+              "#181817",
+              "#F9ECB0",
+              "#FFFFFF"
+            ],
+            "definitionIds": [],
+            "tags": {
+              "svg": 1,
+              "path": 20
+            },
+            "paintRoles": {
+              "#181817": "neutral.ink",
+              "#F9ECB0": "object.primary",
+              "#FFFFFF": "neutral.paper"
+            }
+          },
+          "secondary": {
+            "url": "/library/objects/folder/S/secondary.svg",
+            "source": "Библиотека компонентов/Размер L/Фоновые объекты/Тестовое _ иллюстрации (1)/Папка.svg",
+            "sha256": "ecd331e4023676b93e67069586fff55e2e0a90ec046ad27489c05caabac5befd",
+            "bytes": 13810,
+            "width": 621,
+            "height": 330,
+            "viewBox": [
+              0,
+              0,
+              621,
+              330
+            ],
+            "pathCount": 22,
+            "elementCount": 23,
+            "colors": [
+              "#7864D7",
+              "#D7CDF5"
+            ],
+            "definitionIds": [],
+            "tags": {
+              "svg": 1,
+              "path": 22
+            },
+            "paintRoles": {
+              "#7864D7": "background.strong",
+              "#D7CDF5": "background.base"
+            }
+          }
+        },
+        "L": {
+          "main": {
+            "url": "/library/objects/folder/L/main.svg",
+            "source": "Библиотека компонентов/Размер S/Главные объекты/Тестовое _ иллюстрации (2)/Папка.svg",
+            "sha256": "e1037dd7a46055af35529ee6dfebf3cd19f1e8e20af62fee562d35acc5f01251",
+            "bytes": 13806,
+            "width": 1241,
+            "height": 659,
+            "viewBox": [
+              0,
+              0,
+              1241,
+              659
+            ],
+            "pathCount": 22,
+            "elementCount": 23,
+            "colors": [
+              "#181817",
+              "#F9A3AA",
+              "#F9ECB0",
+              "#FFFFFF"
+            ],
+            "definitionIds": [],
+            "tags": {
+              "svg": 1,
+              "path": 22
+            },
+            "paintRoles": {
+              "#181817": "neutral.ink",
+              "#F9A3AA": "object.secondary",
+              "#F9ECB0": "object.primary",
+              "#FFFFFF": "neutral.paper"
+            }
+          },
+          "secondary": {
+            "url": "/library/objects/folder/L/secondary.svg",
+            "source": "Библиотека компонентов/Размер S/Фоновые объекты/Тестовое _ иллюстрации (3)/Папка.svg",
+            "sha256": "96056b71114aeb435e1221722afe0e0adcbd2a1a76d9aee776a4e42d30a4fb0c",
+            "bytes": 13813,
+            "width": 1241,
+            "height": 659,
+            "viewBox": [
+              0,
+              0,
+              1241,
+              659
+            ],
+            "pathCount": 22,
+            "elementCount": 23,
+            "colors": [
+              "#7864D7",
+              "#D7CDF5"
+            ],
+            "definitionIds": [],
+            "tags": {
+              "svg": 1,
+              "path": 22
+            },
+            "paintRoles": {
+              "#7864D7": "background.strong",
+              "#D7CDF5": "background.base"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "pen",
+      "name": "Ручка",
+      "tags": [
+        "ручка",
+        "запись",
+        "письмо",
+        "учёба",
+        "работа"
+      ],
+      "detailStatus": "no-proven-simplified-pair",
+      "note": "По 24 контура в главных S/L. Отличается окраска корпуса и кольца; геометрическое упрощение не установлено.",
+      "variants": {
+        "S": {
+          "main": {
+            "url": "/library/objects/pen/S/main.svg",
+            "source": "Библиотека компонентов/Размер L/Главные объекты/Тестовое _ иллюстрации/Ручка.svg",
+            "sha256": "6ec363fbc5e722765ddd51d52a1f35f2963bc2a8effe29e6e28d653ef5b8bbe2",
+            "bytes": 13256,
+            "width": 255,
+            "height": 143,
+            "viewBox": [
+              0,
+              0,
+              255,
+              143
+            ],
+            "pathCount": 24,
+            "elementCount": 25,
+            "colors": [
+              "#181817",
+              "#F9A3AA",
+              "#FFFFFF"
+            ],
+            "definitionIds": [],
+            "tags": {
+              "svg": 1,
+              "path": 24
+            },
+            "paintRoles": {
+              "#181817": "neutral.ink",
+              "#F9A3AA": "object.secondary",
+              "#FFFFFF": "neutral.paper"
+            }
+          },
+          "secondary": {
+            "url": "/library/objects/pen/S/secondary.svg",
+            "source": "Библиотека компонентов/Размер L/Фоновые объекты/Тестовое _ иллюстрации (1)/Ручка.svg",
+            "sha256": "45495afdce7f82c926b3b8ab6688244202549cc969391ff992c328288b1bf0e1",
+            "bytes": 13289,
+            "width": 255,
+            "height": 143,
+            "viewBox": [
+              0,
+              0,
+              255,
+              143
+            ],
+            "pathCount": 24,
+            "elementCount": 25,
+            "colors": [
+              "#7864D7",
+              "#D7CDF5"
+            ],
+            "definitionIds": [],
+            "tags": {
+              "svg": 1,
+              "path": 24
+            },
+            "paintRoles": {
+              "#7864D7": "background.strong",
+              "#D7CDF5": "background.base"
+            }
+          }
+        },
+        "L": {
+          "main": {
+            "url": "/library/objects/pen/L/main.svg",
+            "source": "Библиотека компонентов/Размер S/Главные объекты/Тестовое _ иллюстрации (2)/Ручка.svg",
+            "sha256": "984f57e42399caa21c5e7b5e55cb9a6c52bc3b50260bc93fc15c418ce244685d",
+            "bytes": 13253,
+            "width": 509,
+            "height": 286,
+            "viewBox": [
+              0,
+              0,
+              509,
+              286
+            ],
+            "pathCount": 24,
+            "elementCount": 25,
+            "colors": [
+              "#181817",
+              "#D7CDF5",
+              "#F9A3AA",
+              "#F9ECB0",
+              "#FFFFFF"
+            ],
+            "definitionIds": [],
+            "tags": {
+              "svg": 1,
+              "path": 24
+            },
+            "paintRoles": {
+              "#181817": "neutral.ink",
+              "#D7CDF5": "background.base",
+              "#F9A3AA": "object.secondary",
+              "#F9ECB0": "object.primary",
+              "#FFFFFF": "neutral.paper"
+            }
+          },
+          "secondary": {
+            "url": "/library/objects/pen/L/secondary.svg",
+            "source": "Библиотека компонентов/Размер S/Фоновые объекты/Тестовое _ иллюстрации (3)/Ручка.svg",
+            "sha256": "34cae2dc78723dc436e67a541aed23e28fa49135a1ec5b695dda2a7e9d95e84a",
+            "bytes": 13284,
+            "width": 509,
+            "height": 286,
+            "viewBox": [
+              0,
+              0,
+              509,
+              286
+            ],
+            "pathCount": 24,
+            "elementCount": 25,
+            "colors": [
+              "#7864D7",
+              "#D7CDF5"
+            ],
+            "definitionIds": [],
+            "tags": {
+              "svg": 1,
+              "path": 24
+            },
+            "paintRoles": {
+              "#7864D7": "background.strong",
+              "#D7CDF5": "background.base"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "phone",
+      "name": "Телефон",
+      "tags": [
+        "телефон",
+        "смартфон",
+        "связь",
+        "онлайн",
+        "технологии",
+        "приложение"
+      ],
+      "detailStatus": "simplified-main-pair",
+      "note": "В главном S пазлы на экране, в главном L пустой экран; 155/96 контуров. В фоновых S/L пазлы есть.",
+      "variants": {
+        "S": {
+          "main": {
+            "url": "/library/objects/phone/S/main.svg",
+            "source": "Библиотека компонентов/Размер L/Главные объекты/Тестовое _ иллюстрации/Телефон.svg",
+            "sha256": "a52c5ab92dd2387468257950e91770de7749d5cc43d393d2a783015d93df62e2",
+            "bytes": 38097,
+            "width": 399,
+            "height": 231,
+            "viewBox": [
+              0,
+              0,
+              399,
+              231
+            ],
+            "pathCount": 96,
+            "elementCount": 97,
+            "colors": [
+              "#181817",
+              "#7864D7",
+              "#D7CDF5",
+              "#F9ECB0",
+              "#FFFFFF"
+            ],
+            "definitionIds": [],
+            "tags": {
+              "svg": 1,
+              "path": 96
+            },
+            "paintRoles": {
+              "#181817": "neutral.ink",
+              "#7864D7": "background.strong",
+              "#D7CDF5": "background.base",
+              "#F9ECB0": "object.primary",
+              "#FFFFFF": "neutral.paper"
+            }
+          },
+          "secondary": {
+            "url": "/library/objects/phone/S/secondary.svg",
+            "source": "Библиотека компонентов/Размер L/Фоновые объекты/Тестовое _ иллюстрации (1)/Телефон.svg",
+            "sha256": "8b643c80de22b9342ec51b87ff1b7453f8e1825f5890c27f02b32d46b7d3e86e",
+            "bytes": 63991,
+            "width": 399,
+            "height": 231,
+            "viewBox": [
+              0,
+              0,
+              399,
+              231
+            ],
+            "pathCount": 155,
+            "elementCount": 156,
+            "colors": [
+              "#7864D7",
+              "#D7CDF5"
+            ],
+            "definitionIds": [],
+            "tags": {
+              "svg": 1,
+              "path": 155
+            },
+            "paintRoles": {
+              "#7864D7": "background.strong",
+              "#D7CDF5": "background.base"
+            }
+          }
+        },
+        "L": {
+          "main": {
+            "url": "/library/objects/phone/L/main.svg",
+            "source": "Библиотека компонентов/Размер S/Главные объекты/Тестовое _ иллюстрации (2)/Телефон.svg",
+            "sha256": "212505ebd177da83d300e79aeba18f3e51d8f37b63bc0ed097ca62fe44323114",
+            "bytes": 63953,
+            "width": 797,
+            "height": 462,
+            "viewBox": [
+              0,
+              0,
+              797,
+              462
+            ],
+            "pathCount": 155,
+            "elementCount": 156,
+            "colors": [
+              "#181817",
+              "#7864D7",
+              "#D7CDF5",
+              "#F9ECB0",
+              "#FFFFFF"
+            ],
+            "definitionIds": [],
+            "tags": {
+              "svg": 1,
+              "path": 155
+            },
+            "paintRoles": {
+              "#181817": "neutral.ink",
+              "#7864D7": "background.strong",
+              "#D7CDF5": "background.base",
+              "#F9ECB0": "object.primary",
+              "#FFFFFF": "neutral.paper"
+            }
+          },
+          "secondary": {
+            "url": "/library/objects/phone/L/secondary.svg",
+            "source": "Библиотека компонентов/Размер S/Фоновые объекты/Тестовое _ иллюстрации (3)/Телефон.svg",
+            "sha256": "9434f37dce2d217f0fecb8ad54cab323ba4c193f3b2ca3251167f9f5db49b728",
+            "bytes": 63958,
+            "width": 797,
+            "height": 462,
+            "viewBox": [
+              0,
+              0,
+              797,
+              462
+            ],
+            "pathCount": 155,
+            "elementCount": 156,
+            "colors": [
+              "#7864D7",
+              "#D7CDF5"
+            ],
+            "definitionIds": [],
+            "tags": {
+              "svg": 1,
+              "path": 155
+            },
+            "paintRoles": {
+              "#7864D7": "background.strong",
+              "#D7CDF5": "background.base"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "backgrounds": [
+    {
+      "id": "violet",
+      "name": "Сиреневая",
+      "paletteId": "violet",
+      "variants": {
+        "S": {
+          "url": "/library/backgrounds/violet/S.svg",
+          "source": "Библиотека компонентов/Размер S/Фон/Фон.svg",
+          "sha256": "7653d5af47e23cae250bbbf29153863e616f81221e7a840b8fc304cc92d05117",
+          "bytes": 2719,
+          "width": 500,
+          "height": 500,
+          "viewBox": [
+            0,
+            0,
+            500,
+            500
+          ],
+          "pathCount": 9,
+          "elementCount": 11,
+          "colors": [
+            "#7864D7",
+            "#AA9BF0",
+            "#D7CDF5",
+            "#FFFFFF"
+          ],
+          "definitionIds": [],
+          "tags": {
+            "svg": 1,
+            "rect": 1,
+            "path": 9
+          },
+          "paintRoles": {
+            "#7864D7": "background.strong",
+            "#AA9BF0": "background.medium",
+            "#D7CDF5": "background.base",
+            "#FFFFFF": "neutral.paper"
+          }
+        },
+        "L": {
+          "url": "/library/backgrounds/violet/L.svg",
+          "source": "Библиотека компонентов/Размер L/Фон/Фон.svg",
+          "sha256": "d03fe3df35a92aee70f9e94053047eb0491a0a6f14bcdfa6413d04f4a2ad49df",
+          "bytes": 2586,
+          "width": 1000,
+          "height": 1000,
+          "viewBox": [
+            0,
+            0,
+            1000,
+            1000
+          ],
+          "pathCount": 9,
+          "elementCount": 11,
+          "colors": [
+            "#7864D7",
+            "#AA9BF0",
+            "#D7CDF5",
+            "#FFFFFF"
+          ],
+          "definitionIds": [],
+          "tags": {
+            "svg": 1,
+            "rect": 1,
+            "path": 9
+          },
+          "paintRoles": {
+            "#7864D7": "background.strong",
+            "#AA9BF0": "background.medium",
+            "#D7CDF5": "background.base",
+            "#FFFFFF": "neutral.paper"
+          }
+        }
+      }
+    },
+    {
+      "id": "peach",
+      "name": "Персиковая",
+      "paletteId": "peach",
+      "variants": {
+        "S": {
+          "url": "/library/backgrounds/peach/S.svg",
+          "source": "Библиотека компонентов/Размер S/Фон/Фон-2.svg",
+          "sha256": "c423da16a0faca6566917b76cc859a3f22ac707eed79b457a615df76489471c0",
+          "bytes": 544,
+          "width": 500,
+          "height": 500,
+          "viewBox": [
+            0,
+            0,
+            500,
+            500
+          ],
+          "pathCount": 3,
+          "elementCount": 9,
+          "colors": [
+            "#D27532",
+            "#FAC896",
+            "#FDD7B9",
+            "#FFFFFF"
+          ],
+          "definitionIds": [
+            "clip0_24_6120"
+          ],
+          "tags": {
+            "svg": 1,
+            "g": 1,
+            "rect": 2,
+            "path": 3,
+            "defs": 1,
+            "clipPath": 1
+          },
+          "paintRoles": {
+            "#D27532": "background.strong",
+            "#FAC896": "background.medium",
+            "#FDD7B9": "background.base",
+            "#FFFFFF": "neutral.paper"
+          }
+        },
+        "L": {
+          "url": "/library/backgrounds/peach/L.svg",
+          "source": "Библиотека компонентов/Размер L/Фон/Фон-2.svg",
+          "sha256": "2dce32d027db98ef098788ae8bae34bc480f0ae5e381e8984595599de452f0ca",
+          "bytes": 583,
+          "width": 1000,
+          "height": 1000,
+          "viewBox": [
+            0,
+            0,
+            1000,
+            1000
+          ],
+          "pathCount": 3,
+          "elementCount": 9,
+          "colors": [
+            "#D27532",
+            "#FAC896",
+            "#FDD7B9",
+            "#FFFFFF"
+          ],
+          "definitionIds": [
+            "clip0_21_25399"
+          ],
+          "tags": {
+            "svg": 1,
+            "g": 1,
+            "rect": 2,
+            "path": 3,
+            "defs": 1,
+            "clipPath": 1
+          },
+          "paintRoles": {
+            "#D27532": "background.strong",
+            "#FAC896": "background.medium",
+            "#FDD7B9": "background.base",
+            "#FFFFFF": "neutral.paper"
+          }
+        }
+      }
+    },
+    {
+      "id": "aqua",
+      "name": "Бирюзовая",
+      "paletteId": "aqua",
+      "variants": {
+        "S": {
+          "url": "/library/backgrounds/aqua/S.svg",
+          "source": "Библиотека компонентов/Размер S/Фон/Фон-1.svg",
+          "sha256": "8cf96b5f7d125c6647fe6190dcf17d4283696ba76cc8284ded66379a694bc864",
+          "bytes": 2623,
+          "width": 500,
+          "height": 500,
+          "viewBox": [
+            0,
+            0,
+            500,
+            500
+          ],
+          "pathCount": 9,
+          "elementCount": 11,
+          "colors": [
+            "#5ABEBE",
+            "#80DADA",
+            "#BEEBEB",
+            "#FFFFFF"
+          ],
+          "definitionIds": [],
+          "tags": {
+            "svg": 1,
+            "rect": 1,
+            "path": 9
+          },
+          "paintRoles": {
+            "#5ABEBE": "background.strong",
+            "#80DADA": "background.medium",
+            "#BEEBEB": "background.base",
+            "#FFFFFF": "neutral.paper"
+          }
+        },
+        "L": {
+          "url": "/library/backgrounds/aqua/L.svg",
+          "source": "Библиотека компонентов/Размер L/Фон/Фон-1.svg",
+          "sha256": "309452e0ee81cf5063c4938ba80e49cf4af29c75088e4e9c738ca42f8b08a1d1",
+          "bytes": 2586,
+          "width": 1000,
+          "height": 1000,
+          "viewBox": [
+            0,
+            0,
+            1000,
+            1000
+          ],
+          "pathCount": 9,
+          "elementCount": 11,
+          "colors": [
+            "#5ABEBE",
+            "#80DADA",
+            "#BEEBEB",
+            "#FFFFFF"
+          ],
+          "definitionIds": [],
+          "tags": {
+            "svg": 1,
+            "rect": 1,
+            "path": 9
+          },
+          "paintRoles": {
+            "#5ABEBE": "background.strong",
+            "#80DADA": "background.medium",
+            "#BEEBEB": "background.base",
+            "#FFFFFF": "neutral.paper"
+          }
+        }
+      }
+    }
+  ],
+  "warnings": [
+    {
+      "code": "SIZE_MAPPING_ASSUMED",
+      "message": "Логические предметы S берутся из исходной L, L — из исходной S. Фоны сохраняют исходные S/L. Соответствие рабочее, не подтверждённое автором.",
+      "objects": [
+        "flower-vase",
+        "book",
+        "wallet",
+        "lamp",
+        "coin",
+        "headphones",
+        "puzzle",
+        "folder",
+        "pen",
+        "phone"
+      ]
+    },
+    {
+      "code": "SECONDARY_NOT_SIMPLIFIED",
+      "message": "Фоновые версии в обеих размерных группах сохраняют подробную геометрию. При смене роли использовать исходный файл целиком.",
+      "objects": [
+        "flower-vase",
+        "book",
+        "wallet",
+        "lamp",
+        "coin",
+        "headphones",
+        "puzzle",
+        "folder",
+        "pen",
+        "phone"
+      ]
+    },
+    {
+      "code": "NO_DISTINCT_DETAIL_PAIR",
+      "message": "У части предметов не подтверждена отдельная упрощённая геометрия.",
+      "objects": [
+        "flower-vase",
+        "lamp",
+        "puzzle",
+        "pen"
+      ]
+    },
+    {
+      "code": "COLOR_ROLES_INFERRED",
+      "message": "Редактируемые роли назначены по двум колонкам образцов и использованию в фонах. Чёрный и белый сохранены как фиксированные нейтральные цвета; правила требуют визуального согласования."
+    }
+  ]
+}

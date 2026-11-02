@@ -1,0 +1,58 @@
+{
+  "valid": true,
+  "objectCount": 10,
+  "objectVariantCount": 40,
+  "backgroundCount": 3,
+  "backgroundVariantCount": 6,
+  "paletteCount": 3,
+  "sourceFileCount": 52,
+  "exportedAssetCount": 46,
+  "warnings": [
+    {
+      "code": "SIZE_MAPPING_ASSUMED",
+      "message": "Логические предметы S берутся из исходной L, L — из исходной S. Фоны сохраняют исходные S/L. Соответствие рабочее, не подтверждённое автором.",
+      "objects": [
+        "flower-vase",
+        "book",
+        "wallet",
+        "lamp",
+        "coin",
+        "headphones",
+        "puzzle",
+        "folder",
+        "pen",
+        "phone"
+      ]
+    },
+    {
+      "code": "SECONDARY_NOT_SIMPLIFIED",
+      "message": "Фоновые версии в обеих размерных группах сохраняют подробную геометрию. При смене роли использовать исходный файл целиком.",
+      "objects": [
+        "flower-vase",
+        "book",
+        "wallet",
+        "lamp",
+        "coin",
+        "headphones",
+        "puzzle",
+        "folder",
+        "pen",
+        "phone"
+      ]
+    },
+    {
+      "code": "NO_DISTINCT_DETAIL_PAIR",
+      "message": "У части предметов не подтверждена отдельная упрощённая геометрия.",
+      "objects": [
+        "flower-vase",
+        "lamp",
+        "puzzle",
+        "pen"
+      ]
+    },
+    {
+      "code": "COLOR_ROLES_INFERRED",
+      "message": "Редактируемые роли назначены по двум колонкам образцов и использованию в фонах. Чёрный и белый сохранены как фиксированные нейтральные цвета; правила требуют визуального согласования."
+    }
+  ]
+}

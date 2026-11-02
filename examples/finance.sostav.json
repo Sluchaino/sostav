@@ -1,0 +1,36 @@
+{
+  "version": 1,
+  "name": "Безопасные покупки",
+  "size": "L",
+  "formatId": "landscape",
+  "paletteId": "peach",
+  "customPalettes": [],
+  "compositionScale": 0.85,
+  "backgroundVisible": true,
+  "objects": [
+    {
+      "instanceId": "example-phone",
+      "objectId": "phone",
+      "role": "secondary",
+      "x": 0.64,
+      "y": 0.3,
+      "rotation": -9
+    },
+    {
+      "instanceId": "example-wallet",
+      "objectId": "wallet",
+      "role": "main",
+      "x": 0.4,
+      "y": 0.59,
+      "rotation": -5
+    },
+    {
+      "instanceId": "example-coin",
+      "objectId": "coin",
+      "role": "main",
+      "x": 0.76,
+      "y": 0.74,
+      "rotation": 6
+    }
+  ]
+}

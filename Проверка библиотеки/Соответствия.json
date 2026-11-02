@@ -1,0 +1,496 @@
+{
+  "status": "audit_current_paths_not_confirmed_semantic_sizes",
+  "objects": [
+    {
+      "id": "flower-vase",
+      "variants": {
+        "S_main": {
+          "path": "Библиотека компонентов/Размер S/Главные объекты/Тестовое _ иллюстрации (2)/Ваза с цветами.svg",
+          "width": "591",
+          "height": "748",
+          "paths": 131,
+          "source_label": "S"
+        },
+        "L_main": {
+          "path": "Библиотека компонентов/Размер L/Главные объекты/Тестовое _ иллюстрации/Ваза с цветами.svg",
+          "width": "324",
+          "height": "409",
+          "paths": 131,
+          "source_label": "L"
+        },
+        "S_secondary": {
+          "path": "Библиотека компонентов/Размер S/Фоновые объекты/Тестовое _ иллюстрации (3)/Ваза с цветами.svg",
+          "width": "591",
+          "height": "748",
+          "paths": 131,
+          "source_label": "S"
+        },
+        "L_secondary": {
+          "path": "Библиотека компонентов/Размер L/Фоновые объекты/Тестовое _ иллюстрации (1)/Ваза с цветами.svg",
+          "width": "324",
+          "height": "409",
+          "paths": 131,
+          "source_label": "L"
+        }
+      },
+      "name": "Ваза с цветами",
+      "comparison": "Визуально одинаковая детализация; 131/131 контур.",
+      "recommended_main_size_mapping": null,
+      "mapping_status": "proposal_not_applied",
+      "secondary_detail_status": "no_clear_simplified_pair"
+    },
+    {
+      "id": "book",
+      "variants": {
+        "S_main": {
+          "path": "Библиотека компонентов/Размер S/Главные объекты/Тестовое _ иллюстрации (2)/Книга.svg",
+          "width": "1446",
+          "height": "977",
+          "paths": 53,
+          "source_label": "S"
+        },
+        "L_main": {
+          "path": "Библиотека компонентов/Размер L/Главные объекты/Тестовое _ иллюстрации/Книга.svg",
+          "width": "723",
+          "height": "489",
+          "paths": 51,
+          "source_label": "L"
+        },
+        "S_secondary": {
+          "path": "Библиотека компонентов/Размер S/Фоновые объекты/Тестовое _ иллюстрации (3)/Книга.svg",
+          "width": "1446",
+          "height": "977",
+          "paths": 53,
+          "source_label": "S"
+        },
+        "L_secondary": {
+          "path": "Библиотека компонентов/Размер L/Фоновые объекты/Тестовое _ иллюстрации (1)/Книга.svg",
+          "width": "723",
+          "height": "489",
+          "paths": 54,
+          "source_label": "L"
+        }
+      },
+      "name": "Книга",
+      "comparison": "В текущем S 53 контура, в L 51; небольшие различия деталей страниц. Фоновые: 53/54, упрощение не подтверждено.",
+      "recommended_main_size_mapping": {
+        "S": "L_main",
+        "L": "S_main"
+      },
+      "mapping_status": "proposal_not_applied",
+      "secondary_detail_status": "no_clear_simplified_pair"
+    },
+    {
+      "id": "wallet",
+      "variants": {
+        "S_main": {
+          "path": "Библиотека компонентов/Размер S/Главные объекты/Тестовое _ иллюстрации (2)/Кошелек.svg",
+          "width": "631",
+          "height": "397",
+          "paths": 86,
+          "source_label": "S"
+        },
+        "L_main": {
+          "path": "Библиотека компонентов/Размер L/Главные объекты/Тестовое _ иллюстрации/Кошелек.svg",
+          "width": "316",
+          "height": "199",
+          "paths": 83,
+          "source_label": "L"
+        },
+        "S_secondary": {
+          "path": "Библиотека компонентов/Размер S/Фоновые объекты/Тестовое _ иллюстрации (3)/Кошелек.svg",
+          "width": "631",
+          "height": "397",
+          "paths": 86,
+          "source_label": "S"
+        },
+        "L_secondary": {
+          "path": "Библиотека компонентов/Размер L/Фоновые объекты/Тестовое _ иллюстрации (1)/Кошелек.svg",
+          "width": "316",
+          "height": "199",
+          "paths": 86,
+          "source_label": "L"
+        }
+      },
+      "name": "Кошелек",
+      "comparison": "В текущем S есть круглая кнопка на застёжке; в главном L её нет. В фоновых S/L кнопка есть.",
+      "recommended_main_size_mapping": {
+        "S": "L_main",
+        "L": "S_main"
+      },
+      "mapping_status": "proposal_not_applied",
+      "secondary_detail_status": "no_clear_simplified_pair"
+    },
+    {
+      "id": "lamp",
+      "variants": {
+        "S_main": {
+          "path": "Библиотека компонентов/Размер S/Главные объекты/Тестовое _ иллюстрации (2)/Лампа.svg",
+          "width": "946",
+          "height": "1129",
+          "paths": 27,
+          "source_label": "S"
+        },
+        "L_main": {
+          "path": "Библиотека компонентов/Размер L/Главные объекты/Тестовое _ иллюстрации/Лампа.svg",
+          "width": "473",
+          "height": "565",
+          "paths": 27,
+          "source_label": "L"
+        },
+        "S_secondary": {
+          "path": "Библиотека компонентов/Размер S/Фоновые объекты/Тестовое _ иллюстрации (3)/Лампа.svg",
+          "width": "946",
+          "height": "1129",
+          "paths": 27,
+          "source_label": "S"
+        },
+        "L_secondary": {
+          "path": "Библиотека компонентов/Размер L/Фоновые объекты/Тестовое _ иллюстрации (1)/Лампа.svg",
+          "width": "473",
+          "height": "565",
+          "paths": 27,
+          "source_label": "L"
+        }
+      },
+      "name": "Лампа",
+      "comparison": "Визуально одинаковая детализация; 27/27 контуров.",
+      "recommended_main_size_mapping": null,
+      "mapping_status": "proposal_not_applied",
+      "secondary_detail_status": "no_clear_simplified_pair"
+    },
+    {
+      "id": "coin",
+      "variants": {
+        "S_main": {
+          "path": "Библиотека компонентов/Размер S/Главные объекты/Тестовое _ иллюстрации (2)/Монета.svg",
+          "width": "287",
+          "height": "189",
+          "paths": 136,
+          "source_label": "S"
+        },
+        "L_main": {
+          "path": "Библиотека компонентов/Размер L/Главные объекты/Тестовое _ иллюстрации/Монета.svg",
+          "width": "153",
+          "height": "101",
+          "paths": 130,
+          "source_label": "L"
+        },
+        "S_secondary": {
+          "path": "Библиотека компонентов/Размер S/Фоновые объекты/Тестовое _ иллюстрации (3)/Монета.svg",
+          "width": "287",
+          "height": "189",
+          "paths": 136,
+          "source_label": "S"
+        },
+        "L_secondary": {
+          "path": "Библиотека компонентов/Размер L/Фоновые объекты/Тестовое _ иллюстрации (1)/Монета.svg",
+          "width": "153",
+          "height": "101",
+          "paths": 136,
+          "source_label": "L"
+        }
+      },
+      "name": "Монета",
+      "comparison": "В главном S есть замок; в главном L нет. В фоновых S/L замок есть.",
+      "recommended_main_size_mapping": {
+        "S": "L_main",
+        "L": "S_main"
+      },
+      "mapping_status": "proposal_not_applied",
+      "secondary_detail_status": "no_clear_simplified_pair"
+    },
+    {
+      "id": "headphones",
+      "variants": {
+        "S_main": {
+          "path": "Библиотека компонентов/Размер S/Главные объекты/Тестовое _ иллюстрации (2)/Наушники.svg",
+          "width": "889",
+          "height": "692",
+          "paths": 84,
+          "source_label": "S"
+        },
+        "L_main": {
+          "path": "Библиотека компонентов/Размер L/Главные объекты/Тестовое _ иллюстрации/Наушники.svg",
+          "width": "445",
+          "height": "346",
+          "paths": 79,
+          "source_label": "L"
+        },
+        "S_secondary": {
+          "path": "Библиотека компонентов/Размер S/Фоновые объекты/Тестовое _ иллюстрации (3)/Наушники.svg",
+          "width": "889",
+          "height": "692",
+          "paths": 84,
+          "source_label": "S"
+        },
+        "L_secondary": {
+          "path": "Библиотека компонентов/Размер L/Фоновые объекты/Тестовое _ иллюстрации (1)/Наушники.svg",
+          "width": "445",
+          "height": "346",
+          "paths": 84,
+          "source_label": "L"
+        }
+      },
+      "name": "Наушники",
+      "comparison": "В главном S есть дополнительное цветовое оформление чашки, в L оно отсутствует; 84/79 контуров. Фоновые S/L сохраняют детали.",
+      "recommended_main_size_mapping": {
+        "S": "L_main",
+        "L": "S_main"
+      },
+      "mapping_status": "proposal_not_applied",
+      "secondary_detail_status": "no_clear_simplified_pair"
+    },
+    {
+      "id": "puzzle",
+      "variants": {
+        "S_main": {
+          "path": "Библиотека компонентов/Размер S/Главные объекты/Тестовое _ иллюстрации (2)/Пазлы.svg",
+          "width": "545",
+          "height": "314",
+          "paths": 57,
+          "source_label": "S"
+        },
+        "L_main": {
+          "path": "Библиотека компонентов/Размер L/Главные объекты/Тестовое _ иллюстрации/Пазлы.svg",
+          "width": "273",
+          "height": "157",
+          "paths": 57,
+          "source_label": "L"
+        },
+        "S_secondary": {
+          "path": "Библиотека компонентов/Размер S/Фоновые объекты/Тестовое _ иллюстрации (3)/Пазлы.svg",
+          "width": "545",
+          "height": "314",
+          "paths": 57,
+          "source_label": "S"
+        },
+        "L_secondary": {
+          "path": "Библиотека компонентов/Размер L/Фоновые объекты/Тестовое _ иллюстрации (1)/Пазлы.svg",
+          "width": "273",
+          "height": "157",
+          "paths": 57,
+          "source_label": "L"
+        }
+      },
+      "name": "Пазлы",
+      "comparison": "Визуально одинаковая детализация; 57/57 контуров.",
+      "recommended_main_size_mapping": null,
+      "mapping_status": "proposal_not_applied",
+      "secondary_detail_status": "no_clear_simplified_pair"
+    },
+    {
+      "id": "folder",
+      "variants": {
+        "S_main": {
+          "path": "Библиотека компонентов/Размер S/Главные объекты/Тестовое _ иллюстрации (2)/Папка.svg",
+          "width": "1241",
+          "height": "659",
+          "paths": 22,
+          "source_label": "S"
+        },
+        "L_main": {
+          "path": "Библиотека компонентов/Размер L/Главные объекты/Тестовое _ иллюстрации/Папка.svg",
+          "width": "621",
+          "height": "330",
+          "paths": 20,
+          "source_label": "L"
+        },
+        "S_secondary": {
+          "path": "Библиотека компонентов/Размер S/Фоновые объекты/Тестовое _ иллюстрации (3)/Папка.svg",
+          "width": "1241",
+          "height": "659",
+          "paths": 22,
+          "source_label": "S"
+        },
+        "L_secondary": {
+          "path": "Библиотека компонентов/Размер L/Фоновые объекты/Тестовое _ иллюстрации (1)/Папка.svg",
+          "width": "621",
+          "height": "330",
+          "paths": 22,
+          "source_label": "L"
+        }
+      },
+      "name": "Папка",
+      "comparison": "В главном S есть отверстие и линия на листе; в главном L они отсутствуют. В фоновых S/L детали есть.",
+      "recommended_main_size_mapping": {
+        "S": "L_main",
+        "L": "S_main"
+      },
+      "mapping_status": "proposal_not_applied",
+      "secondary_detail_status": "no_clear_simplified_pair"
+    },
+    {
+      "id": "pen",
+      "variants": {
+        "S_main": {
+          "path": "Библиотека компонентов/Размер S/Главные объекты/Тестовое _ иллюстрации (2)/Ручка.svg",
+          "width": "509",
+          "height": "286",
+          "paths": 24,
+          "source_label": "S"
+        },
+        "L_main": {
+          "path": "Библиотека компонентов/Размер L/Главные объекты/Тестовое _ иллюстрации/Ручка.svg",
+          "width": "255",
+          "height": "143",
+          "paths": 24,
+          "source_label": "L"
+        },
+        "S_secondary": {
+          "path": "Библиотека компонентов/Размер S/Фоновые объекты/Тестовое _ иллюстрации (3)/Ручка.svg",
+          "width": "509",
+          "height": "286",
+          "paths": 24,
+          "source_label": "S"
+        },
+        "L_secondary": {
+          "path": "Библиотека компонентов/Размер L/Фоновые объекты/Тестовое _ иллюстрации (1)/Ручка.svg",
+          "width": "255",
+          "height": "143",
+          "paths": 24,
+          "source_label": "L"
+        }
+      },
+      "name": "Ручка",
+      "comparison": "По 24 контура в главных S/L. Отличается окраска корпуса и кольца; геометрическое упрощение не установлено.",
+      "recommended_main_size_mapping": null,
+      "mapping_status": "proposal_not_applied",
+      "secondary_detail_status": "no_clear_simplified_pair"
+    },
+    {
+      "id": "phone",
+      "variants": {
+        "S_main": {
+          "path": "Библиотека компонентов/Размер S/Главные объекты/Тестовое _ иллюстрации (2)/Телефон.svg",
+          "width": "797",
+          "height": "462",
+          "paths": 155,
+          "source_label": "S"
+        },
+        "L_main": {
+          "path": "Библиотека компонентов/Размер L/Главные объекты/Тестовое _ иллюстрации/Телефон.svg",
+          "width": "399",
+          "height": "231",
+          "paths": 96,
+          "source_label": "L"
+        },
+        "S_secondary": {
+          "path": "Библиотека компонентов/Размер S/Фоновые объекты/Тестовое _ иллюстрации (3)/Телефон.svg",
+          "width": "797",
+          "height": "462",
+          "paths": 155,
+          "source_label": "S"
+        },
+        "L_secondary": {
+          "path": "Библиотека компонентов/Размер L/Фоновые объекты/Тестовое _ иллюстрации (1)/Телефон.svg",
+          "width": "399",
+          "height": "231",
+          "paths": 155,
+          "source_label": "L"
+        }
+      },
+      "name": "Телефон",
+      "comparison": "В главном S пазлы на экране, в главном L пустой экран; 155/96 контуров. В фоновых S/L пазлы есть.",
+      "recommended_main_size_mapping": {
+        "S": "L_main",
+        "L": "S_main"
+      },
+      "mapping_status": "proposal_not_applied",
+      "secondary_detail_status": "no_clear_simplified_pair"
+    }
+  ],
+  "backgrounds": [
+    {
+      "name": "Фон.svg",
+      "S": "Библиотека компонентов/Размер S/Фон/Фон.svg",
+      "L": "Библиотека компонентов/Размер L/Фон/Фон.svg"
+    },
+    {
+      "name": "Фон-1.svg",
+      "S": "Библиотека компонентов/Размер S/Фон/Фон-1.svg",
+      "L": "Библиотека компонентов/Размер L/Фон/Фон-1.svg"
+    },
+    {
+      "name": "Фон-2.svg",
+      "S": "Библиотека компонентов/Размер S/Фон/Фон-2.svg",
+      "L": "Библиотека компонентов/Размер L/Фон/Фон-2.svg"
+    }
+  ],
+  "palettes": [
+    {
+      "id": "violet",
+      "name": "Сиреневая",
+      "background_file": "Фон.svg",
+      "swatch_S": "Библиотека компонентов/Размер S/Фон/Group 2136136338.svg",
+      "swatch_L": "Библиотека компонентов/Размер L/Фон/Group 2136136332.svg",
+      "all_swatch_colors": [
+        "#D7CDF5",
+        "#F9ECB0",
+        "#AA9BF0",
+        "#F9A3AA",
+        "#7864D7",
+        "#FFE3E1",
+        "#181817",
+        "#FFFFFF"
+      ],
+      "observed_background_colors": [
+        "#D7CDF5",
+        "#AA9BF0",
+        "#7864D7"
+      ],
+      "allowed_color_roles_status": "not_fully_confirmed_by_standalone_exports"
+    },
+    {
+      "id": "aqua",
+      "name": "Бирюзовая",
+      "background_file": "Фон-1.svg",
+      "swatch_S": "Библиотека компонентов/Размер S/Фон/Group 2136136340.svg",
+      "swatch_L": "Библиотека компонентов/Размер L/Фон/Group 2136136334.svg",
+      "all_swatch_colors": [
+        "#BEEBEB",
+        "#FFD4F2",
+        "#80DADA",
+        "#6D7BFC",
+        "#5ABEBE",
+        "#B6C6FE",
+        "#181817",
+        "#FFFFFF"
+      ],
+      "observed_background_colors": [
+        "#BEEBEB",
+        "#80DADA",
+        "#5ABEBE"
+      ],
+      "allowed_color_roles_status": "not_fully_confirmed_by_standalone_exports"
+    },
+    {
+      "id": "peach",
+      "name": "Персиковая",
+      "background_file": "Фон-2.svg",
+      "swatch_S": "Библиотека компонентов/Размер S/Фон/Group 2136136339.svg",
+      "swatch_L": "Библиотека компонентов/Размер L/Фон/Group 2136136333.svg",
+      "all_swatch_colors": [
+        "#FDD7B9",
+        "#F9ECB0",
+        "#FAC896",
+        "#80DADA",
+        "#D27532",
+        "#BEEBEB",
+        "#181817",
+        "#FFFFFF"
+      ],
+      "observed_background_colors": [
+        "#FDD7B9",
+        "#FAC896"
+      ],
+      "allowed_color_roles_status": "not_fully_confirmed_by_standalone_exports"
+    }
+  ],
+  "notes": [
+    "Source SVG files unchanged.",
+    "S/L are current folder labels, not confirmed semantic sizes.",
+    "Recommended mapping is a proposal for main objects only; no automatic whole-folder swap.",
+    "Use original coordinates with explicit scene transforms; do not normalize each object independently because relative sizes must be preserved."
+  ]
+}
