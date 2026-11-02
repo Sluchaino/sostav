@@ -26,3 +26,10 @@
 @media(max-width:520px){.auto-source button{font-size:9px;padding:9px 3px}.auto-dialog:has(.meaning-summary) .variant-image{height:150px}.meaning-summary{padding:12px}.meaning-summary>p{font-size:9px}}
 
 .upload-svg{margin:0 20px 14px;justify-content:center}.library-object{min-width:0}.library-object>.object-card{width:100%}.custom-card-actions{display:flex;justify-content:space-between;padding:3px 8px 7px;gap:6px}.custom-card-actions button{font-size:10px;color:var(--accent,#9069ab);background:transparent;border:0;padding:4px}.custom-dialog{width:min(520px,100%);max-height:90dvh;overflow:auto;background:white;border-radius:16px;padding:28px;box-shadow:0 20px 80px #33204430}.custom-dialog h2{font-size:22px;margin-bottom:14px}.custom-dialog p{font-size:12px;line-height:1.7;color:#806d8c;margin:12px 0}.custom-dialog label{display:block;font-size:12px;margin:16px 0;color:#6d537d}.custom-dialog input,.custom-dialog textarea{display:block;width:100%;box-sizing:border-box;margin-top:8px;padding:10px;border:1px solid #dfd2e8;border-radius:7px;background:#fcfaff;color:#4e3a5c;font:inherit;resize:vertical}.custom-dialog-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:20px}
+
+/* Match the upload action to the library widths at each editor breakpoint. */
+.upload-svg{margin:0 22px 14px;max-width:calc(100% - 44px);min-width:0;min-height:39px;height:auto;padding:10px 12px;line-height:1.35;white-space:normal;flex-shrink:0;gap:8px}
+.upload-svg>svg{flex-shrink:0}.upload-svg-compact{display:none}
+@media(max-width:1000px){.upload-svg{margin-left:15px;margin-right:15px;max-width:calc(100% - 30px);font-size:11px;gap:6px;padding:9px 10px;min-height:37px}.upload-svg-full{display:none}.upload-svg-compact{display:inline}}
+@media(max-width:760px){.upload-svg{margin:0 12px 12px;max-width:calc(100% - 24px);font-size:11px;min-height:35px;padding:8px}}
+@media(max-width:430px){.upload-svg{margin-left:10px;margin-right:10px;max-width:calc(100% - 20px);font-size:10px;min-height:34px;padding:7px 6px;gap:5px}.upload-svg>svg{width:13px;height:13px}}
