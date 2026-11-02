@@ -41,6 +41,23 @@ test('metaphors work without mentioning literal object names', () => {
   }
 });
 
+test('paid education preserves payment and learning, including a third online meaning', () => {
+  for (const prompt of ['Платное обучение', 'Платное образование', 'Стоимость обучения', 'Обучение с оплатой']) {
+    const result = selectObjectsByTheme(catalog, prompt);
+    assert.ok(ids(result).includes('book'), prompt);
+    assert.ok(ids(result).includes('wallet') || ids(result).includes('coin'), prompt);
+    assert.equal(result.status, 'matched', prompt);
+    assert.ok(result.items.every(item => item.role === 'main'));
+  }
+  const online = selectObjectsByTheme(catalog, 'Платное онлайн-обучение');
+  assert.deepEqual(new Set(ids(online)), new Set(['book', 'wallet', 'phone']));
+  for (const prompt of ['Бесплатное обучение', 'Платформа для обучения']) {
+    const result = selectObjectsByTheme(catalog, prompt);
+    assert.ok(ids(result).includes('book'));
+    assert.ok(!ids(result).includes('wallet') && !ids(result).includes('coin'), prompt);
+  }
+});
+
 test('negated objects and concepts are excluded, without confusing безопасность with без', () => {
   const safe = selectObjectsByTheme(catalog, 'Безопасные покупки без телефона', { includeBackgroundObjects: true });
   assert.ok(!ids(safe).includes('phone')); assert.ok(safe.excludedObjectIds.includes('phone'));

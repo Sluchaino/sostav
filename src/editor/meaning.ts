@@ -20,7 +20,7 @@ const link = (objectId: string, weight: number, reason: string): Connection => (
 const CONCEPTS: Concept[] = [
   { id: 'learning', label: 'Обучение и знания', stems: ['обуч', 'учеб', 'учит', 'учить', 'учиться', 'образован', 'знани', 'чтени', 'learn', 'educat', 'study'], links: [link('book', 6, 'Книга передаёт обучение и накопление знаний.'), link('pen', 2, 'Ручка поддерживает тему учёбы и записей.'), link('phone', 1, 'Телефон может поддержать цифровую сторону обучения.')] },
   { id: 'digital', label: 'Онлайн и технологии', stems: ['онлайн', 'цифров', 'интернет', 'дистанцион', 'технолог', 'подключ', 'приложен', 'online', 'digital', 'remote'], links: [link('phone', 6, 'Телефон обозначает онлайн-доступ и цифровые сервисы.'), link('puzzle', 2, 'Пазлы связывают отдельные части цифрового решения.')] },
-  { id: 'finance', label: 'Деньги и сбережения', stems: ['финанс', 'деньг', 'бюджет', 'сбереж', 'накоп', 'эконом', 'доход', 'расход', 'money', 'saving', 'budget'], phrases: ['финансовая подушка', 'копить на мечту'], links: [link('wallet', 6, 'Кошелёк обозначает личные финансы и запас средств.'), link('coin', 4, 'Монета поддерживает тему накоплений и ценности.')] },
+  { id: 'finance', label: 'Деньги и сбережения', stems: ['финанс', 'деньг', 'бюджет', 'сбереж', 'накоп', 'эконом', 'доход', 'расход', 'платн', 'стоимост', 'money', 'saving', 'budget'], phrases: ['финансовая подушка', 'копить на мечту'], links: [link('wallet', 6, 'Кошелёк обозначает личные финансы, оплату и запас средств.'), link('coin', 4, 'Монета поддерживает тему накоплений и ценности.')] },
   { id: 'security', label: 'Защита и надёжность', stems: ['безопас', 'защит', 'надежн', 'сохранност', 'шифр', 'security', 'secure'], links: [link('coin', 6, 'Монета обозначает ценность, которую важно сохранить.'), link('wallet', 2, 'Кошелёк связывает защиту с деньгами.'), link('phone', 1, 'Телефон может обозначать защищённый цифровой доступ.')] },
   { id: 'shopping', label: 'Покупки и платежи', stems: ['покуп', 'оплат', 'платеж', 'магазин', 'торгов', 'shopping', 'payment'], links: [link('wallet', 6, 'Кошелёк обозначает оплату и покупки.'), link('phone', 4, 'Телефон поддерживает покупки через цифровой сервис.'), link('coin', 2, 'Монета дополняет тему платежей.')] },
   { id: 'music', label: 'Музыка и звук', stems: ['музык', 'звук', 'подкаст', 'слуш', 'music', 'audio'], links: [link('headphones', 7, 'Наушники прямо передают музыку, звук и прослушивание.'), link('phone', 2, 'Телефон может выступать источником звука.')] },
@@ -102,18 +102,26 @@ export function selectObjectsByTheme(catalog: Catalog, text: string, options: { 
   if (direct.size > 6) return { ...base, summary: 'В заголовке перечислено больше шести предметов. Сократите список.' };
   if (!ranked.length) return { ...base, summary: 'Не нашёл надёжной связи с предметами библиотеки. Уточните тему: обучение, финансы, идеи, работа, музыка или забота.' };
   const strongest = ranked[0]![1].score;
-  const main = ranked.filter(([id, rank]) => direct.has(id) || rank.score >= strongest * 0.45).slice(0, Math.max(2, direct.size));
+  // Cover distinct meanings before filling by aggregate score: a third idea must
+  // not disappear just because the previous picker always stopped at two items.
+  const anchors = concepts.map(concept => concept.links.filter(connection => available.has(connection.objectId) && !excluded.has(connection.objectId)).sort((a, b) => b.weight - a.weight)[0]?.objectId);
+  const selected = new Set(direct);
+  for (const [id] of ranked) if (anchors.includes(id) && selected.size < Math.max(3, direct.size)) selected.add(id);
+  for (const [id, rank] of ranked) if (selected.size < 2 && rank.score >= strongest * 0.45) selected.add(id);
+  const main = ranked.filter(([id]) => selected.has(id));
+  const meaningsCovered = anchors.every(id => id !== undefined && selected.has(id));
   const noBackground = /без\s+фонов[\p{L}]*/u.test(normalize(prompt));
   const support = options.includeBackgroundObjects && !noBackground && main.length < 6 ? ranked.filter(([id]) => !main.some(([mainId]) => mainId === id)).slice(0, 1) : [];
   base.items = [...main.map(([id, rank]): MeaningItem => ({ objectId: id, role: 'main', reason: rank.reasons.slice(0, 2).join(' '), conceptIds: rank.concepts })), ...support.map(([id, rank]): MeaningItem => ({ objectId: id, role: 'secondary', reason: rank.reasons.slice(0, 2).join(' '), conceptIds: rank.concepts }))];
   const accounted = new Set([...concepts.flatMap(concept => concept.evidence), ...positive.filter(word => mentions(word).some(id => direct.has(id)))]);
   const significant = positive.filter(word => word.length >= 3 && !STOP.has(word));
   const coverage = significant.length ? significant.filter(word => accounted.has(word)).length / significant.length : 0;
-  base.status = coverage >= 0.5 && !missing.length ? 'matched' : 'partial';
+  base.status = coverage >= 0.5 && !missing.length && meaningsCovered ? 'matched' : 'partial';
   base.summary = concepts.length
     ? 'Связал тему с понятиями: ' + concepts.map(concept => concept.label.toLocaleLowerCase('ru')).join(', ') + '.'
     : 'Нашёл в заголовке названия предметов и использовал их как основу композиции.';
   if (base.status === 'partial') base.limitations.push('Распознана только часть формулировки. Проверьте выбранные предметы или уточните тему.');
+  if (!meaningsCovered) base.limitations.push('Не все найденные темы представлены главными предметами. Сузьте формулировку или уточните состав вручную.');
   if (noBackground && options.includeBackgroundObjects) base.limitations.push('Фоновые предметы исключены по формулировке заголовка.');
   validateMeaningResult(base, catalog);
   return base;
