@@ -1,0 +1,14 @@
+{
+  "id": "forest-example",
+  "name": "Лесная",
+  "colors": {
+    "background.base": "#E8F2E6",
+    "background.medium": "#A7C6AA",
+    "background.strong": "#497B60",
+    "object.primary": "#F4CD82",
+    "object.secondary": "#E7A093",
+    "object.soft": "#F9E6D0",
+    "neutral.ink": "#181817",
+    "neutral.paper": "#FFFFFF"
+  }
+}
