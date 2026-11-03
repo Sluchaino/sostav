@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { semanticDocuments, chooseSuggestion } from '../.build/editor/semantic.js';
-import { editReview, confirmedSuggestion, validateSelectionReview } from '../.build/editor/selection.js';
+import { editReview, confirmedSuggestion, validateSelectionReview, reviewFromScene, reviewWithSupport } from '../.build/editor/selection.js';
 import { createBlankScene, validateScene, reduceHistory } from '../.build/editor/model.js';
 import { generateLayouts } from '../.build/editor/layout.js';
 const catalog = JSON.parse(await readFile(new URL('../public/library/catalog.json', import.meta.url),'utf8'));
@@ -55,4 +55,48 @@ test('confirmed model selections persist, validate and assemble with undo as a s
   assert.throws(()=>validateSelectionReview({...review,suggestion:{...suggestion,score:.1}},catalog));
   assert.throws(()=>validateSelectionReview({...review,suggestion:{...suggestion,objectId:'book'}},catalog));
   validateScene(createBlankScene(),catalog);
+});
+
+
+test('reopening composition uses current canvas roles and additions, not stale selection provenance',()=>{
+  const object=(id,role='main')=>({instanceId:'theme-'+id,objectId:id,role,x:.5,y:.5,rotation:0});
+  const stale={prompt:'Обучение онлайн',items:[{objectId:'book',role:'main',origin:'rules',reason:'Знания'},{objectId:'phone',role:'main',origin:'rules',reason:'Связь'}]};
+  const scene={...createBlankScene(),selectionReview:stale,objects:[object('phone','secondary'),object('pen')]};
+  const items=reviewFromScene(scene);
+  assert.deepEqual(items.map(i=>[i.objectId,i.role,i.origin]),[['phone','secondary','manual'],['pen','main','manual']]);
+  assert.equal(stale.items[1].role,'main');
+  const updated={...scene,selectionReview:{prompt:stale.prompt,items}};
+  for(let seed=0;seed<5;seed++)for(const variant of generateLayouts(catalog,updated,{seed})){
+    const restored=JSON.parse(JSON.stringify(variant.scene));validateScene(restored,catalog);
+    assert.deepEqual(restored.objects.map(o=>[o.objectId,o.role]),[['phone','secondary'],['pen','main']]);
+    assert.deepEqual(reviewFromScene(restored),items);
+  }
+  assert.deepEqual(reviewFromScene({...scene,objects:[]}),[],'deleted objects must not return from history');
+  assert.equal(reviewFromScene({...scene,objects:[object('book'),{...object('book','secondary'),instanceId:'copy'}]}),null,'duplicate instances must use canvas mode');
+  assert.equal(reviewFromScene(createBlankScene()),null);
+});
+
+test('manual role edits survive repeated generation and automatic support toggles',()=>{
+  const initial=[{objectId:'book',role:'main',origin:'rules',reason:'Знания'},{objectId:'phone',role:'main',origin:'rules',reason:'Онлайн'}];
+  const edited=editReview(initial,{type:'role',objectId:'phone',role:'secondary'},catalog);
+  assert.equal(edited[1].origin,'manual');assert.equal(initial[1].role,'main');
+  const suggested=[...initial,{objectId:'pen',role:'secondary',origin:'rules',reason:'Дополнение'}];
+  const enabled=reviewWithSupport(edited,suggested,true);
+  assert.deepEqual(enabled.map(i=>[i.objectId,i.role]),[['book','main'],['phone','secondary'],['pen','secondary']]);
+  assert.deepEqual(reviewWithSupport(enabled,suggested,false),edited,'turning off automatic support keeps the explicitly assigned background object');
+  const base={...createBlankScene(),selectionReview:{prompt:'Обучение онлайн',items:edited},objects:edited.map(i=>({instanceId:'theme-'+i.objectId,objectId:i.objectId,role:i.role,x:.5,y:.5,rotation:0}))};
+  for(let seed=0;seed<5;seed++)for(const variant of generateLayouts(catalog,base,{seed})){
+    assert.equal(variant.scene.objects.find(o=>o.objectId==='phone').role,'secondary');
+    assert.equal(variant.scene.objects.find(o=>o.objectId==='book').role,'main');
+    validateScene(variant.scene,catalog);
+  }
+  assert.equal(reviewWithSupport(edited,suggested,true).filter(i=>i.objectId==='phone').length,1);
+});
+
+test('canvas review preserves roles without provenance and support stays within capacity',()=>{
+  const scene={...createBlankScene(),objects:[{instanceId:'book',objectId:'book',role:'secondary',x:.5,y:.5,rotation:0}]};
+  assert.equal(reviewFromScene(scene)[0].role,'secondary');
+  const full=catalog.objects.slice(0,6).map(o=>({objectId:o.id,role:'main',origin:'manual',reason:'Выбор'}));
+  const other={objectId:catalog.objects[6].id,role:'secondary',origin:'rules',reason:'Дополнение'};
+  assert.equal(reviewWithSupport(full,[other],true).length,6);
 });

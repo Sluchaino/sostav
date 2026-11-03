@@ -2,7 +2,7 @@ import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import { ArrowRight, Check, Layers3, Plus, RefreshCw, Shapes, Sparkles, X } from 'lucide-react';
 import type { Catalog, ObjectRole } from '../library/types.js';
 import { searchObjects } from '../library/index.js';
-import { editReview, type ReviewedItem, type SelectionReview } from '../editor/selection.js';
+import { editReview, reviewFromScene, reviewWithSupport, type ReviewedItem, type SelectionReview } from '../editor/selection.js';
 import { generateLayouts, MAX_LAYOUT_OBJECTS, objectsFromNames, parseObjectNames, type LayoutVariant } from '../editor/layout.js';
 import { exportSvg, preparedSvg, type AssetTexts } from '../editor/svg.js';
 import { activePalette, type Scene } from '../editor/model.js';
@@ -31,16 +31,17 @@ function ObjectThumbnail({ catalog, texts, scene, objectId }: { catalog: Catalog
 }
 
 export function AutoComposeDialog({ catalog, texts, scene, onApply, onClose }: { catalog: Catalog; texts: AssetTexts; scene: Scene; onApply: (scene: Scene) => void; onClose: () => void }) {
-  const [source, setSource] = useState<'theme' | 'canvas' | 'names'>('theme');
+  const [initialReview] = useState(() => reviewFromScene(scene));
+  const [source, setSource] = useState<'theme' | 'canvas' | 'names'>(scene.objects.length && initialReview === null ? 'canvas' : 'theme');
   const [onlyCustom, setOnlyCustom] = useState(false);
   const [theme, setTheme] = useState(scene.selectionReview?.prompt ?? scene.interpretation?.prompt ?? (scene.name === 'Новая иллюстрация' ? '' : scene.name));
-  const [review, setReview] = useState<ReviewedItem[] | null>(scene.selectionReview?.items ?? null);
+  const [review, setReview] = useState<ReviewedItem[] | null>(initialReview);
   const [acceptedSuggestion, setAcceptedSuggestion] = useState<SelectionReview['suggestion']>(scene.selectionReview?.suggestion);
   const [choiceQuery, setChoiceQuery] = useState('');
   const [meaning, setMeaning] = useState<MeaningResult | null>(null);
   const [names, setNames] = useState(scene.objects.map(object => catalog.objects.find(item => item.id === object.objectId)!.name).join(', '));
   const [roles, setRoles] = useState<Record<string, ObjectRole>>(() => Object.fromEntries(scene.objects.flatMap((object, index) => [[object.instanceId, object.role], [`auto-choice-${index}-${object.objectId}`, object.role]])));
-  const [support, setSupport] = useState(Boolean(scene.interpretation?.items.some(item => item.role === 'secondary')));
+  const [support, setSupport] = useState(initialReview !== null && scene.objects.some(item => item.role === 'secondary'));
   const [variants, setVariants] = useState<LayoutVariant[]>([]);
   const [selected, setSelected] = useState(0);
   const [error, setError] = useState('');
@@ -62,7 +63,6 @@ export function AutoComposeDialog({ catalog, texts, scene, onApply, onClose }: {
   const activeVariant = variants[selected];
   const mainCount = objects.filter(object => object.role === 'main').length;
 
-  useEffect(() => { if (objects.length >= MAX_LAYOUT_OBJECTS) setSupport(false); }, [objects.length]);
 
   useEffect(() => {
     dialog.current?.focus();
@@ -88,6 +88,15 @@ export function AutoComposeDialog({ catalog, texts, scene, onApply, onClose }: {
   }
   function resetSelection() {
     setMeaning(null); setReview(null); setAcceptedSuggestion(undefined); setVariants([]); invalidate();
+  }
+  function changeSupport(enabled: boolean) {
+    setSupport(enabled);
+    if (source !== 'theme' || review === null) { invalidate(); return; }
+    try {
+      const result = selectObjectsByTheme(themeCatalog, theme, { includeBackgroundObjects: enabled });
+      const suggested: ReviewedItem[] = result.items.map(item => ({ objectId: item.objectId, role: item.role, reason: item.reason, origin: 'rules' }));
+      setMeaning(result); setReview(reviewWithSupport(review, suggested, enabled)); invalidate();
+    } catch (error) { setError(error instanceof Error ? error.message : 'Не удалось изменить фоновые предметы'); }
   }
   function pickByRules() {
     try {
@@ -137,14 +146,14 @@ export function AutoComposeDialog({ catalog, texts, scene, onApply, onClose }: {
           {source === 'theme' && <><div className="meaning-mode"><span />Подбор из вашей библиотеки</div><label className="auto-input-label" htmlFor="auto-theme">О чём ваша иллюстрация?</label><textarea id="auto-theme" aria-label="Заголовок или метафора" placeholder="Например: обучение онлайн или финансовая подушка" value={theme} onChange={event => changeTheme(event.target.value)} rows={3} maxLength={300} /><div className="theme-examples">{THEME_EXAMPLES.map(example => <button key={example} onClick={() => changeTheme(example)}>{example}</button>)}</div></>}
           {source === 'names' && <><label className="auto-input-label" htmlFor="auto-names">Какие предметы нужны?</label><textarea id="auto-names" aria-label="Названия предметов для автосборки" placeholder="Например: книга, телефон, ручка" value={names} onChange={event => { setNames(event.target.value); invalidate(); }} rows={3} maxLength={500} /><div className="auto-object-chips">{catalog.objects.map(object => <button key={object.id} aria-pressed={parsed.objectIds.includes(object.id)} className={parsed.objectIds.includes(object.id) ? 'active' : ''} onClick={() => chooseObject(object.id)}>{parsed.objectIds.includes(object.id) ? <Check size={11} /> : <Plus size={11} />}{object.name}</button>)}</div></>}
           <div className="auto-options">
-            <label className="auto-support"><input type="checkbox" checked={support} disabled={objects.length >= MAX_LAYOUT_OBJECTS} onChange={event => { setSupport(event.target.checked); if (source === 'theme') resetSelection(); else invalidate(); }} /><span>{source === 'theme' ? 'Использовать фоновые предметы' : 'Добавить фоновый предмет'}</span></label>
+            <label className="auto-support"><input type="checkbox" checked={support} disabled={objects.length >= MAX_LAYOUT_OBJECTS && !support} onChange={event => changeSupport(event.target.checked)} /><span>{source === 'theme' ? 'Использовать фоновые предметы' : 'Добавить фоновый предмет'}</span></label>
             {source === 'theme' && catalog.objects.some(object => object.custom) && <label className="auto-support"><input type="checkbox" checked={onlyCustom} onChange={event => { setOnlyCustom(event.target.checked); resetSelection(); }} /><span>Только мои SVG</span></label>}
           </div>
           <button className="button primary generate-button" disabled={source === 'theme' && review !== null && !review.length} onClick={() => generate()}><RefreshCw size={16} />{variants.length && !dirty ? 'Ещё варианты' : 'Построить композицию'}</button>
           <details className={source === 'theme' ? 'composition-selection' : 'composition-selection plain'} hidden={source === 'theme' && review === null} open={source !== 'theme' || showSelection} onToggle={event => { if (source === 'theme') setShowSelection(event.currentTarget.open); }}>
           <summary hidden={source !== 'theme'}>{review?.length ? 'Изменить предметы' : 'Выбрать предметы'}<span>{objects.length} / {MAX_LAYOUT_OBJECTS}</span></summary>
           <div className="auto-selection-heading"><h3>Предметы композиции</h3><span className={objects.length > MAX_LAYOUT_OBJECTS ? 'over-limit' : ''}>{objects.length} / {MAX_LAYOUT_OBJECTS}</span></div>
-          <div className="auto-selected-list">{objects.map(object => <div key={object.instanceId} className="meaning-object"><label className="auto-selected-object"><span className={`role-dot ${object.role}`} /><span>{catalog.objects.find(item => item.id === object.objectId)!.name}</span><select aria-label={`Роль: ${catalog.objects.find(item => item.id === object.objectId)!.name}`} value={object.role} onChange={event => { if (source === 'theme') setReview(current => (current ?? []).map(item => item.objectId === object.objectId ? { ...item, role: event.target.value as ObjectRole } : item)); else setRoles({ ...roles, [object.instanceId]: event.target.value as ObjectRole }); invalidate(); }}><option value="main">Главный</option><option value="secondary">Фоновый</option></select></label>{source === 'theme' && <><p>{review?.find(item => item.objectId === object.objectId)?.reason}</p><div className="review-edit-row"><label>Заменить<select aria-label={`Заменить: ${catalog.objects.find(item => item.id === object.objectId)!.name}`} value={object.objectId} onChange={event => editItems({ type: 'replace', objectId: event.target.value, previousId: object.objectId })}><option value={object.objectId}>{catalog.objects.find(item => item.id === object.objectId)!.name}</option>{themeCatalog.objects.filter(item => !excluded.includes(item.id) && !(review ?? []).some(selected => selected.objectId === item.id)).map(item => <option key={item.id} value={item.id}>{item.name}</option>)}</select></label><button type="button" aria-label={`Убрать из подбора: ${catalog.objects.find(item => item.id === object.objectId)!.name}`} onClick={() => editItems({ type: 'remove', objectId: object.objectId })}>Убрать</button></div></>}</div>)}{!objects.length && <p className="auto-empty-selection">{source === 'theme' ? review === null ? 'Введите фразу и постройте композицию.' : 'Предметы не выбраны. Уточните фразу или добавьте их вручную.' : source === 'canvas' ? 'Холст пуст. Выберите предметы по названиям.' : 'Введите названия или нажмите на предметы выше.'}</p>}</div>
+          <div className="auto-selected-list">{objects.map(object => <div key={object.instanceId} className="meaning-object"><label className="auto-selected-object"><span className={`role-dot ${object.role}`} /><span>{catalog.objects.find(item => item.id === object.objectId)!.name}</span><select aria-label={`Роль: ${catalog.objects.find(item => item.id === object.objectId)!.name}`} value={object.role} onChange={event => { if (source === 'theme') editItems({ type: 'role', objectId: object.objectId, role: event.target.value as ObjectRole }); else setRoles({ ...roles, [object.instanceId]: event.target.value as ObjectRole }); invalidate(); }}><option value="main">Главный</option><option value="secondary">Фоновый</option></select></label>{source === 'theme' && <><p>{review?.find(item => item.objectId === object.objectId)?.reason}</p><div className="review-edit-row"><label>Заменить<select aria-label={`Заменить: ${catalog.objects.find(item => item.id === object.objectId)!.name}`} value={object.objectId} onChange={event => editItems({ type: 'replace', objectId: event.target.value, previousId: object.objectId })}><option value={object.objectId}>{catalog.objects.find(item => item.id === object.objectId)!.name}</option>{themeCatalog.objects.filter(item => !excluded.includes(item.id) && !(review ?? []).some(selected => selected.objectId === item.id)).map(item => <option key={item.id} value={item.id}>{item.name}</option>)}</select></label><button type="button" aria-label={`Убрать из подбора: ${catalog.objects.find(item => item.id === object.objectId)!.name}`} onClick={() => editItems({ type: 'remove', objectId: object.objectId })}>Убрать</button></div></>}</div>)}{!objects.length && <p className="auto-empty-selection">{source === 'theme' ? review === null ? 'Введите фразу и постройте композицию.' : 'Предметы не выбраны. Уточните фразу или добавьте их вручную.' : source === 'canvas' ? 'Холст пуст. Выберите предметы по названиям.' : 'Введите названия или нажмите на предметы выше.'}</p>}</div>
           {source === 'theme' && review !== null && <>
             <button className="button secondary review-retry" onClick={pickByRules}>Подобрать заново</button>
             <details className="review-library"><summary>Добавить предмет вручную</summary><label>Поиск<input aria-label="Поиск для исправления подбора" placeholder="Название или тег" value={choiceQuery} onChange={event => setChoiceQuery(event.target.value)} /></label><div className="review-choice-grid">{choiceObjects.map(object => <button className="review-choice" key={object.id} disabled={(review?.length ?? 0) >= MAX_LAYOUT_OBJECTS} onClick={() => editItems({ type: 'add', objectId: object.id })}><ObjectThumbnail catalog={catalog} texts={texts} scene={scene} objectId={object.id} /><span>{object.name}</span><Plus size={12} /></button>)}</div>{!choiceObjects.length && <p>Доступных предметов не найдено. Проверьте поиск и ограничения фразы.</p>}</details>
