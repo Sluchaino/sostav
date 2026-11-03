@@ -38,7 +38,6 @@ export function AutoComposeDialog({ catalog, texts, scene, onApply, onClose }: {
   const [onlyCustom, setOnlyCustom] = useState(false);
   const [theme, setTheme] = useState(scene.selectionReview?.prompt ?? scene.interpretation?.prompt ?? (scene.name === 'Новая иллюстрация' ? '' : scene.name));
   const [review, setReview] = useState<ReviewedItem[] | null>(initialReview);
-  const [acceptedSuggestion, setAcceptedSuggestion] = useState<SelectionReview['suggestion']>(scene.selectionReview?.suggestion);
   const [choiceQuery, setChoiceQuery] = useState('');
   const [meaning, setMeaning] = useState<MeaningResult | null>(null);
   const [names, setNames] = useState(scene.objects.map(object => catalog.objects.find(item => item.id === object.objectId)!.name).join(', '));
@@ -89,7 +88,7 @@ export function AutoComposeDialog({ catalog, texts, scene, onApply, onClose }: {
     invalidate();
   }
   function resetSelection() {
-    setMeaning(null); setReview(null); setAcceptedSuggestion(undefined); setVariants([]); invalidate();
+    setMeaning(null); setReview(null); setVariants([]); invalidate();
   }
   function changeSupport(enabled: boolean) {
     setSupport(enabled);
@@ -107,23 +106,22 @@ export function AutoComposeDialog({ catalog, texts, scene, onApply, onClose }: {
       setMeaning(result);
       const items: ReviewedItem[] = result.items.map(item => ({ objectId: item.objectId, role: item.role, reason: item.reason, origin: 'rules' }));
       setReview(items); setShowSelection(!items.length);
-      if (items.length) generate(items, result, undefined);
+      if (items.length) generate(items, result);
     } catch (error) { setError(error instanceof Error ? error.message : 'Не удалось подобрать предметы'); }
   }
   function editItems(action: Parameters<typeof editReview>[1]) {
     try {
       const next = editReview(review ?? [], action, themeCatalog, excluded);
       setReview(next);
-      if (!next.some(item => item.origin === 'model-confirmed')) setAcceptedSuggestion(undefined);
       invalidate();
     } catch (error) { setError(error instanceof Error ? error.message : 'Не удалось изменить подбор'); }
   }
-  function generate(nextReview = review, nextMeaning = meaning, nextSuggestion = acceptedSuggestion) {
+  function generate(nextReview = review, nextMeaning = meaning) {
     if (source === 'theme' && nextReview === null) { pickByRules(); return; }
     try {
       const selectedObjects = source === 'theme' ? (nextReview ?? []).map(item => ({ instanceId: `theme-${item.objectId}`, objectId: item.objectId, role: item.role, x: 0.5, y: 0.5, rotation: 0 })) : source === 'names' ? objectsFromNames(catalog, names, roles) : objects;
       const { interpretation: _prior, selectionReview: _oldReview, ...baseScene } = scene;
-      const selectionReview: SelectionReview | undefined = source === 'theme' && nextReview?.length ? { prompt: theme.trim(), items: nextReview, ...(nextSuggestion && nextReview.some(item => item.origin === 'model-confirmed') ? { suggestion: nextSuggestion } : {}) } : undefined;
+      const selectionReview: SelectionReview | undefined = source === 'theme' && nextReview?.length ? { prompt: theme.trim(), items: nextReview } : undefined;
       const unchangedRules = nextMeaning && nextReview && nextReview.length === nextMeaning.items.length && nextReview.every((item, i) => item.origin === 'rules' && item.objectId === nextMeaning.items[i]?.objectId && item.role === nextMeaning.items[i]?.role);
       const base: Scene = { ...baseScene, size, name: source === 'theme' ? theme.trim().slice(0, 120) : scene.name.trim() || 'Новая иллюстрация', objects: selectedObjects, ...(selectionReview ? { selectionReview } : {}), ...(source === 'theme' && unchangedRules && nextMeaning ? { interpretation: nextMeaning } : {}) };
       const result = generateLayouts(catalog, base, { seed, includeBackgroundObjects: source === 'theme' ? false : support });

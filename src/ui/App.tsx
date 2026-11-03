@@ -1,7 +1,7 @@
 import { useEffect, useId, useMemo, useReducer, useRef, useState, type PointerEvent as ReactPointerEvent, type ReactNode } from 'react';
 import { ArrowDown, ArrowUp, Check, CheckCheck, ChevronDown, Copy, Download, EyeOff, FilePlus2, FolderOpen, Frame, Grip, Layers3, LayoutGrid, Maximize, Minus, MousePointer2, Plus, Redo2, RotateCcw, Search, Settings2, Shapes, Sparkles, Trash2, Undo2, Upload, X, type LucideIcon } from 'lucide-react';
 import { selectObject, searchObjects, validatePalette, type Catalog, type Palette, type SvgAsset } from '../library/index.js';
-import { activePalette, canvasSize, compositionScale, createBlankScene, createExample, EXAMPLES, moveLayer, objectTransform, reduceHistory, validateScene, type ExampleId, type History, type Scene, type SceneObject } from '../editor/model.js';
+import { activePalette, canvasSize, compositionScale, createBlankScene, createExample, EXAMPLES, moveLayer, objectTransform, reduceHistory, readScene, type ExampleId, type History, type Scene, type SceneObject } from '../editor/model.js';
 import { backgroundMarkup, exportSvg, objectMarkup, preparedSvg, type AssetTexts } from '../editor/svg.js';
 import { customLibrary, customTexts, readCustomSvg, validateCustomObjects, MAX_SVG_BYTES, type CustomObject } from '../library/custom.js';
 import { CustomObjectDialog } from './CustomObjectDialog.js';
@@ -68,7 +68,7 @@ function Editor({ catalog: baseCatalog, texts: baseTexts }: { catalog: Catalog; 
   const [initial] = useState(() => {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) { const parsed: unknown = JSON.parse(raw); validateScene(parsed, baseCatalog); return { scene: parsed, restored: true, invalid: false }; }
+      if (raw) { const parsed = readScene(JSON.parse(raw), baseCatalog); return { scene: parsed, restored: true, invalid: false }; }
     } catch { return { scene: createExample('learning'), restored: false, invalid: true }; }
     return { scene: createExample('learning'), restored: false, invalid: false };
   });
@@ -165,9 +165,9 @@ function Editor({ catalog: baseCatalog, texts: baseTexts }: { catalog: Catalog; 
     if (!file) return;
     try {
       if (file.size > MAX_FILE_BYTES) throw new Error('Файл слишком большой. Максимум — 15 МБ.');
-      const value: unknown = JSON.parse(await file.text());
+      const value = readScene(JSON.parse(await file.text()), baseCatalog);
       if (kind === 'project') {
-        validateScene(value, baseCatalog); commit(value); setSelectedId(value.objects.at(-1)?.instanceId ?? null); setToast('Проект открыт');
+        commit(value); setSelectedId(value.objects.at(-1)?.instanceId ?? null); setToast('Проект открыт');
       } else {
         validatePalette(catalog, value);
         if ([...catalog.palettes, ...scene.customPalettes].some(p => p.id === value.id)) throw new Error('Палитра с таким id уже есть. Задайте уникальный id в JSON.');

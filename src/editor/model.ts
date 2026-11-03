@@ -89,6 +89,25 @@ export function moveLayer(scene: Scene, instanceId: string, direction: -1 | 1): 
   return { ...scene, objects };
 }
 
+/** Restore the scene even when optional selection history comes from an unsupported version. */
+export function readScene(value: unknown, catalog: Catalog): Scene {
+  if (value && typeof value === 'object' && !Array.isArray(value) && 'selectionReview' in value) {
+    const { selectionReview, ...scene } = value;
+    validateScene(scene, catalog);
+    try {
+      validateSelectionReview(selectionReview, customLibrary(catalog, scene.customObjects));
+      return { ...scene, selectionReview: {
+        prompt: selectionReview.prompt,
+        items: selectionReview.items.map(({ objectId, role, reason, origin }) => ({ objectId, role, reason, origin })),
+      } };
+    } catch {
+      return scene;
+    }
+  }
+  validateScene(value, catalog);
+  return value;
+}
+
 export function validateScene(value: unknown, catalog: Catalog): asserts value is Scene {
   if (!value || typeof value !== 'object' || Array.isArray(value)) throw new Error('Файл должен содержать проект конструктора');
   const scene = value as Partial<Scene>;
