@@ -1,0 +1,53 @@
+{
+  "version": 1,
+  "name": "qa-custom-roles",
+  "size": "L",
+  "formatId": "landscape",
+  "paletteId": "aqua",
+  "customPalettes": [],
+  "compositionScale": 0.58,
+  "backgroundVisible": true,
+  "objects": [
+    {
+      "instanceId": "i-44376307-64ff-4362-8981-be9cbf215a8d",
+      "objectId": "custom-acaff39e-0e26-4600-9b97-fa5356b731f2",
+      "role": "main",
+      "x": 0.2916666666666667,
+      "y": 0.5,
+      "rotation": 0
+    },
+    {
+      "instanceId": "i-e92d8c37-43f3-42f7-89f0-269afe9216dc",
+      "objectId": "custom-acaff39e-0e26-4600-9b97-fa5356b731f2",
+      "role": "secondary",
+      "x": 0.7083333333333334,
+      "y": 0.5,
+      "rotation": 0
+    }
+  ],
+  "customObjects": [
+    {
+      "id": "custom-acaff39e-0e26-4600-9b97-fa5356b731f2",
+      "name": "QA Ladder",
+      "tags": [
+        "лестница",
+        "ступени"
+      ],
+      "meanings": [
+        "рост",
+        "развитие"
+      ],
+      "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 300 400\" width=\"300\" height=\"400\" preserveAspectRatio=\"xMidYMid meet\">\n  <title>Лестница — рост и развитие</title>\n  <path d=\"M65 365L125 35M175 365L235 35\" fill=\"none\" stroke=\"#7353A6\" stroke-width=\"22\" stroke-linecap=\"round\"/>\n  <path d=\"M82 285H190M97 205H205M111 125H220\" fill=\"none\" stroke=\"#F3AD64\" stroke-width=\"18\" stroke-linecap=\"round\"/>\n</svg>",
+      "paintRolesByRole": {
+        "main": {
+          "#7353A6": "object.primary",
+          "#F3AD64": "object.secondary"
+        },
+        "secondary": {
+          "#7353A6": "background.strong",
+          "#F3AD64": "background.medium"
+        }
+      }
+    }
+  ]
+}

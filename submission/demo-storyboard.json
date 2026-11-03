@@ -1,0 +1,163 @@
+{
+  "durationSeconds": 158,
+  "fps": 12,
+  "width": 1280,
+  "height": 900,
+  "style": "Edited walkthrough of actual UI screenshots; Russian burnt-in captions; no narration",
+  "segments": [
+    {
+      "start": 0,
+      "duration": 7,
+      "chapter": "Задача",
+      "capture": "title",
+      "caption": "Собрать композицию из готовой библиотеки и сохранить редактируемый вектор."
+    },
+    {
+      "start": 7,
+      "duration": 10,
+      "chapter": "Запуск",
+      "capture": "launch",
+      "caption": "В PowerShell используем npm.cmd. Отдельный backend, ключи и .env не нужны."
+    },
+    {
+      "start": 17,
+      "duration": 6,
+      "chapter": "Редактор",
+      "capture": "01-editor",
+      "caption": "Слева — библиотека, в центре — холст, справа — параметры сцены и предмета."
+    },
+    {
+      "start": 23,
+      "duration": 7,
+      "chapter": "Идея",
+      "capture": "02-phrase",
+      "caption": "Пишем «Обучение через интернет». Подбор использует локальные смысловые связи."
+    },
+    {
+      "start": 30,
+      "duration": 6,
+      "chapter": "Детализация",
+      "capture": "03-size",
+      "caption": "До построения выбираем S или L. Для стандартных предметов подставляется нужный SVG."
+    },
+    {
+      "start": 36,
+      "duration": 9,
+      "chapter": "Варианты",
+      "capture": "04-variants",
+      "caption": "Одним нажатием получаем три композиции: Диагональ, Баланс и Каскад."
+    },
+    {
+      "start": 45,
+      "duration": 5,
+      "chapter": "Применение",
+      "capture": "05-applied",
+      "caption": "Открываем вариант в редакторе. Результат можно сразу менять вручную."
+    },
+    {
+      "start": 50,
+      "duration": 8,
+      "chapter": "Ручная правка",
+      "capture": "06-manual",
+      "caption": "Меняем координаты и поворот телефона. Пропорции исходного SVG сохраняются."
+    },
+    {
+      "start": 58,
+      "duration": 6,
+      "chapter": "Палитра",
+      "capture": "07-palette",
+      "caption": "Переключаем цветовую схему: меняются цвета сцены, контуры остаются прежними."
+    },
+    {
+      "start": 64,
+      "duration": 5,
+      "chapter": "Просмотр",
+      "capture": "08-preview",
+      "caption": "Полноэкранный предпросмотр помогает оценить готовую композицию без панелей."
+    },
+    {
+      "start": 69,
+      "duration": 8,
+      "chapter": "Проверка",
+      "capture": "09-preflight",
+      "caption": "Перед экспортом проверяются границы, сильные перекрытия и назначения цветов."
+    },
+    {
+      "start": 77,
+      "duration": 5,
+      "chapter": "Экспорт",
+      "capture": "10-downloaded",
+      "caption": "Скачиваем SVG. Ctrl+S отдельно сохраняет редактируемый JSON-проект."
+    },
+    {
+      "start": 82,
+      "duration": 8,
+      "chapter": "Figma: положение",
+      "capture": "figma-standard",
+      "caption": "В проверке Figma экспорт открылся отдельными группами. Телефон перемещён и повёрнут."
+    },
+    {
+      "start": 90,
+      "duration": 8,
+      "chapter": "Figma: контур",
+      "capture": "figma-vector",
+      "caption": "У отдельного Vector изменена заливка. Открывается режим редактирования узлов."
+    },
+    {
+      "start": 98,
+      "duration": 6,
+      "chapter": "Свой SVG",
+      "capture": "11-upload",
+      "caption": "Загружаем автономный SVG. Название, теги и смыслы задаются в карточке."
+    },
+    {
+      "start": 104,
+      "duration": 8,
+      "chapter": "Цветная роль",
+      "capture": "12-main-colors",
+      "caption": "Назначаем исходным цветам акцентные роли палитры. Справа виден результат."
+    },
+    {
+      "start": 112,
+      "duration": 8,
+      "chapter": "Фоновая роль",
+      "capture": "13-secondary-colors",
+      "caption": "Отдельно настраиваем монохромный вариант. Геометрия и обводки сохраняются."
+    },
+    {
+      "start": 120,
+      "duration": 8,
+      "chapter": "Своя метафора",
+      "capture": "14-custom-meaning",
+      "caption": "«Путь к успеху» и «Только мои SVG»: лестница подбирается по заполненной карточке."
+    },
+    {
+      "start": 128,
+      "duration": 8,
+      "chapter": "Перенос проекта",
+      "capture": "15-custom-roles",
+      "caption": "Открываем пример с двумя ролями одного SVG. Все назначения встроены в JSON."
+    },
+    {
+      "start": 136,
+      "duration": 6,
+      "chapter": "Две роли",
+      "capture": "16-custom-recolor",
+      "caption": "Смена схемы перекрашивает обе копии: главная цветная, фоновая монохромная."
+    },
+    {
+      "start": 142,
+      "duration": 7,
+      "chapter": "Своя палитра",
+      "capture": "17-import-palette",
+      "caption": "Загружаем palette-forest.json. Новая схема сразу применяется к композиции."
+    },
+    {
+      "start": 149,
+      "duration": 9,
+      "chapter": "Результат",
+      "capture": "end",
+      "caption": "Примеры и инструкция лежат в репозитории. Незнакомые метафоры можно собрать вручную."
+    }
+  ]
+}

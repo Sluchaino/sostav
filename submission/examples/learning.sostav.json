@@ -1,0 +1,88 @@
+{
+  "version": 1,
+  "name": "submission-learning",
+  "size": "S",
+  "formatId": "square",
+  "paletteId": "aqua",
+  "customPalettes": [],
+  "compositionScale": 0.4099198932577664,
+  "backgroundVisible": true,
+  "objects": [
+    {
+      "instanceId": "theme-phone",
+      "objectId": "phone",
+      "role": "main",
+      "x": 0.65,
+      "y": 0.65,
+      "rotation": 18
+    },
+    {
+      "instanceId": "theme-book",
+      "objectId": "book",
+      "role": "main",
+      "x": 0.38359178103161495,
+      "y": 0.4305048397776472,
+      "rotation": -7
+    }
+  ],
+  "selectionReview": {
+    "prompt": "Обучение через интернет",
+    "items": [
+      {
+        "objectId": "phone",
+        "role": "main",
+        "reason": "Телефон может поддержать цифровую сторону обучения. Телефон обозначает онлайн-доступ и цифровые сервисы.",
+        "origin": "rules"
+      },
+      {
+        "objectId": "book",
+        "role": "main",
+        "reason": "Книга передаёт обучение и накопление знаний.",
+        "origin": "rules"
+      }
+    ]
+  },
+  "interpretation": {
+    "provider": "local",
+    "prompt": "Обучение через интернет",
+    "status": "matched",
+    "summary": "Связал тему с понятиями: обучение и знания, онлайн и технологии.",
+    "concepts": [
+      {
+        "id": "learning",
+        "label": "Обучение и знания",
+        "evidence": [
+          "обучение"
+        ]
+      },
+      {
+        "id": "digital",
+        "label": "Онлайн и технологии",
+        "evidence": [
+          "интернет"
+        ]
+      }
+    ],
+    "items": [
+      {
+        "objectId": "phone",
+        "role": "main",
+        "reason": "Телефон может поддержать цифровую сторону обучения. Телефон обозначает онлайн-доступ и цифровые сервисы.",
+        "conceptIds": [
+          "learning",
+          "digital"
+        ]
+      },
+      {
+        "objectId": "book",
+        "role": "main",
+        "reason": "Книга передаёт обучение и накопление знаний.",
+        "conceptIds": [
+          "learning"
+        ]
+      }
+    ],
+    "excludedObjectIds": [],
+    "limitations": []
+  }
+}
