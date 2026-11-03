@@ -2,6 +2,8 @@
 
 Тестовое задание: собрать иллюстрацию из готовых SVG, сохранить векторность, цвета и пропорции. React + TypeScript + Vite, версия 0.11.2. Работает в браузере, без отдельного backend, API-ключей и загрузки моделей.
 
+**[Открыть работающий сервис](https://sostav-2bp.pages.dev/)** · [Видеообзор — 2:52](submission/demo-v2.mp4) · [Примеры](submission/README.md)
+
 ## Запуск на Windows
 
 Нужен **Node.js 22.12 или новее**. Откройте PowerShell в папке с `package.json`:
@@ -26,6 +28,7 @@ npm.cmd run dev
 - [Три готовых примера, палитра и SVG для загрузки](submission/README.md).
 - [Результаты проверок комплекта](submission/CHECKS.md).
 - [Архитектура](docs/ARCHITECTURE.md), [использование AI при разработке и комплект сдачи](docs/DELIVERY.md).
+- [Публикация в Cloudflare Pages](docs/DEPLOYMENT.md).
 - [Подробная инструкция](docs/USER-GUIDE.md), [ручная проверка редактирования в Figma](docs/END-TO-END.md).
 
 ## Проверки и production-сборка
