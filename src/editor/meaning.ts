@@ -1,5 +1,6 @@
 import type { Catalog, ObjectRole } from '../library/types.js';
 import type { SceneObject } from './model.js';
+import { matchMeaningPhrases, type PhraseMatches } from './phrases.js';
 
 export interface MeaningItem { objectId: string; role: ObjectRole; reason: string; conceptIds: string[] }
 export interface MeaningResult {
@@ -13,14 +14,14 @@ export interface MeaningResult {
   limitations: string[];
 }
 interface Connection { objectId: string; weight: number; reason: string }
-interface Concept { id: string; label: string; stems: string[]; phrases?: string[]; exact?: string[]; unless?: string[]; links: Connection[] }
+interface Concept { id: string; label: string; stems: string[]; phrases?: string[]; exact?: string[]; unless?: string[]; negatedObjects?: string[]; links: Connection[] }
 const link = (objectId: string, weight: number, reason: string): Connection => ({ objectId, weight, reason });
 
 /** An explicit, inspectable ontology. This is a local rule system, not a trained AI model. */
 const CONCEPTS: Concept[] = [
   { id: 'learning', label: 'Обучение и знания', stems: ['обуч', 'учеб', 'учит', 'учить', 'учиться', 'образован', 'знани', 'чтени', 'learn', 'educat', 'study'], links: [link('book', 6, 'Книга передаёт обучение и накопление знаний.'), link('pen', 2, 'Ручка поддерживает тему учёбы и записей.'), link('phone', 1, 'Телефон может поддержать цифровую сторону обучения.')] },
   { id: 'digital', label: 'Онлайн и технологии', stems: ['онлайн', 'цифров', 'интернет', 'дистанцион', 'технолог', 'подключ', 'приложен', 'online', 'digital', 'remote'], links: [link('phone', 6, 'Телефон обозначает онлайн-доступ и цифровые сервисы.'), link('puzzle', 2, 'Пазлы связывают отдельные части цифрового решения.')] },
-  { id: 'finance', label: 'Деньги и сбережения', stems: ['финанс', 'деньг', 'бюджет', 'сбереж', 'накоплени', 'копить', 'эконом', 'расход', 'платн', 'money', 'saving', 'budget'], phrases: ['финансовая подушка', 'копить на мечту', 'накопить на мечту', 'накопить денег', 'накопить средства'], links: [link('wallet', 6, 'Кошелёк обозначает личные финансы, оплату и запас средств.'), link('coin', 2, 'Монета может дополнить тему денежных средств.')] },
+  { id: 'finance', label: 'Деньги и сбережения', negatedObjects: ['wallet', 'coin'], stems: ['финанс', 'деньг', 'денег', 'бюджет', 'сбереж', 'накоплени', 'копить', 'эконом', 'расход', 'платн', 'money', 'saving', 'budget'], phrases: ['финансовая подушка', 'копить на мечту', 'накопить на мечту', 'накопить денег', 'накопить средства'], links: [link('wallet', 6, 'Кошелёк обозначает личные финансы, оплату и запас средств.'), link('coin', 2, 'Монета может дополнить тему денежных средств.')] },
   { id: 'security', label: 'Защита и надёжность', stems: ['безопас', 'защит', 'надежн', 'сохранност', 'шифр', 'security', 'secure'], links: [link('coin', 6, 'Монета обозначает ценность, которую важно сохранить.'), link('wallet', 2, 'Кошелёк связывает защиту с деньгами.'), link('phone', 1, 'Телефон может обозначать защищённый цифровой доступ.')] },
   { id: 'shopping', label: 'Покупки и платежи', stems: ['покуп', 'оплат', 'платеж', 'магазин', 'торгов', 'shopping', 'payment'], links: [link('wallet', 6, 'Кошелёк обозначает оплату и покупки.'), link('phone', 4, 'Телефон поддерживает покупки через цифровой сервис.'), link('coin', 2, 'Монета дополняет тему платежей.')] },
   { id: 'music', label: 'Музыка и звук', stems: ['музык', 'звук', 'подкаст', 'слуш', 'music', 'audio'], links: [link('headphones', 7, 'Наушники прямо передают музыку, звук и прослушивание.'), link('phone', 2, 'Телефон может выступать источником звука.')] },
@@ -61,9 +62,10 @@ function mentions(word: string): string[] {
   if (FLOWERS.has(word)) found.push('flower-vase');
   return found;
 }
-function evidence(concept: Concept, words: string[]) {
-  if (concept.unless?.some(stem => words.some(word => word.startsWith(stem)))) return [];
-  const found = words.filter(word => concept.exact?.includes(word) || concept.stems.some(stem => word.startsWith(stem)));
+function evidence(concept: Concept, originalWords: string[], phrases: PhraseMatches = matchMeaningPhrases(originalWords)) {
+  const words = originalWords.map((word, index) => phrases.claimed.has(index) ? "|" : word);
+  if (concept.unless?.some(stem => originalWords.some(word => word.startsWith(stem)))) return [];
+  const found = [...(phrases.evidence.get(concept.id) ?? []), ...words.filter(word => concept.exact?.includes(word) || concept.stems.some(stem => word.startsWith(stem)))];
   const text = ' ' + words.join(' ') + ' ';
   for (const phrase of concept.phrases ?? []) if (text.includes(' ' + phrase + ' ')) found.push(...phrase.split(' '));
   return [...new Set(found)];
@@ -75,7 +77,7 @@ function splitNegation(prompt: string) {
   let negated = false;
   for (let index = 0; index < tokens.length; index++) {
     const word = tokens[index]!;
-    if (/^[,;.!?:]$/.test(word) || ['но', 'зато', 'а'].includes(word)) { negated = false; positive.push('|'); continue; }
+    if (/^[,;.!?:]$/.test(word) || ['но', 'зато', 'а'].includes(word)) { negated = false; positive.push('|'); negative.push('|'); continue; }
     if (word === 'без') { negated = true; continue; }
     if (word === 'не' && ['добавляй', 'используй', 'добавлять', 'использовать', 'нужен', 'нужна', 'нужны'].includes(tokens[index + 1] ?? '')) { negated = true; index++; continue; }
     (negated ? negative : positive).push(word);
@@ -99,16 +101,19 @@ export function selectObjectsByTheme(catalog: Catalog, text: string, options: { 
   if (typeof text !== 'string' || text.trim().length < 2 || text.trim().length > 300) throw new Error('Введите заголовок длиной от 2 до 300 символов');
   const prompt = text.trim();
   const { positive, negative } = splitNegation(prompt);
+  const positivePhrases = matchMeaningPhrases(positive), negativePhrases = matchMeaningPhrases(negative);
   const available = new Set(catalog.objects.map(object => object.id));
   const excluded = new Set(negative.flatMap(mentions));
   const customs = catalog.objects.filter(object => object.custom);
   const labels = (object: typeof customs[number]) => [object.name, ...object.tags, ...(object.meanings ?? [])];
-  const conceptSource = CONCEPTS.map(concept => ({ ...concept, links: [...concept.links, ...customs.filter(object => labels(object).some(label => evidence(concept, semanticWords(label)).length)).map(object => link(object.id, 8, `Свой SVG «${object.name}» связан с темой «${concept.label}» через заданные теги и смыслы.`))] }));
+  const customLabels = new Map(customs.map(object => [object.id, labels(object).map(label => { const words = semanticWords(label); return { words, phrases: matchMeaningPhrases(words) }; })]));
+  const conceptSource = CONCEPTS.map(concept => ({ ...concept, links: [...concept.links, ...customs.filter(object => customLabels.get(object.id)!.some(label => evidence(concept, label.words, label.phrases).length)).map(object => link(object.id, 8, `Свой SVG «${object.name}» связан с темой «${concept.label}» через заданные теги и смыслы.`))] }));
   for (const object of customs) if (labels(object).some(label => labelEvidence(label, negative).length)) excluded.add(object.id);
-  for (const concept of conceptSource) if (evidence(concept, negative).length) {
+  for (const concept of conceptSource) if (evidence(concept, negative, negativePhrases).length) {
+    for (const id of concept.negatedObjects ?? []) excluded.add(id);
     for (const connection of concept.links) if (connection.weight >= 5) excluded.add(connection.objectId);
   }
-  const concepts = conceptSource.map(concept => ({ ...concept, evidence: evidence(concept, positive) })).filter(concept => concept.evidence.length);
+  const concepts = conceptSource.map(concept => ({ ...concept, evidence: evidence(concept, positive, positivePhrases) })).filter(concept => concept.evidence.length);
   const direct = new Set(positive.flatMap(mentions).filter(id => available.has(id) && !excluded.has(id)));
   const customMatches = customs.filter(object => !excluded.has(object.id)).map(object => ({ object, evidence: [...new Set(labels(object).flatMap(label => labelEvidence(label, positive)))] })).filter(match => match.evidence.length);
   for (const match of customMatches) direct.add(match.object.id);
@@ -118,7 +123,8 @@ export function selectObjectsByTheme(catalog: Catalog, text: string, options: { 
   for (const concept of concepts) for (const connection of concept.links) {
     if (!available.has(connection.objectId) || excluded.has(connection.objectId)) continue;
     const rank = ranks.get(connection.objectId) ?? { score: 0, reasons: [], concepts: [] };
-    rank.score += connection.weight; rank.reasons.push(connection.reason); rank.concepts.push(concept.id);
+    const phraseBoost = positivePhrases.evidence.has(concept.id) && connection.weight === Math.max(...concept.links.map(item => item.weight)) ? 2 : 0;
+    rank.score += connection.weight + phraseBoost; rank.reasons.push(connection.reason); rank.concepts.push(concept.id);
     ranks.set(connection.objectId, rank);
   }
   const ranked = [...ranks.entries()].sort((a, b) => Number(direct.has(b[0])) - Number(direct.has(a[0])) || b[1].score - a[1].score || a[0].localeCompare(b[0], 'en'));
