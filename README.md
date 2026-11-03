@@ -22,7 +22,7 @@ npm.cmd run dev
 
 ## Материалы для проверки
 
-- [Видеообзор — 2 мин 38 с, с субтитрами](submission/demo.mp4).
+- [Видеообзор — 2 мин 52 с, с субтитрами](submission/demo-v2.mp4).
 - [Три готовых примера, палитра и SVG для загрузки](submission/README.md).
 - [Результаты проверок комплекта](submission/CHECKS.md).
 - [Архитектура](docs/ARCHITECTURE.md), [использование AI при разработке и комплект сдачи](docs/DELIVERY.md).

@@ -1,163 +1,454 @@
 {
-  "durationSeconds": 158,
-  "fps": 12,
-  "width": 1280,
-  "height": 900,
-  "style": "Edited walkthrough of actual UI screenshots; Russian burnt-in captions; no narration",
+  "revision": 2,
+  "durationSeconds": 172,
+  "fps": 24,
+  "width": 1600,
+  "height": 1160,
+  "captureSize": [
+    1600,
+    1000
+  ],
+  "style": "Actual before/after UI captures; editorial cursor and click highlights from observed target rectangles; keyboard badges; Russian captions; no narration",
   "segments": [
     {
       "start": 0,
       "duration": 7,
-      "chapter": "Задача",
-      "capture": "title",
-      "caption": "Собрать композицию из готовой библиотеки и сохранить редактируемый вектор."
+      "chapter": "Начало",
+      "caption": "Фраза → композиция → Figma → свой SVG."
     },
     {
       "start": 7,
-      "duration": 10,
-      "chapter": "Запуск",
-      "capture": "launch",
-      "caption": "В PowerShell используем npm.cmd. Отдельный backend, ключи и .env не нужны."
+      "duration": 5,
+      "chapter": "Композиция · шаг 1",
+      "caption": "Нажимаем «Собрать композицию» над холстом.",
+      "capture": "01-open",
+      "targetRect": {
+        "h": 34,
+        "w": 149.8125,
+        "x": 1009.9375,
+        "y": 98.5999984741211
+      },
+      "keys": ""
+    },
+    {
+      "start": 12,
+      "duration": 5,
+      "chapter": "Композиция · шаг 2",
+      "caption": "Вводим фразу «Обучение через интернет».",
+      "capture": "02-phrase",
+      "targetRect": {
+        "h": 83,
+        "w": 257.20001220703125,
+        "x": 293,
+        "y": 364.7000122070313
+      },
+      "keys": ""
     },
     {
       "start": 17,
-      "duration": 6,
-      "chapter": "Редактор",
-      "capture": "01-editor",
-      "caption": "Слева — библиотека, в центре — холст, справа — параметры сцены и предмета."
-    },
-    {
-      "start": 23,
-      "duration": 7,
-      "chapter": "Идея",
-      "capture": "02-phrase",
-      "caption": "Пишем «Обучение через интернет». Подбор использует локальные смысловые связи."
-    },
-    {
-      "start": 30,
-      "duration": 6,
-      "chapter": "Детализация",
+      "duration": 5,
+      "chapter": "Композиция · шаг 3",
+      "caption": "Выбираем S — компактную детализацию исходных SVG.",
       "capture": "03-size",
-      "caption": "До построения выбираем S или L. Для стандартных предметов подставляется нужный SVG."
+      "targetRect": {
+        "h": 43.20000076293945,
+        "w": 124.5999984741211,
+        "x": 293,
+        "y": 627.5
+      },
+      "keys": ""
     },
     {
-      "start": 36,
-      "duration": 9,
-      "chapter": "Варианты",
-      "capture": "04-variants",
-      "caption": "Одним нажатием получаем три композиции: Диагональ, Баланс и Каскад."
-    },
-    {
-      "start": 45,
+      "start": 22,
       "duration": 5,
-      "chapter": "Применение",
-      "capture": "05-applied",
-      "caption": "Открываем вариант в редакторе. Результат можно сразу менять вручную."
+      "chapter": "Композиция · шаг 4",
+      "caption": "Нажимаем «Построить композицию»: появляются три варианта.",
+      "capture": "04-build",
+      "targetRect": {
+        "h": 39,
+        "w": 257.20001220703125,
+        "x": 293,
+        "y": 718.1000366210938
+      },
+      "keys": ""
     },
     {
-      "start": 50,
-      "duration": 8,
-      "chapter": "Ручная правка",
-      "capture": "06-manual",
-      "caption": "Меняем координаты и поворот телефона. Пропорции исходного SVG сохраняются."
-    },
-    {
-      "start": 58,
-      "duration": 6,
-      "chapter": "Палитра",
-      "capture": "07-palette",
-      "caption": "Переключаем цветовую схему: меняются цвета сцены, контуры остаются прежними."
-    },
-    {
-      "start": 64,
+      "start": 27,
       "duration": 5,
-      "chapter": "Просмотр",
-      "capture": "08-preview",
-      "caption": "Полноэкранный предпросмотр помогает оценить готовую композицию без панелей."
+      "chapter": "Композиция · шаг 5",
+      "caption": "Применяем выбранный вариант кнопкой «Открыть в редакторе».",
+      "capture": "05-apply",
+      "targetRect": {
+        "h": 39,
+        "w": 149.375,
+        "x": 1154.625,
+        "y": 833.2999877929688
+      },
+      "keys": ""
     },
     {
-      "start": 69,
-      "duration": 8,
-      "chapter": "Проверка",
-      "capture": "09-preflight",
-      "caption": "Перед экспортом проверяются границы, сильные перекрытия и назначения цветов."
+      "start": 32,
+      "duration": 5,
+      "chapter": "Композиция · шаг 6",
+      "caption": "Щёлкаем по телефону на холсте: справа открываются его параметры.",
+      "capture": "06-select",
+      "targetRect": {
+        "h": 153.3236846923828,
+        "w": 241.71826171875,
+        "x": 862.3917846679688,
+        "y": 610.7030639648438
+      },
+      "keys": ""
+    },
+    {
+      "start": 37,
+      "duration": 5,
+      "chapter": "Композиция · шаг 7",
+      "caption": "В поле «Поворот» справа вводим 18°.",
+      "capture": "07-rotate",
+      "targetRect": {
+        "h": 16.399999618530273,
+        "w": 43,
+        "x": 1488.625,
+        "y": 864.2000122070312
+      },
+      "keys": ""
+    },
+    {
+      "start": 42,
+      "duration": 5,
+      "chapter": "Композиция · шаг 8",
+      "caption": "Нажимаем бирюзовую схему: вся композиция перекрашивается.",
+      "capture": "08-palette",
+      "targetRect": {
+        "h": 35,
+        "w": 244.40000915527344,
+        "x": 1325.800048828125,
+        "y": 338
+      },
+      "keys": ""
+    },
+    {
+      "start": 47,
+      "duration": 5,
+      "chapter": "Композиция · шаг 9",
+      "caption": "Кнопка «Скачать SVG» сначала открывает проверку композиции.",
+      "capture": "09-check",
+      "targetRect": {
+        "h": 39,
+        "w": 127.2874984741211,
+        "x": 1444.7125244140625,
+        "y": 23.100000381469727
+      },
+      "keys": ""
+    },
+    {
+      "start": 52,
+      "duration": 5,
+      "chapter": "Композиция · шаг 10",
+      "caption": "Подтверждаем скачивание. Предметы сохраняются в SVG отдельными группами.",
+      "capture": "10-download",
+      "targetRect": {
+        "h": 39,
+        "w": 122.2874984741211,
+        "x": 983.7125244140624,
+        "y": 640.7999877929688
+      },
+      "keys": ""
+    },
+    {
+      "start": 57,
+      "duration": 5,
+      "chapter": "Figma · шаг 11",
+      "caption": "В Figma вставляем содержимое скачанного SVG: Ctrl+V.",
+      "capture": "11-figma-paste",
+      "targetRect": null,
+      "keys": "Ctrl+V"
+    },
+    {
+      "start": 62,
+      "duration": 5,
+      "chapter": "Figma · шаг 12",
+      "caption": "Shift+2 крупно вписывает выбранную композицию в рабочую область.",
+      "capture": "12-figma-fit",
+      "targetRect": null,
+      "keys": "Shift+2"
+    },
+    {
+      "start": 67,
+      "duration": 5,
+      "chapter": "Figma · шаг 13",
+      "caption": "В слоях выбираем «Телефон». Shift+2 приближает сам предмет.",
+      "capture": "13-figma-phone",
+      "targetRect": {
+        "h": 32,
+        "w": 240,
+        "x": 57,
+        "y": 317.6000061035156
+      },
+      "keys": "Shift+2"
+    },
+    {
+      "start": 72,
+      "duration": 5,
+      "chapter": "Figma · шаг 14",
+      "caption": "В поле Rotation справа меняем угол на −10°.",
+      "capture": "14-figma-rotate",
+      "targetRect": {
+        "h": 24,
+        "w": 64.0999984741211,
+        "x": 1399.800048828125,
+        "y": 286.8000183105469
+      },
+      "keys": ""
     },
     {
       "start": 77,
       "duration": 5,
-      "chapter": "Экспорт",
-      "capture": "10-downloaded",
-      "caption": "Скачиваем SVG. Ctrl+S отдельно сохраняет редактируемый JSON-проект."
+      "chapter": "Figma · шаг 15",
+      "caption": "Enter раскрывает внутренний Frame выбранного предмета.",
+      "capture": "15-figma-inside",
+      "targetRect": null,
+      "keys": "Enter"
     },
     {
       "start": 82,
-      "duration": 8,
-      "chapter": "Figma: положение",
-      "capture": "figma-standard",
-      "caption": "В проверке Figma экспорт открылся отдельными группами. Телефон перемещён и повёрнут."
+      "duration": 5,
+      "chapter": "Figma · шаг 16",
+      "caption": "Выбираем отдельный слой Vector внутри телефона.",
+      "capture": "16-figma-vector",
+      "targetRect": {
+        "h": 32,
+        "w": 240,
+        "x": 57,
+        "y": 509.6000061035156
+      },
+      "keys": ""
     },
     {
-      "start": 90,
-      "duration": 8,
-      "chapter": "Figma: контур",
-      "capture": "figma-vector",
-      "caption": "У отдельного Vector изменена заливка. Открывается режим редактирования узлов."
+      "start": 87,
+      "duration": 5,
+      "chapter": "Figma · шаг 17",
+      "caption": "В поле цвета меняем заливку одного контура на FF6B6B.",
+      "capture": "17-figma-fill",
+      "targetRect": {
+        "h": 24,
+        "w": 78,
+        "x": 1399.5999755859375,
+        "y": 575.6000366210938
+      },
+      "keys": ""
     },
     {
-      "start": 98,
-      "duration": 6,
-      "chapter": "Свой SVG",
-      "capture": "11-upload",
-      "caption": "Загружаем автономный SVG. Название, теги и смыслы задаются в карточке."
+      "start": 92,
+      "duration": 5,
+      "chapter": "Figma · шаг 18",
+      "caption": "Enter открывает узлы, Shift+2 приближает выбранный контур.",
+      "capture": "18-figma-nodes",
+      "targetRect": null,
+      "keys": "Enter → Shift+2"
     },
     {
-      "start": 104,
-      "duration": 8,
-      "chapter": "Цветная роль",
-      "capture": "12-main-colors",
-      "caption": "Назначаем исходным цветам акцентные роли палитры. Справа виден результат."
+      "start": 97,
+      "duration": 5,
+      "chapter": "Свой SVG · шаг 19",
+      "caption": "Новый сценарий: «Загрузить свои SVG» → выбираем ladder.svg.",
+      "capture": "19-upload",
+      "targetRect": {
+        "h": 39,
+        "w": 249.1999969482422,
+        "x": 22,
+        "y": 263.6000061035156
+      },
+      "keys": ""
+    },
+    {
+      "start": 102,
+      "duration": 5,
+      "chapter": "Свой SVG · шаг 20",
+      "caption": "В поле «Смыслы и метафоры» задаём ассоциации своего SVG.",
+      "capture": "20-meanings",
+      "targetRect": {
+        "h": 69.5999984741211,
+        "w": 459.2000122070313,
+        "x": 568,
+        "y": 373.6000061035156
+      },
+      "keys": ""
+    },
+    {
+      "start": 107,
+      "duration": 5,
+      "chapter": "Свой SVG · шаг 21",
+      "caption": "В разделе «Цвета» назначаем первому цвету «Основной акцент предмета».",
+      "capture": "21-main-primary",
+      "targetRect": {
+        "h": 37.20000076293945,
+        "w": 305.20001220703125,
+        "x": 690,
+        "y": 642
+      },
+      "keys": ""
     },
     {
       "start": 112,
-      "duration": 8,
-      "chapter": "Фоновая роль",
-      "capture": "13-secondary-colors",
-      "caption": "Отдельно настраиваем монохромный вариант. Геометрия и обводки сохраняются."
+      "duration": 5,
+      "chapter": "Свой SVG · шаг 22",
+      "caption": "Второму цвету назначаем «Дополнительный акцент предмета».",
+      "capture": "22-main-secondary",
+      "targetRect": {
+        "h": 37.20000076293945,
+        "w": 305.20001220703125,
+        "x": 690,
+        "y": 689.2000122070312
+      },
+      "keys": ""
     },
     {
-      "start": 120,
-      "duration": 8,
-      "chapter": "Своя метафора",
-      "capture": "14-custom-meaning",
-      "caption": "«Путь к успеху» и «Только мои SVG»: лестница подбирается по заполненной карточке."
+      "start": 117,
+      "duration": 5,
+      "chapter": "Свой SVG · шаг 23",
+      "caption": "Переключаемся на отдельную вкладку «Фоновый · монохромный».",
+      "capture": "23-background-tab",
+      "targetRect": {
+        "h": 34,
+        "w": 154.46250915527344,
+        "x": 694.8500366210938,
+        "y": 200.8000030517578
+      },
+      "keys": ""
     },
     {
-      "start": 128,
-      "duration": 8,
-      "chapter": "Перенос проекта",
-      "capture": "15-custom-roles",
-      "caption": "Открываем пример с двумя ролями одного SVG. Все назначения встроены в JSON."
+      "start": 122,
+      "duration": 5,
+      "chapter": "Свой SVG · шаг 24",
+      "caption": "Прокручиваем ниже и нажимаем «Назначить монохром по яркости».",
+      "capture": "24-monochrome",
+      "targetRect": {
+        "h": 39,
+        "w": 221.6374969482422,
+        "x": 568,
+        "y": 756.4000244140625
+      },
+      "keys": ""
     },
     {
-      "start": 136,
-      "duration": 6,
-      "chapter": "Две роли",
-      "capture": "16-custom-recolor",
-      "caption": "Смена схемы перекрашивает обе копии: главная цветная, фоновая монохромная."
+      "start": 127,
+      "duration": 5,
+      "chapter": "Свой SVG · шаг 25",
+      "caption": "Сохраняем обе независимые карты цветов.",
+      "capture": "25-save-colors",
+      "targetRect": {
+        "h": 39,
+        "w": 154.33750915527344,
+        "x": 872.8624877929688,
+        "y": 883
+      },
+      "keys": ""
+    },
+    {
+      "start": 132,
+      "duration": 5,
+      "chapter": "Свой SVG · шаг 26",
+      "caption": "Прокручиваем библиотеку вниз и нажимаем карточку ladder.",
+      "capture": "26-add-custom",
+      "targetRect": {
+        "h": 126.8000030517578,
+        "w": 116.20000457763672,
+        "x": 22,
+        "y": 740.2000122070312
+      },
+      "keys": ""
+    },
+    {
+      "start": 137,
+      "duration": 5,
+      "chapter": "Свой SVG · шаг 27",
+      "caption": "В поле X задаём 300: главная цветная копия находится слева.",
+      "capture": "27-position-main",
+      "targetRect": {
+        "h": 16.399999618530273,
+        "w": 82.70000457763672,
+        "x": 1350.5,
+        "y": 821.9000244140625
+      },
+      "keys": ""
     },
     {
       "start": 142,
-      "duration": 7,
-      "chapter": "Своя палитра",
-      "capture": "17-import-palette",
-      "caption": "Загружаем palette-forest.json. Новая схема сразу применяется к композиции."
+      "duration": 5,
+      "chapter": "Свой SVG · шаг 28",
+      "caption": "Нажимаем кнопку дублирования предмета в правой панели.",
+      "capture": "28-duplicate",
+      "targetRect": {
+        "h": 29,
+        "w": 33,
+        "x": 1499.2000732421875,
+        "y": 839.7000122070312
+      },
+      "keys": ""
     },
     {
-      "start": 149,
-      "duration": 9,
+      "start": 147,
+      "duration": 5,
+      "chapter": "Свой SVG · шаг 29",
+      "caption": "Для дубликата нажимаем «Фоновый»: цвета переключаются на монохром.",
+      "capture": "29-background-role",
+      "targetRect": {
+        "h": 24,
+        "w": 117.70000457763672,
+        "x": 1449.5,
+        "y": 701.2999877929688
+      },
+      "keys": ""
+    },
+    {
+      "start": 152,
+      "duration": 5,
+      "chapter": "Свой SVG · шаг 30",
+      "caption": "В поле X задаём 700: фоновая копия перемещается вправо.",
+      "capture": "30-position-background",
+      "targetRect": {
+        "h": 16.399999618530273,
+        "w": 82.70000457763672,
+        "x": 1350.5,
+        "y": 711.5
+      },
+      "keys": ""
+    },
+    {
+      "start": 157,
+      "duration": 5,
+      "chapter": "Свой SVG · шаг 31",
+      "caption": "Переключаем палитру: обе копии перекрашиваются с учётом своих ролей.",
+      "capture": "31-recolor",
+      "targetRect": {
+        "h": 35,
+        "w": 244.40000915527344,
+        "x": 1325.800048828125,
+        "y": 296
+      },
+      "keys": ""
+    },
+    {
+      "start": 162,
+      "duration": 5,
+      "chapter": "Свой SVG · шаг 32",
+      "caption": "Кнопка «Проект» сохраняет JSON со своим SVG и обеими картами цветов.",
+      "capture": "32-save-project",
+      "targetRect": {
+        "h": 39,
+        "w": 98.6750030517578,
+        "x": 1337.0374755859375,
+        "y": 23.100000381469727
+      },
+      "keys": ""
+    },
+    {
+      "start": 167,
+      "duration": 5,
       "chapter": "Результат",
-      "capture": "end",
-      "caption": "Примеры и инструкция лежат в репозитории. Незнакомые метафоры можно собрать вручную."
+      "caption": "Инструкция, примеры и проверки находятся в репозитории."
     }
   ]
 }
