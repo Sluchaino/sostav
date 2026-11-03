@@ -65,8 +65,11 @@ export function inspectComposition(catalog: Catalog, scene: Scene): PreflightIss
     const definition=catalog.objects.find(item=>item.id===object.objectId)!;
     if(!definition.custom || checked.has(definition.id)) continue;
     checked.add(definition.id);
-    const asset=selectObject(catalog,object.objectId,scene.size,object.role);
-    const original=asset.colors.filter(color=>!Object.hasOwn(asset.paintRoles,color));
+    const used=scene.objects.filter(item=>item.objectId===definition.id);
+    const original=[...new Set(used.flatMap(item=>{
+      const asset=selectObject(catalog,item.objectId,scene.size,item.role);
+      return asset.colors.filter(color=>!Object.hasOwn(asset.paintRoles,color));
+    }))];
     const source=scene.customObjects?.find(item=>item.id===definition.id);
     const unsupported=source?readCustomSvg(source.svg).unsupportedPaints:[];
     if(original.length || unsupported.length) issues.push({id:'colors-'+definition.id,code:'original-colors',level:'info',title:`«${definition.name}»: есть исходные цвета`,message:`${original.length?`Без назначения роли: ${original.length}. Эти цвета не меняются вместе с палитрой. `:''}${unsupported.length?`Не поддерживаются для перекраски: ${unsupported.slice(0,5).join(', ')}${unsupported.length>5?'…':''}. `:''}Если исходные цвета подходят, менять их не нужно.`,instanceIds:scene.objects.filter(item=>item.objectId===definition.id).map(item=>item.instanceId),objectId:definition.id,colors:original});

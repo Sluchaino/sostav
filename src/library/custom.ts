@@ -1,4 +1,4 @@
-import type { Catalog, ColorRole, LibraryObject, SvgAsset } from './types.js';
+import type { Catalog, ColorRole, ObjectRole, LibraryObject, SvgAsset } from './types.js';
 import { normalizePaintColor, PAINT_ATTRIBUTES } from './paint.js';
 
 export interface CustomObject {
@@ -8,6 +8,7 @@ export interface CustomObject {
   meanings: string[];
   svg: string;
   paintRoles?: Record<string, ColorRole>;
+  paintRolesByRole?: Partial<Record<ObjectRole, Record<string, ColorRole>>>;
 }
 export const MAX_SVG_BYTES = 1_000_000;
 export const MAX_CUSTOM_OBJECTS = 30;
@@ -101,22 +102,42 @@ export function validateCustomObjects(value: unknown, catalog: Catalog): asserts
     if (typeof item.name !== 'string' || !item.name.trim() || item.name.length > 80) throw new Error('Название SVG: от 1 до 80 символов');
     for (const field of [item.tags, item.meanings]) if (!Array.isArray(field) || field.length > 30 || field.some((word: unknown) => typeof word !== 'string' || !word.trim() || word.length > 120)) throw new Error('Не более 30 тегов и смыслов, каждый до 120 символов');
     const { colors } = readCustomSvg(item.svg);
-    if (item.paintRoles !== undefined) {
-      if (!item.paintRoles || typeof item.paintRoles !== 'object' || Array.isArray(item.paintRoles)) throw new Error('Неверное назначение цветов SVG');
-      for (const [color, role] of Object.entries(item.paintRoles)) {
-        if (!colors.includes(color) || typeof role !== 'string' || !Object.hasOwn(catalog.colorRoles, role) || !catalog.colorRoles[role as ColorRole].targets.includes('object')) throw new Error('Неизвестный цвет или роль в настройках SVG');
+    const validatePaints = (mapping: unknown, secondary = false) => {
+      if (!mapping || typeof mapping !== 'object' || Array.isArray(mapping)) throw new Error('Неверное назначение цветов SVG');
+      for (const [color, role] of Object.entries(mapping)) {
+        if (!colors.includes(color) || typeof role !== 'string' || !Object.hasOwn(catalog.colorRoles, role) || !catalog.colorRoles[role as ColorRole].targets.includes('object') || (secondary && role.startsWith('object.'))) throw new Error('Неизвестный цвет или недопустимая роль в настройках SVG');
       }
+    };
+    if (item.paintRoles !== undefined) validatePaints(item.paintRoles);
+    if (item.paintRolesByRole !== undefined) {
+      const maps = item.paintRolesByRole;
+      if (!maps || typeof maps !== 'object' || Array.isArray(maps) || Object.keys(maps).some(role => role !== 'main' && role !== 'secondary')) throw new Error('Неверные цветовые варианты SVG');
+      for (const role of ['main', 'secondary'] as const) if (Object.hasOwn(maps, role)) validatePaints(maps[role], role === 'secondary');
     }
     total += new TextEncoder().encode(item.svg).length;
   }
   if (total > 8_000_000) throw new Error('Общий размер своих SVG — не больше 8 МБ');
 }
 
+export function customPaintRoles(item: CustomObject, role: ObjectRole): Record<string, ColorRole> {
+  return item.paintRolesByRole?.[role] ?? item.paintRoles ?? {};
+}
+
+/** A starting point for monochrome assignments; source alpha and paths stay intact. */
+export function monochromePaintRoles(colors: string[]): Record<string, ColorRole> {
+  return Object.fromEntries(colors.map(color => {
+    const rgb = [1, 3, 5].map(offset => parseInt(color.slice(offset, offset + 2), 16));
+    const brightness = (rgb[0]! * .2126 + rgb[1]! * .7152 + rgb[2]! * .0722) / 255;
+    const role: ColorRole = brightness < .12 ? 'neutral.ink' : brightness > .96 ? 'neutral.paper' : brightness > .75 ? 'background.base' : brightness > .45 ? 'background.medium' : 'background.strong';
+    return [color, role];
+  }));
+}
+
 export function customLibrary(catalog: Catalog, items: CustomObject[] = []): Catalog {
   const objects: LibraryObject[] = items.map(item => {
     const { width, height, viewBox, colors } = readCustomSvg(item.svg);
     const asset: SvgAsset = { url: item.id, source: item.name, sha256: '', bytes: item.svg.length, width, height, viewBox, pathCount: 0, elementCount: 0, colors, definitionIds: [], tags: {}, paintRoles: item.paintRoles ?? {} };
-    return { id: item.id, name: item.name, tags: [...item.tags, ...item.meanings], meanings: item.meanings, custom: true, detailStatus: 'no-proven-simplified-pair', note: 'Свой SVG: цвета по назначениям палитры, один вариант для S/L и обеих ролей.', variants: { S: { main: asset, secondary: asset }, L: { main: asset, secondary: asset } } };
+    return { id: item.id, name: item.name, tags: [...item.tags, ...item.meanings], meanings: item.meanings, custom: true, detailStatus: 'no-proven-simplified-pair', note: 'Свой SVG: одна геометрия S/L, отдельные цвета главной и фоновой роли.', variants: { S: { main: { ...asset, paintRoles: customPaintRoles(item, 'main') }, secondary: { ...asset, paintRoles: customPaintRoles(item, 'secondary') } }, L: { main: { ...asset, paintRoles: customPaintRoles(item, 'main') }, secondary: { ...asset, paintRoles: customPaintRoles(item, 'secondary') } } } };
   });
   return { ...catalog, objects: [...catalog.objects.filter(item => !item.custom), ...objects] };
 }
