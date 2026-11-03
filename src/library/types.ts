@@ -47,7 +47,7 @@ export interface Background {
 export interface Catalog {
   schemaVersion: 1;
   basePaletteId: string;
-  sizeMappingStatus: 'working-assumption' | 'confirmed';
+  sizeMappingStatus: 'working-assumption' | 'normalized' | 'confirmed';
   sizes: Record<IllustrationSize, { label: string; referenceFrame: { width: number; height: number } }>;
   formats: { id: string; width: number; height: number }[];
   geometryPolicy: {

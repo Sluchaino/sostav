@@ -5,8 +5,20 @@ import { createHash } from 'node:crypto';
 import { inspectSvg } from '../scripts/svg.mjs';
 import { selectObject, selectBackground, searchObjects, allowedColors, paintSubstitutions, validatePalette, sceneTransform, getPalette } from '../.build/library/index.js';
 
+
 const root = new URL('../', import.meta.url);
 const catalog = JSON.parse(await readFile(new URL('public/library/catalog.json', root), 'utf8'));
+
+test('normalized source folders match logical S/L for objects and backgrounds', () => {
+  assert.equal(catalog.sizeMappingStatus, 'normalized');
+  assert.ok(!catalog.warnings.some(warning => warning.code === 'SIZE_MAPPING_ASSUMED'));
+  for (const object of catalog.objects) for (const size of ['S', 'L']) for (const role of ['main', 'secondary']) {
+    assert.ok(object.variants[size][role].source.includes(`/Размер ${size}/`), `${object.id}/${size}/${role}`);
+  }
+  for (const background of catalog.backgrounds) for (const size of ['S', 'L']) {
+    assert.ok(background.variants[size].source.includes(`/Размер ${size}/Фон/`));
+  }
+});
 
 test('all 46 exported assets match original SVG bytes and checksums', async () => {
   const assets = [

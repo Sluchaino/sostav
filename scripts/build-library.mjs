@@ -96,7 +96,7 @@ for (const scheme of palettes.schemes) {
   backgrounds.push({ id: scheme.id, name: scheme.name, paletteId: scheme.id, variants });
 }
 const warnings = [
-  { code: 'SIZE_MAPPING_ASSUMED', message: 'Логические предметы S берутся из исходной L, L — из исходной S. Фоны сохраняют исходные S/L. Соответствие рабочее, не подтверждённое автором.', objects: objects.map(o => o.id) },
+  ...(sourceMap.sizeMappingStatus === 'working-assumption' ? [{ code: 'SIZE_MAPPING_ASSUMED', message: 'Логические предметы S берутся из исходной L, L — из исходной S. Фоны сохраняют исходные S/L. Соответствие рабочее, не подтверждённое автором.', objects: objects.map(o => o.id) }] : []),
   { code: 'SECONDARY_NOT_SIMPLIFIED', message: 'Фоновые версии в обеих размерных группах сохраняют подробную геометрию. При смене роли использовать исходный файл целиком.', objects: objects.map(o => o.id) },
   { code: 'NO_DISTINCT_DETAIL_PAIR', message: 'У части предметов не подтверждена отдельная упрощённая геометрия.', objects: objects.filter(o => o.detailStatus === 'no-proven-simplified-pair').map(o => o.id) },
   { code: 'COLOR_ROLES_INFERRED', message: 'Редактируемые роли назначены по двум колонкам образцов и использованию в фонах. Чёрный и белый сохранены как фиксированные нейтральные цвета; правила требуют визуального согласования.' },

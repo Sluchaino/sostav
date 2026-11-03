@@ -9,22 +9,6 @@
   "exportedAssetCount": 46,
   "warnings": [
     {
-      "code": "SIZE_MAPPING_ASSUMED",
-      "message": "Логические предметы S берутся из исходной L, L — из исходной S. Фоны сохраняют исходные S/L. Соответствие рабочее, не подтверждённое автором.",
-      "objects": [
-        "flower-vase",
-        "book",
-        "wallet",
-        "lamp",
-        "coin",
-        "headphones",
-        "puzzle",
-        "folder",
-        "pen",
-        "phone"
-      ]
-    },
-    {
       "code": "SECONDARY_NOT_SIMPLIFIED",
       "message": "Фоновые версии в обеих размерных группах сохраняют подробную геометрию. При смене роли использовать исходный файл целиком.",
       "objects": [
