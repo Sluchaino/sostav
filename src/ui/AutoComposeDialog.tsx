@@ -3,7 +3,7 @@ import { ArrowRight, Check, Layers3, Plus, RefreshCw, Shapes, Sparkles, X } from
 import type { Catalog, IllustrationSize, ObjectRole } from '../library/types.js';
 import { searchObjects } from '../library/index.js';
 import { editReview, reviewFromScene, reviewWithSupport, type ReviewedItem, type SelectionReview } from '../editor/selection.js';
-import { generateLayouts, MAX_LAYOUT_OBJECTS, objectsFromNames, parseObjectNames, type LayoutVariant } from '../editor/layout.js';
+import { generateLayouts, namedObjectKeys, objectNameToken, MAX_LAYOUT_OBJECTS, objectsFromNames, parseObjectNames, type LayoutVariant } from '../editor/layout.js';
 import { exportSvg, preparedSvg, type AssetTexts } from '../editor/svg.js';
 import { activePalette, canvasSize, type Scene } from '../editor/model.js';
 import { selectObjectsByTheme, THEME_EXAMPLES, type MeaningResult } from '../editor/meaning.js';
@@ -41,8 +41,8 @@ export function AutoComposeDialog({ catalog, texts, scene, onApply, onClose }: {
   const [review, setReview] = useState<ReviewedItem[] | null>(initialReview);
   const [choiceQuery, setChoiceQuery] = useState('');
   const [meaning, setMeaning] = useState<MeaningResult | null>(null);
-  const [names, setNames] = useState(scene.objects.map(object => catalog.objects.find(item => item.id === object.objectId)!.name).join(', '));
-  const [roles, setRoles] = useState<Record<string, ObjectRole>>(() => Object.fromEntries(scene.objects.flatMap((object, index) => [[object.instanceId, object.role], [`auto-choice-${index}-${object.objectId}`, object.role]])));
+  const [names, setNames] = useState(scene.objects.map(object => objectNameToken(catalog, object.objectId)).join(', '));
+  const [roles, setRoles] = useState<Record<string, ObjectRole>>(() => Object.fromEntries(scene.objects.flatMap((object, index) => [[object.instanceId, object.role], [namedObjectKeys(scene.objects.map(item => item.objectId))[index]!.instanceId, object.role]])));
   const [support, setSupport] = useState(initialReview !== null && scene.objects.some(item => item.role === 'secondary'));
   const [variants, setVariants] = useState<LayoutVariant[]>([]);
   const [selected, setSelected] = useState(0);
@@ -58,7 +58,7 @@ export function AutoComposeDialog({ catalog, texts, scene, onApply, onClose }: {
     ? (review ?? []).map(item => ({ instanceId: `theme-${item.objectId}`, objectId: item.objectId, role: item.role, x: 0.5, y: 0.5, rotation: 0 }))
     : source === 'canvas'
     ? scene.objects.map(object => ({ ...object, role: roles[object.instanceId] ?? object.role }))
-    : parsed.objectIds.map((objectId, index) => ({ instanceId: `auto-choice-${index}-${objectId}`, objectId, role: roles[`auto-choice-${index}-${objectId}`] ?? 'main', x: 0.5, y: 0.5, rotation: 0 })), [source, scene.objects, roles, parsed, review]);
+    : namedObjectKeys(parsed.objectIds).map(({ objectId, instanceId }) => ({ instanceId, objectId, role: roles[instanceId] ?? 'main', x: 0.5, y: 0.5, rotation: 0 })), [source, scene.objects, roles, parsed, review]);
   const themeCatalog = useMemo(() => onlyCustom ? { ...catalog, objects: catalog.objects.filter(object => object.custom) } : catalog, [catalog, onlyCustom]);
   const excluded = meaning?.excludedObjectIds ?? [];
   const choiceObjects = searchObjects(themeCatalog, choiceQuery).filter(object => !excluded.includes(object.id) && !(review ?? []).some(item => item.objectId === object.id));
@@ -85,7 +85,7 @@ export function AutoComposeDialog({ catalog, texts, scene, onApply, onClose }: {
   function chooseObject(id: string) {
     const selected = parsed.objectIds.includes(id);
     const ids = selected ? parsed.objectIds.filter(objectId => objectId !== id) : [...parsed.objectIds, id];
-    setNames([...ids.map(objectId => catalog.objects.find(item => item.id === objectId)!.name), ...parsed.unknown].join(', '));
+    setNames([...ids.map(objectId => objectNameToken(catalog, objectId)), ...parsed.unknown].join(', '));
     invalidate();
   }
   function resetSelection() {

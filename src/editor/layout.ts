@@ -30,6 +30,22 @@ export function parseObjectNames(catalog: Catalog, text: string): { objectIds: s
   return { objectIds, unknown };
 }
 
+/** Stable identity across removing or reordering other named objects. */
+export function namedObjectKeys(objectIds: string[]): { objectId: string; instanceId: string }[] {
+  const counts = new Map<string, number>();
+  return objectIds.map(objectId => {
+    const occurrence = counts.get(objectId) ?? 0;
+    counts.set(objectId, occurrence + 1);
+    return { objectId, instanceId: `named-${objectId}-${occurrence}` };
+  });
+}
+
+/** Disambiguate duplicate labels without losing the selected library ID. */
+export function objectNameToken(catalog: Catalog, objectId: string): string {
+  const object = catalog.objects.find(item => item.id === objectId)!;
+  return catalog.objects.filter(item => normalize(item.name) === normalize(object.name)).length > 1 ? object.id : object.name;
+}
+
 export interface LayoutMetrics { maxOverlap: number; occupancy: number; insideCanvas: boolean }
 export interface LayoutVariant { id: string; name: string; description: string; scene: Scene; metrics: LayoutMetrics; addedObjectIds: string[] }
 interface Box { x: number; y: number; width: number; height: number }

@@ -14,8 +14,8 @@ export const MAX_SVG_BYTES = 1_000_000;
 export const MAX_CUSTOM_OBJECTS = 30;
 const NS = 'http://www.w3.org/2000/svg';
 const elements = new Set('svg g defs path rect circle ellipse line polyline polygon linearGradient radialGradient stop clipPath mask pattern use title desc text tspan textPath filter feGaussianBlur feOffset feBlend feColorMatrix feComposite feFlood feMerge feMergeNode feComponentTransfer feFuncR feFuncG feFuncB feFuncA feDropShadow'.split(' '));
-const attributes = new Set('id xmlns xmlns:xlink version width height viewBox preserveAspectRatio x y x1 y1 x2 y2 cx cy r rx ry d points transform fill fill-rule fill-opacity stroke stroke-width stroke-opacity stroke-linecap stroke-linejoin stroke-miterlimit stroke-dasharray stroke-dashoffset opacity clip-path clip-rule mask filter gradientUnits gradientTransform spreadMethod offset stop-color stop-opacity fx fy fr patternUnits patternContentUnits patternTransform clipPathUnits maskUnits maskContentUnits href xlink:href color display visibility vector-effect paint-order font-family font-size font-weight font-style text-anchor dominant-baseline dx dy rotate textLength lengthAdjust startOffset method spacing filterUnits primitiveUnits in in2 result stdDeviation mode type values operator k1 k2 k3 k4 flood-color flood-opacity slope intercept amplitude exponent tableValues'.split(' '));
-const styleAttributes = new Set('fill fill-rule fill-opacity stroke stroke-width stroke-opacity stroke-linecap stroke-linejoin stroke-miterlimit stroke-dasharray stroke-dashoffset opacity clip-path clip-rule mask filter stop-color stop-opacity color display visibility font-family font-size font-weight font-style text-anchor dominant-baseline vector-effect paint-order'.split(' '));
+const attributes = new Set('overflow id xmlns xmlns:xlink version width height viewBox preserveAspectRatio x y x1 y1 x2 y2 cx cy r rx ry d points transform fill fill-rule fill-opacity stroke stroke-width stroke-opacity stroke-linecap stroke-linejoin stroke-miterlimit stroke-dasharray stroke-dashoffset opacity clip-path clip-rule mask filter gradientUnits gradientTransform spreadMethod offset stop-color stop-opacity fx fy fr patternUnits patternContentUnits patternTransform clipPathUnits maskUnits maskContentUnits href xlink:href color display visibility vector-effect paint-order font-family font-size font-weight font-style text-anchor dominant-baseline dx dy rotate textLength lengthAdjust startOffset method spacing filterUnits primitiveUnits in in2 result stdDeviation mode type values operator k1 k2 k3 k4 flood-color flood-opacity slope intercept amplitude exponent tableValues'.split(' '));
+const styleAttributes = new Set('overflow fill fill-rule fill-opacity stroke stroke-width stroke-opacity stroke-linecap stroke-linejoin stroke-miterlimit stroke-dasharray stroke-dashoffset opacity clip-path clip-rule mask filter stop-color stop-opacity color display visibility font-family font-size font-weight font-style text-anchor dominant-baseline vector-effect paint-order'.split(' '));
 
 /** Accept only self-contained, static SVG. Never insert arbitrary uploaded XML into HTML. */
 export function readCustomSvg(text: string): { svg: string; width: number; height: number; viewBox: [number, number, number, number]; colors: string[]; unsupportedPaints: string[] } {
@@ -35,13 +35,17 @@ export function readCustomSvg(text: string): { svg: string; width: number; heigh
       else if (child.nodeType === 8) node.removeChild(child);
     }
     if (node.hasAttribute('style')) {
+      const declarations = new Map<string, { value: string; important: boolean }>();
       for (const declaration of node.getAttribute('style')!.split(';').filter(value => value.trim())) {
         const colon = declaration.indexOf(':');
         const name = declaration.slice(0, colon).trim();
         const value = declaration.slice(colon + 1).trim();
         if (colon < 1 || !styleAttributes.has(name)) throw new Error('Неподдерживаемый стиль SVG: ' + name);
-        node.setAttribute(name, value);
+        const important = /!important\s*$/i.test(value);
+        const clean = value.replace(/\s*!important\s*$/i, '').trim();
+        if (!declarations.get(name)?.important || important) declarations.set(name, { value: clean, important });
       }
+      for (const [name, declaration] of declarations) node.setAttribute(name, declaration.value);
       node.removeAttribute('style');
     }
     for (const attr of Array.from(node.attributes)) {

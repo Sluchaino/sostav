@@ -1,0 +1,36 @@
+{
+  "version": 1,
+  "name": "Обучение онлайн",
+  "size": "L",
+  "formatId": "square",
+  "paletteId": "violet",
+  "customPalettes": [],
+  "compositionScale": 0.58,
+  "backgroundVisible": true,
+  "objects": [
+    {
+      "instanceId": "example-book",
+      "objectId": "book",
+      "role": "main",
+      "x": 0.44,
+      "y": 0.4,
+      "rotation": -7
+    },
+    {
+      "instanceId": "example-phone",
+      "objectId": "phone",
+      "role": "main",
+      "x": 10,
+      "y": 0.66,
+      "rotation": 6
+    },
+    {
+      "instanceId": "i-cc873ddb-75ef-4b4b-b48c-459d7599332e",
+      "objectId": "phone",
+      "role": "main",
+      "x": 10.035,
+      "y": 0.6950000000000001,
+      "rotation": 6
+    }
+  ]
+}

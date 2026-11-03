@@ -118,7 +118,7 @@ function Editor({ catalog: baseCatalog, texts: baseTexts }: { catalog: Catalog; 
   const bgMarkup = useMemo(() => scene.backgroundVisible ? backgroundMarkup(catalog, texts, scene) : '', [catalog, texts, scene.size, scene.paletteId, scene.customPalettes, scene.backgroundVisible, scene.formatId, width, height]);
   const renderedObjects = useMemo(() => scene.objects.map(object => {
     const asset = selectObject(catalog, object.objectId, scene.size, object.role);
-    const key = `${asset.url}|${object.instanceId}|${JSON.stringify(asset.paintRoles)}|${JSON.stringify(palette.colors)}`;
+    const key = `${asset.url}|${texts.get(asset.url)}|${object.instanceId}|${JSON.stringify(asset.paintRoles)}|${JSON.stringify(palette.colors)}`;
     let markup = markupCache.current.get(key);
     if (!markup) {
       if (markupCache.current.size > 1000) markupCache.current.clear();
@@ -147,7 +147,7 @@ function Editor({ catalog: baseCatalog, texts: baseTexts }: { catalog: Catalog; 
   }
   function duplicateSelected() {
     if (!selected || scene.objects.length >= 100) return;
-    const copy = { ...selected, instanceId: newId(), x: selected.x + 0.035, y: selected.y + 0.035 };
+    const copy = { ...selected, instanceId: newId(), x: Math.min(10, selected.x + 0.035), y: Math.min(10, selected.y + 0.035) };
     const objects = [...history.present.objects]; objects.splice(selectedIndex + 1, 0, copy);
     commit({ ...history.present, objects }); setSelectedId(copy.instanceId);
   }
@@ -168,10 +168,12 @@ function Editor({ catalog: baseCatalog, texts: baseTexts }: { catalog: Catalog; 
     if (!file) return;
     try {
       if (file.size > MAX_FILE_BYTES) throw new Error('Файл слишком большой. Максимум — 15 МБ.');
-      const value = readScene(JSON.parse(await file.text()), baseCatalog);
+      const parsed: unknown = JSON.parse(await file.text());
       if (kind === 'project') {
+        const value = readScene(parsed, baseCatalog);
         commit(value); setSelectedId(value.objects.at(-1)?.instanceId ?? null); setToast('Проект открыт');
       } else {
+        const value = parsed;
         validatePalette(catalog, value);
         if ([...catalog.palettes, ...scene.customPalettes].some(p => p.id === value.id)) throw new Error('Палитра с таким id уже есть. Задайте уникальный id в JSON.');
         if (scene.customPalettes.length >= 50) throw new Error('Допускается не более 50 пользовательских палитр');
@@ -236,6 +238,7 @@ function Editor({ catalog: baseCatalog, texts: baseTexts }: { catalog: Catalog; 
   }, [history.present]);
   useEffect(() => {
     function keydown(event: KeyboardEvent) {
+      if (showHelp) { if (event.key === 'Escape') { event.preventDefault(); setShowHelp(false); } return; }
       if (showAuto || editingCustom || showPreflight || showPreview) return;
       const element = event.target as HTMLElement;
       const action = editorShortcut(event, ['INPUT', 'TEXTAREA', 'SELECT'].includes(element.tagName) || element.isContentEditable);

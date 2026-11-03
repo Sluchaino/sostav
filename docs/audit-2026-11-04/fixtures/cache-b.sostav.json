@@ -1,0 +1,53 @@
+{
+  "version": 1,
+  "name": "cache-b",
+  "size": "L",
+  "formatId": "landscape",
+  "paletteId": "aqua",
+  "customPalettes": [],
+  "compositionScale": 0.58,
+  "backgroundVisible": true,
+  "objects": [
+    {
+      "instanceId": "i-44376307-64ff-4362-8981-be9cbf215a8d",
+      "objectId": "custom-acaff39e-0e26-4600-9b97-fa5356b731f2",
+      "role": "main",
+      "x": 0.2916666666666667,
+      "y": 0.5,
+      "rotation": 0
+    },
+    {
+      "instanceId": "i-e92d8c37-43f3-42f7-89f0-269afe9216dc",
+      "objectId": "custom-acaff39e-0e26-4600-9b97-fa5356b731f2",
+      "role": "secondary",
+      "x": 0.7083333333333334,
+      "y": 0.5,
+      "rotation": 0
+    }
+  ],
+  "customObjects": [
+    {
+      "id": "custom-acaff39e-0e26-4600-9b97-fa5356b731f2",
+      "name": "QA Ladder",
+      "tags": [
+        "лестница",
+        "ступени"
+      ],
+      "meanings": [
+        "рост",
+        "развитие"
+      ],
+      "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 100 100\" width=\"400\" height=\"400\" preserveAspectRatio=\"xMidYMid meet\"><path d=\"M 50 10 L 90 90 H 10 Z\" fill=\"#7353A6\"/><path d=\"M 40 40 H 60 V 60 H 40 Z\" fill=\"#F3AD64\"/></svg>",
+      "paintRolesByRole": {
+        "main": {
+          "#7353A6": "object.primary",
+          "#F3AD64": "object.secondary"
+        },
+        "secondary": {
+          "#7353A6": "background.strong",
+          "#F3AD64": "background.medium"
+        }
+      }
+    }
+  ]
+}
