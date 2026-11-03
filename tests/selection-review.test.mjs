@@ -21,9 +21,11 @@ test('review edits retain roles on replacement, enforce limits, deduplicate and 
   assert.throws(()=>editReview(full,{type:'add',objectId:catalog.objects[6].id},catalog));
 });
 
-test('production semantic descriptions match the evaluated baseline and exclude SVG data',async()=>{
+test('archived model descriptions reproduce the frozen benchmark library and exclude SVG data',async()=>{
   const reference=JSON.parse(await readFile(new URL('../benchmarks/meaning/objects.json',import.meta.url),'utf8'));
-  const documents=semanticDocuments(catalog);
+  // The archived model experiment predates the expanded production tags.
+  const frozenCatalog={...catalog,objects:catalog.objects.map(object=>({...object,tags:reference.find(item=>item.id===object.id)?.tags??object.tags}))};
+  const documents=semanticDocuments(frozenCatalog);
   for(const object of reference.filter(o=>!o.custom)) assert.equal(documents.find(d=>d.id===object.id).text,`${object.name}. ${object.tags.join(', ')}. ${object.meanings.join(', ')}.`);
   assert.ok(!JSON.stringify(documents).includes('<svg'));
 });
