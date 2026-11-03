@@ -8,6 +8,7 @@ import { CustomObjectDialog } from './CustomObjectDialog.js';
 import { CompositionPreview } from './CompositionPreview.js';
 import { PreflightDialog } from './PreflightDialog.js';
 import { AutoComposeDialog } from './AutoComposeDialog.js';
+import { editorShortcut } from '../editor/shortcuts.js';
 
 const STORAGE_KEY = 'sostav-project-v1';
 const MAX_FILE_BYTES = 15_000_000;
@@ -235,18 +236,17 @@ function Editor({ catalog: baseCatalog, texts: baseTexts }: { catalog: Catalog; 
     function keydown(event: KeyboardEvent) {
       if (showAuto || editingCustom || showPreflight || showPreview) return;
       const element = event.target as HTMLElement;
-      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 's') { event.preventDefault(); saveProject(); return; }
-      if (['INPUT', 'TEXTAREA', 'SELECT'].includes(element.tagName) || element.isContentEditable) return;
-      const mod = event.ctrlKey || event.metaKey;
-      if (mod && event.key.toLowerCase() === 'z') { event.preventDefault(); dispatch({ type: event.shiftKey ? 'redo' : 'undo' }); }
-      else if (mod && event.key.toLowerCase() === 'y') { event.preventDefault(); dispatch({ type: 'redo' }); }
-      else if (mod && event.key.toLowerCase() === 'd') { event.preventDefault(); duplicateSelected(); }
-      else if (event.key === 'Escape') { setSelectedId(null); setShowExamples(false); setShowHelp(false); }
-      else if ((event.key === 'Delete' || event.key === 'Backspace') && selected) { event.preventDefault(); removeSelected(); }
-      else if (selected && ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(event.key)) {
+      const action = editorShortcut(event, ['INPUT', 'TEXTAREA', 'SELECT'].includes(element.tagName) || element.isContentEditable);
+      if (!action) return;
+      if (action === 'save') { event.preventDefault(); saveProject(); }
+      else if (action === 'undo' || action === 'redo') { event.preventDefault(); dispatch({ type: action }); }
+      else if (action === 'duplicate') { event.preventDefault(); duplicateSelected(); }
+      else if (action === 'escape') { setSelectedId(null); setShowExamples(false); setShowHelp(false); }
+      else if (action === 'delete' && selected) { event.preventDefault(); removeSelected(); }
+      else if (selected && ['up', 'down', 'left', 'right'].includes(action)) {
         event.preventDefault(); const step = event.shiftKey ? 10 : 1;
-        const dx = event.key === 'ArrowLeft' ? -step : event.key === 'ArrowRight' ? step : 0;
-        const dy = event.key === 'ArrowUp' ? -step : event.key === 'ArrowDown' ? step : 0;
+        const dx = action === 'left' ? -step : action === 'right' ? step : 0;
+        const dy = action === 'up' ? -step : action === 'down' ? step : 0;
         updateSelected({ x: Math.max(-10, Math.min(10, selected.x + dx / width)), y: Math.max(-10, Math.min(10, selected.y + dy / height)) });
       }
     }

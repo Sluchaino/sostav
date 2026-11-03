@@ -67,3 +67,9 @@ Compress-Archive -Path dist/* -DestinationPath .build/sostav-pages.zip -Force
 Библиотека должна загружаться с `/library/`; загрузки и сохранения своих SVG выполняются в браузере. Проекты из localStorage на localhost автоматически не переносятся на новый домен: для переноса откройте скачанный `.sostav.json`.
 
 Официальные инструкции: [Direct Upload](https://developers.cloudflare.com/pages/get-started/direct-upload/), [Git integration](https://developers.cloudflare.com/pages/get-started/git-integration/), [версия Node.js](https://developers.cloudflare.com/pages/configuration/build-image/).
+
+## Обновление 0.11.4 — 4 ноября 2026
+
+Опубликовано исправление горячих клавиш: буквенные команды используют физические клавиши и не зависят от раскладки. Production загружает `assets/index-DOYUDgIM.js`. На HTTPS-сайте проверены Ctrl+Z, Ctrl+Shift+Z, Ctrl+Y, Ctrl+D, Ctrl+S, Delete, Backspace, Escape и все четыре стрелки с шагом 1/10 px. Отмена действительно возвращает число предметов, повтор восстанавливает действие; скачивание через Ctrl+S создаёт JSON. Консоль без ошибок/предупреждений. Перед проверкой сцена сохранена, после — восстановлена. Русские символы и Command покрыты регрессионными тестами; физическая macOS не проверялась.
+
+![После отмены добавления: на холсте снова два предмета, повтор доступен](shortcuts.png)
