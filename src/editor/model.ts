@@ -21,6 +21,7 @@ export interface Scene {
   name: string;
   size: IllustrationSize;
   formatId: string;
+  customCanvas?: { width: number; height: number };
   paletteId: string;
   customPalettes: Palette[];
   compositionScale: number;
@@ -58,7 +59,23 @@ export function createExample(id: ExampleId): Scene {
   ] };
 }
 
+export const MAX_CANVAS_DIMENSION = 16384;
+
+export function validateCanvasSize(value: unknown): asserts value is { width: number; height: number } {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) throw new Error('Укажите ширину и высоту холста');
+  const { width, height } = value as { width?: unknown; height?: unknown };
+  for (const dimension of [width, height]) {
+    if (typeof dimension !== 'number' || !Number.isSafeInteger(dimension) || dimension < 1 || dimension > MAX_CANVAS_DIMENSION) {
+      throw new Error(`Ширина и высота должны быть целыми числами от 1 до ${MAX_CANVAS_DIMENSION} px`);
+    }
+  }
+}
+
 export function canvasSize(catalog: Catalog, scene: Scene) {
+  if (scene.formatId === 'custom') {
+    validateCanvasSize(scene.customCanvas);
+    return { ...scene.customCanvas };
+  }
   const format = catalog.formats.find(item => item.id === scene.formatId);
   if (!format) throw new Error('Неизвестный формат холста');
   return { width: format.width, height: format.height };
@@ -119,7 +136,8 @@ export function validateScene(value: unknown, catalog: Catalog): asserts value i
   if (scene.interpretation !== undefined) validateMeaningResult(scene.interpretation, catalog);
   if (scene.selectionReview !== undefined) validateSelectionReview(scene.selectionReview, catalog);
   if (scene.size !== 'S' && scene.size !== 'L') throw new Error('Неизвестный размер иллюстрации');
-  if (!catalog.formats.some(item => item.id === scene.formatId)) throw new Error('Неизвестный формат холста');
+  if (scene.customCanvas !== undefined) validateCanvasSize(scene.customCanvas);
+  canvasSize(catalog, scene as Scene);
   if (typeof scene.compositionScale !== 'number' || !Number.isFinite(scene.compositionScale) || scene.compositionScale < 0.15 || scene.compositionScale > 1.5) throw new Error('Недопустимый масштаб композиции');
   if (typeof scene.backgroundVisible !== 'boolean') throw new Error('Неверная настройка фона');
   if (!Array.isArray(scene.customPalettes) || scene.customPalettes.length > 50) throw new Error('Неверный список палитр');

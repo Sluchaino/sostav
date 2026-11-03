@@ -5,7 +5,7 @@ import { searchObjects } from '../library/index.js';
 import { editReview, reviewFromScene, reviewWithSupport, type ReviewedItem, type SelectionReview } from '../editor/selection.js';
 import { generateLayouts, MAX_LAYOUT_OBJECTS, objectsFromNames, parseObjectNames, type LayoutVariant } from '../editor/layout.js';
 import { exportSvg, preparedSvg, type AssetTexts } from '../editor/svg.js';
-import { activePalette, type Scene } from '../editor/model.js';
+import { activePalette, canvasSize, type Scene } from '../editor/model.js';
 import { selectObjectsByTheme, THEME_EXAMPLES, type MeaningResult } from '../editor/meaning.js';
 
 function VariantPreview({ catalog, texts, variant }: { catalog: Catalog; texts: AssetTexts; variant: LayoutVariant }) {
@@ -31,6 +31,7 @@ function ObjectThumbnail({ catalog, texts, scene, objectId }: { catalog: Catalog
 }
 
 export function AutoComposeDialog({ catalog, texts, scene, onApply, onClose }: { catalog: Catalog; texts: AssetTexts; scene: Scene; onApply: (scene: Scene) => void; onClose: () => void }) {
+  const { width, height } = canvasSize(catalog, scene);
   const [initialReview] = useState(() => reviewFromScene(scene));
   const [source, setSource] = useState<'theme' | 'canvas' | 'names'>(scene.objects.length && initialReview === null ? 'canvas' : 'theme');
   const [size, setSize] = useState<IllustrationSize>(scene.size);
@@ -165,7 +166,7 @@ export function AutoComposeDialog({ catalog, texts, scene, onApply, onClose }: {
           {error && <p className="auto-error" role="alert">{error}</p>}
         </div>
         <div className="auto-results" ref={results}>
-          <div className="auto-results-heading"><span>РАСПОЛОЖЕНИЯ</span><span>{size} · {catalog.formats.find(format => format.id === scene.formatId)!.width} × {catalog.formats.find(format => format.id === scene.formatId)!.height}</span></div>
+          <div className="auto-results-heading"><span>РАСПОЛОЖЕНИЯ</span><span>{size} · {width} × {height}</span></div>
           {source === 'theme' && meaning && <div className={`meaning-summary ${meaning.status}`} role="status"><span>{review?.some(item => item.origin !== 'rules') ? 'Состав исправлен вами' : meaning.status === 'matched' ? 'Найдена смысловая связь' : meaning.status === 'partial' ? 'Частичная смысловая связь' : 'Нужен контекст'}</span><p>{review?.some(item => item.origin !== 'rules') ? 'Варианты собраны из выбранных вами предметов.' : meaning.summary}</p><div>{meaning.concepts.map(concept => <i key={concept.id}>{concept.label}</i>)}</div>{meaning.limitations.map((note, index) => <p className="meaning-limitation" key={index}>{note}</p>)}{meaning.excludedObjectIds.length > 0 && <p className="meaning-limitation">Исключены по вашему запросу: {meaning.excludedObjectIds.map(id => catalog.objects.find(object => object.id === id)!.name).join(', ')}.</p>}</div>}
           {!variants.length ? <div className="auto-placeholder"><span><Sparkles size={32} /></span><h3>{source === 'theme' && review?.length === 0 ? 'Нужны предметы для композиции' : 'У одной идеи — несколько форм'}</h3><p>{source === 'theme' && review?.length === 0 ? 'Уточните фразу или добавьте подходящие предметы вручную.' : source === 'theme' ? 'Напишите метафору и нажмите «Построить композицию».' : 'Выберите предметы и нажмите «Построить композицию».'}</p><div><i /><i /><i /></div></div> : <>
             <div className={`variant-grid ${dirty ? 'stale' : ''}`}>{variants.map((variant, index) => <button className={`variant-card ${selected === index ? 'active' : ''}`} key={variant.id} aria-pressed={selected === index} aria-label={`Вариант: ${variant.name}`} onClick={() => setSelected(index)}><span className="variant-image"><VariantPreview catalog={catalog} texts={texts} variant={variant} /><span className="variant-number">0{index + 1}</span>{selected === index && <span className="variant-check"><Check size={13} /></span>}</span><strong>{variant.name}</strong><small>{variant.description}</small></button>)}</div>

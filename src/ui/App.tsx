@@ -8,6 +8,7 @@ import { CustomObjectDialog } from './CustomObjectDialog.js';
 import { CompositionPreview } from './CompositionPreview.js';
 import { PreflightDialog } from './PreflightDialog.js';
 import { AutoComposeDialog } from './AutoComposeDialog.js';
+import { CanvasSizeForm } from './CanvasSizeForm.js';
 import { editorShortcut } from '../editor/shortcuts.js';
 
 const STORAGE_KEY = 'sostav-project-v1';
@@ -97,6 +98,7 @@ function Editor({ catalog: baseCatalog, texts: baseTexts }: { catalog: Catalog; 
   const [toast, setToast] = useState(initial.invalid ? 'Сохранённый проект не удалось прочитать. Открыт пример.' : initial.restored ? 'Восстановлен последний проект' : 'Начните с примера или добавьте свои предметы');
   const [showExamples, setShowExamples] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
+  const [showCanvasSize, setShowCanvasSize] = useState(false);
   const [showAuto, setShowAuto] = useState(false);
   const [showPreflight, setShowPreflight] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
@@ -113,7 +115,7 @@ function Editor({ catalog: baseCatalog, texts: baseTexts }: { catalog: Catalog; 
   const displayWidth = width * fit * zoom;
   const displayHeight = height * fit * zoom;
   const scale = compositionScale(catalog, scene);
-  const bgMarkup = useMemo(() => scene.backgroundVisible ? backgroundMarkup(catalog, texts, scene) : '', [catalog, texts, scene.size, scene.paletteId, scene.customPalettes, scene.backgroundVisible, scene.formatId]);
+  const bgMarkup = useMemo(() => scene.backgroundVisible ? backgroundMarkup(catalog, texts, scene) : '', [catalog, texts, scene.size, scene.paletteId, scene.customPalettes, scene.backgroundVisible, scene.formatId, width, height]);
   const renderedObjects = useMemo(() => scene.objects.map(object => {
     const asset = selectObject(catalog, object.objectId, scene.size, object.role);
     const key = `${asset.url}|${object.instanceId}|${JSON.stringify(asset.paintRoles)}|${JSON.stringify(palette.colors)}`;
@@ -306,7 +308,12 @@ function Editor({ catalog: baseCatalog, texts: baseTexts }: { catalog: Catalog; 
       </aside>
 
       <main className="canvas-panel">
-        <div className="canvas-toolbar"><div className="toolbar-left"><IconButton icon={Undo2} label="Отменить (Ctrl+Z)" disabled={!history.past.length} onClick={() => dispatch({ type: 'undo' })} /><IconButton icon={Redo2} label="Повторить (Ctrl+Shift+Z)" disabled={!history.future.length} onClick={() => dispatch({ type: 'redo' })} /><span className="toolbar-divider" /><label className="format-select"><LayoutGrid size={15} /><select aria-label="Формат холста" value={scene.formatId} onChange={event => patch({ formatId: event.target.value })}>{catalog.formats.map(format => <option key={format.id} value={format.id}>{formatNames[format.id]} · {format.width} × {format.height}</option>)}</select><ChevronDown size={14} /></label></div><div className="toolbar-actions"><button className="button auto-compose-button" aria-label="Собрать композицию" onClick={() => setShowAuto(true)}><Sparkles size={15} /><span>Собрать композицию</span></button><div className="example-menu"><button className={`button quiet ${showExamples ? 'active' : ''}`} aria-expanded={showExamples} onClick={() => setShowExamples(!showExamples)}><Sparkles size={16} />Примеры<ChevronDown size={14} /></button>{showExamples && <><button className="menu-backdrop" aria-label="Закрыть примеры" onClick={() => setShowExamples(false)} /><div className="dropdown">{EXAMPLES.map(example => <button key={example.id} onClick={() => loadExample(example.id)}><span>{example.name}</span><small>{example.description}</small></button>)}</div></>}</div></div></div>
+        <div className="canvas-toolbar"><div className="toolbar-left"><IconButton icon={Undo2} label="Отменить (Ctrl+Z)" disabled={!history.past.length} onClick={() => dispatch({ type: 'undo' })} /><IconButton icon={Redo2} label="Повторить (Ctrl+Shift+Z)" disabled={!history.future.length} onClick={() => dispatch({ type: 'redo' })} /><span className="toolbar-divider" /><label className="format-select"><LayoutGrid size={15} /><select aria-label="Формат холста" value={scene.formatId} onChange={event => {
+          if (event.target.value === 'custom') { setShowCanvasSize(true); return; }
+          const { customCanvas: _customCanvas, ...presetScene } = scene;
+          commit({ ...presetScene, formatId: event.target.value }); setShowCanvasSize(false);
+        }}>{catalog.formats.map(format => <option key={format.id} value={format.id}>{formatNames[format.id]} · {format.width} × {format.height}</option>)}<option value="custom">{scene.formatId === 'custom' ? `Свой · ${width} × ${height}` : 'Свой размер…'}</option></select><ChevronDown size={14} /></label>{scene.formatId === 'custom' && <IconButton icon={Settings2} label="Изменить размер холста" active={showCanvasSize} onClick={() => setShowCanvasSize(!showCanvasSize)} />}</div><div className="toolbar-actions"><button className="button auto-compose-button" aria-label="Собрать композицию" onClick={() => setShowAuto(true)}><Sparkles size={15} /><span>Собрать композицию</span></button><div className="example-menu"><button className={`button quiet ${showExamples ? 'active' : ''}`} aria-expanded={showExamples} onClick={() => setShowExamples(!showExamples)}><Sparkles size={16} />Примеры<ChevronDown size={14} /></button>{showExamples && <><button className="menu-backdrop" aria-label="Закрыть примеры" onClick={() => setShowExamples(false)} /><div className="dropdown">{EXAMPLES.map(example => <button key={example.id} onClick={() => loadExample(example.id)}><span>{example.name}</span><small>{example.description}</small></button>)}</div></>}</div></div></div>
+        {showCanvasSize && <CanvasSizeForm key={`${scene.formatId}:${width}:${height}`} width={width} height={height} onApply={dimensions => { patch({ formatId: 'custom', customCanvas: dimensions }); setShowCanvasSize(false); }} onClose={() => setShowCanvasSize(false)} />}
         <div className="canvas-viewport" ref={stageContainer}>
           <div className="canvas-space" style={{ minWidth: Math.max(viewport.width, displayWidth + 100), minHeight: Math.max(viewport.height, displayHeight + 100) }}>
             <div className="artboard-wrap" style={{ width: displayWidth, height: displayHeight }}><div className="artboard-label"><span>{scene.name || 'Новая иллюстрация'}</span><span>{scene.size} / {width} × {height}</span></div>
