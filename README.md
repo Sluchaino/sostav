@@ -12,7 +12,7 @@
 
 ## Примеры композиций
 
-Ниже — сами SVG-файлы: их можно открыть отдельно или скачать. JSON-проекты под примерами открываются кнопкой **«Открыть проект»** в редакторе.
+Ниже — сами SVG-файлы: их можно открыть отдельно или скачать. Для продолжения работы в редакторе доступны [примеры JSON-проектов](submission/examples/).
 
 <table>
   <tr>
@@ -22,13 +22,13 @@
   </tr>
   <tr>
     <td width="33%" valign="top"><a href="examples/learning-online.svg"><img src="examples/learning-online.svg" width="260" alt="SVG-композиция: книга и телефон на бирюзовом фоне"></a></td>
-    <td width="33%" valign="top"><a href="submission/examples/finance.svg"><img src="submission/examples/finance.svg" width="260" alt="SVG-композиция: кошелёк, монета и фоновый телефон"></a></td>
-    <td width="33%" valign="top"><a href="examples/music.svg"><img src="examples/music.svg" width="260" alt="SVG-композиция: наушники и фоновая ваза с цветами"></a></td>
+    <td width="33%" valign="top"><a href="examples/safe-shopping.svg"><img src="examples/safe-shopping.svg" width="260" alt="SVG-композиция: кошелёк, монета и фоновый телефон"></a></td>
+    <td width="33%" valign="top"><a href="examples/time-for-yourself.svg"><img src="examples/time-for-yourself.svg" width="260" alt="SVG-композиция: наушники, ваза с цветами и фоновая книга"></a></td>
   </tr>
   <tr>
     <td>1000 × 1000<br><a href="examples/learning-online.svg">SVG</a></td>
-    <td>L · 1200 × 630<br><a href="submission/examples/finance.svg">SVG</a> · <a href="submission/examples/finance.sostav.json">JSON-проект</a></td>
-    <td>L · 800 × 1200<br><a href="examples/music.svg">SVG</a> · <a href="examples/music.sostav.json">JSON-проект</a></td>
+    <td>1000 × 1000<br><a href="examples/safe-shopping.svg">SVG</a></td>
+    <td>1000 × 1000<br><a href="examples/time-for-yourself.svg">SVG</a></td>
   </tr>
 </table>
 
